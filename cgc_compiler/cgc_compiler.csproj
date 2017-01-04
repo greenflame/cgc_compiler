@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{7656B77C-151B-4C2B-A65F-51B48FAAAB7F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>cgc_compiler</RootNamespace>
+    <AssemblyName>cgc_compiler</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IDynamic.cs" />
+    <Compile Include="GameWorld.cs" />
+    <Compile Include="Components\Health.cs" />
+    <Compile Include="Components\Mover.cs" />
+    <Compile Include="Components\AComponent.cs" />
+    <Compile Include="GameObjects\AGameObject.cs" />
+    <Compile Include="GameObjects\ATower.cs" />
+    <Compile Include="GameObjects\ATroop.cs" />
+    <Compile Include="GameObjects\Forge.cs" />
+    <Compile Include="GameObjects\Knight.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Metrics.cs" />
+    <Compile Include="Components\Deployer.cs" />
+    <Compile Include="EventLogger.cs" />
+    <Compile Include="GameObjects\Arrow.cs" />
+    <Compile Include="Components\Strategies\AStrategy.cs" />
+    <Compile Include="Components\Strategies\TowerStrategy.cs" />
+    <Compile Include="Components\Strategies\AngryTroopStrategy.cs" />
+    <Compile Include="Components\Weapons\AWeapon.cs" />
+    <Compile Include="Components\Weapons\Bow.cs" />
+    <Compile Include="Components\Weapons\Sword.cs" />
+    <Compile Include="Components\Strategies\ArrowStrategy.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Components\" />
+    <Folder Include="GameObjects\" />
+    <Folder Include="Components\Strategies\" />
+    <Folder Include="Components\Weapons\" />
+  </ItemGroup>
+</Project>
