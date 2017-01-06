@@ -44,10 +44,8 @@
     <Compile Include="GameObjects\ATower.cs" />
     <Compile Include="GameObjects\ATroop.cs" />
     <Compile Include="GameObjects\Forge.cs" />
-    <Compile Include="GameObjects\Knight.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Metrics.cs" />
-    <Compile Include="Components\Deployer.cs" />
     <Compile Include="EventLogger.cs" />
     <Compile Include="GameObjects\Arrow.cs" />
     <Compile Include="Components\Strategies\AStrategy.cs" />
@@ -57,6 +55,8 @@
     <Compile Include="Components\Weapons\Bow.cs" />
     <Compile Include="Components\Weapons\Sword.cs" />
     <Compile Include="Components\Strategies\ArrowStrategy.cs" />
+    <Compile Include="Components\Deploy.cs" />
+    <Compile Include="GameObjects\Peasant.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,13 +2,13 @@
 
 namespace cgc_compiler
 {
-    public class Deployer : AComponent
+    public class Deploy : AComponent
     {
         public float Time { get; private set; }
 
         public float TimeRest { get; private set; }
 
-        public Deployer(AGameObject obj, float time)
+        public Deploy(AGameObject obj, float time)
             : base(obj)
         {
             Time = time;
@@ -20,7 +20,7 @@ namespace cgc_compiler
             TimeRest = Math.Max(0, TimeRest - deltaTime);
         }
 
-        public bool IsFinished()
+        public bool IsDeployed()
         {
             return TimeRest == 0;
         }

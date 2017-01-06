@@ -6,8 +6,6 @@ namespace cgc_compiler
 {
     public abstract class AGameObject
     {
-        public string Name { get; private set; }
-
         public Player Owner { get; set; }
 
         public float Position { get; set; }
@@ -16,17 +14,17 @@ namespace cgc_compiler
 
         public List<AComponent> Components { get; private set; }
 
-        public String Id { get; private set; }
+        public int Id { get; private set; }
 
-        public AGameObject(GameWorld world, string name, Player owner, float position)
+        private static int NextId = 0;
+
+        public AGameObject(GameWorld world, Player owner, float position)
         {
-            Name = name;
             Owner = owner;
             Position = position;
             World = world;
             Components = new List<AComponent>();
-//            Id = Guid.NewGuid();
-            Id = "id" + new Random().Next() % 100;
+            Id = NextId++;
         }
 
         public List<T> GetComponents<T >() where T : AComponent

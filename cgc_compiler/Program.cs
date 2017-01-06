@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace cgc_compiler
 {
@@ -8,23 +9,36 @@ namespace cgc_compiler
         {
             Console.WriteLine("Hello World!");
 
-            GameWorld gameWorld = new GameWorld();
-
-            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.RightPlayer, 10));
-//            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.RightPlayer, 9));
-//            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
-
-            for (int i = 0; i < 200; i++)
+            using (FileStream fs = File.Open("/Users/Alexander/Desktop/log1", FileMode.Create))
             {
-                gameWorld.Update(0.1f);
+                using (StreamWriter tw = new StreamWriter(fs))
+                {
+                    GameWorld gameWorld = new GameWorld(s => {
+                        Console.WriteLine(s);
+                        tw.WriteLine(s);
+                    });
+
+                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 10));
+                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 9));
+                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 8));
+                    //            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        gameWorld.Update(0.1f);
+                    }
+                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 0));
+
+                    //            gameWorld.GameObjects.Add(new Forge(gameWorld, Player.LeftPlayer, 0));
+
+                    for (int i = 0; i < 2000; i++)
+                    {
+                        gameWorld.Update(0.1f);
+                    } 
+                }
             }
 
-            gameWorld.GameObjects.Add(new Forge(gameWorld, Player.LeftPlayer, 0));
 
-            for (int i = 0; i < 200; i++)
-            {
-                gameWorld.Update(0.1f);
-            }
         }
     }
 }

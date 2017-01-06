@@ -24,7 +24,7 @@ namespace cgc_compiler
 
         public bool IsInRange(AGameObject aim)
         {
-            return Metrics.Distance(Object, aim) <= Radius;
+            return Metrics.LessOrEquals(Metrics.Distance(Object, aim), Radius);
         }
 
         public abstract void Attack(AGameObject targer);

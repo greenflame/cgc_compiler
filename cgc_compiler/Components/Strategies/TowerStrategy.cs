@@ -18,7 +18,7 @@ namespace cgc_compiler
         public TowerStrategy(AGameObject obj)
             : base(obj)
         {
-            Object.World.Logger.OnDeclare(Object);
+            Object.World.Logger.OnCreate(Object);
             State = StateE.Created;
             Weapon = Object.GetComponent<AWeapon>();
         }
@@ -28,6 +28,7 @@ namespace cgc_compiler
             return Object.World.GameObjects
                 .Where(o => o.Owner != Object.Owner)    // Enemy
                 .Where(o => o is ATroop)    // Troop
+                .Where(o => o.HasComponent<Deploy>() ? o.GetComponent<Deploy>().IsDeployed() : true)    // Deployed
                 .Aggregate((AGameObject)null, (a, b) => Metrics.Closest(Object, a, b));    // Closest
         }
 
@@ -41,7 +42,7 @@ namespace cgc_compiler
 
                     if (target != null && Weapon.IsInRange(target)) // Target is is in range -> shot
                     {
-                        Object.World.Logger.OnShot(Object, target);
+                        Object.World.Logger.OnAttack(Object, target);
                         State = StateE.Shooting;
                         Weapon.Attack(target);
                     }
@@ -57,7 +58,7 @@ namespace cgc_compiler
                 
                     if (target != null && Weapon.IsInRange(target))    // Target appears -> shot
                     {
-                        Object.World.Logger.OnShot(Object, target);
+                        Object.World.Logger.OnAttack(Object, target);
                         Weapon.Attack(target);
                         State = StateE.Shooting;
                     }
@@ -70,7 +71,7 @@ namespace cgc_compiler
                     {
                         if (target != null && Weapon.IsInRange(target))    // New target -> shoot
                         {
-                            Object.World.Logger.OnShot(Object, target);
+                            Object.World.Logger.OnAttack(Object, target);
                             Weapon.Attack(target);
                         }
                         else    // No available target -> idle

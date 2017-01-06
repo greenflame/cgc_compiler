@@ -10,10 +10,10 @@ namespace cgc_compiler
         public float Time { get; private set; }
         public EventLogger Logger { get; private set; }
 
-        public GameWorld()
+        public GameWorld(Action<string> loggerDelegate)
         {
             GameObjects = new List<AGameObject>();
-            Logger = new EventLogger(this);
+            Logger = new EventLogger(this, loggerDelegate);
         }
 
         public void Update(float deltaTime)

@@ -8,7 +8,7 @@ namespace cgc_compiler
 
         public Arrow(GameWorld world, Player owner, float positioin,
             AGameObject target, float damage, float speed)
-            : base(world, "Arrow", owner, positioin)
+            : base(world, owner, positioin)
         {
             Damage = damage;
             Components.Add(new Mover(this, speed));

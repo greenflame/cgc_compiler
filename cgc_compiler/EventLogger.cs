@@ -1,28 +1,33 @@
 ﻿using System;
+using System.Linq;
 
 namespace cgc_compiler
 {
     public class EventLogger
     {
         public GameWorld World { get; private set; }
+        public Action<string> Logger;
 
-        public EventLogger(GameWorld world)
+        public EventLogger(GameWorld world, Action<string> logger)
         {
             World = world;
+            Logger = logger;
         }
 
-        public void OnDeclare(AGameObject obj)
+        public void OnCreate(AGameObject obj)
         {
-            Console.WriteLine(string.Format("{0} DECLARE {1} {2} {3}",
+            Logger(string.Format("CREATE {0} {1} {2} {3} {4}",
                 World.Time,
                 obj.Id,
-                obj.Name,
+                obj.Position,
+
+                obj.GetType().ToString().Split('.').Last(),
                 obj.Owner));
         }
 
         public void OnDeploy(AGameObject obj)
         {
-            Console.WriteLine(string.Format("{0} DEPLOY {1} {2}",
+            Logger(string.Format("DEPLOY {0} {1} {2}",
                 World.Time,
                 obj.Id,
                 obj.Position));
@@ -30,7 +35,7 @@ namespace cgc_compiler
 
         public void OnIdle(AGameObject obj)
         {
-            Console.WriteLine(string.Format("{0} IDLE {1} {2}",
+            Logger(string.Format("IDLE {0} {1} {2}",
                 World.Time,
                 obj.Id,
                 obj.Position));
@@ -38,35 +43,40 @@ namespace cgc_compiler
 
         public void OnWalk(AGameObject obj, AGameObject target)
         {
-            Console.WriteLine(string.Format("{0} WALK {1} {2} {3}",
+            Logger(string.Format("WALK {0} {1} {2} {3}",
                 World.Time,
                 obj.Id,
                 obj.Position,
+
                 target.Id));
         }
 
-        public void OnShot(AGameObject obj, AGameObject target)
+        public void OnAttack(AGameObject obj, AGameObject target)
         {
-            Console.WriteLine(string.Format("{0} SHOT {1} {2} {3}",
+            Logger(string.Format("ATTACK {0} {1} {2} {3}",
                 World.Time,
                 obj.Id,
                 obj.Position,
+
                 target.Id));
         }
 
         public void OnHealthUpdate(AGameObject obj)
         {
-            Console.WriteLine(string.Format("{0} HEALTH {1} {2}",
+            Logger(string.Format("HEALTH {0} {1} {2} {3}",
                 World.Time,
                 obj.Id,
+                obj.Position,
+
                 obj.GetComponent<Health>().CurrentHealth));
         }
 
         public void OnDeath(AGameObject obj)
         {
-            Console.WriteLine(string.Format("{0} DEATH {1}",
+            Logger(string.Format("DEATH {0} {1} {2}",
                 World.Time,
-                obj.Id));
+                obj.Id,
+                obj.Position));
         }
     }
 }

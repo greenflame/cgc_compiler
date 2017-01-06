@@ -11,7 +11,7 @@ namespace cgc_compiler
             Deploying,
             Idle,
             Walking,
-            Shooting
+            Attacking
         }
 
         private StateE State;
@@ -20,16 +20,16 @@ namespace cgc_compiler
 
         private AWeapon Weapon;
 
-        private Deployer Deployer;
+        private Deploy Deploy;
 
         private Mover Mover;
 
         public AngryTroopStrategy(AGameObject obj)
             : base(obj)
         {
-            Object.World.Logger.OnDeclare(Object);
+            Object.World.Logger.OnCreate(Object);
             Weapon = Object.GetComponent<AWeapon>();
-            Deployer = Object.GetComponent<Deployer>();
+            Deploy = Object.GetComponent<Deploy>();
             Mover = Object.GetComponent<Mover>();
         }
 
@@ -37,6 +37,7 @@ namespace cgc_compiler
         {
             return Object.World.GameObjects
                 .Where(o => o.Owner != Object.Owner)    // Enemy
+                .Where(o => o.HasComponent<Deploy>() ? o.GetComponent<Deploy>().IsDeployed() : true)    // Deployed
                 .Aggregate((AGameObject)null, (a, b) => Metrics.Closest(Object, a, b));    // Closest
         }
 
@@ -55,14 +56,14 @@ namespace cgc_compiler
 
                 case StateE.Deploying:
 
-                    if (Deployer.IsFinished())  // Deployment finished
+                    if (Deploy.IsDeployed())  // Deployment finished
                     {
                         if (target != null)
                         {
                             if (Weapon.IsInRange(target))  // Target is in range -> shoot
                             {
-                                Object.World.Logger.OnShot(Object, target);
-                                State = StateE.Shooting;
+                                Object.World.Logger.OnAttack(Object, target);
+                                State = StateE.Attacking;
                                 Weapon.Attack(target);
                             }
                             else
@@ -88,9 +89,9 @@ namespace cgc_compiler
                     {
                         if (Weapon.IsInRange(target))  // Traget is in range -> shoot
                         {
-                            Object.World.Logger.OnShot(Object, target);
+                            Object.World.Logger.OnAttack(Object, target);
                             Weapon.Attack(target);
-                            State = StateE.Shooting;
+                            State = StateE.Attacking;
                         }
                         else    // Target is not in range -> move
                         {
@@ -107,11 +108,11 @@ namespace cgc_compiler
 
                     if (target != null)
                     {
-                        if (Weapon.IsInRange(target))  // Target is in range -> shoot
+                        if (Weapon.IsInRange(target))  // Target is in range -> attack
                         {
-                            Object.World.Logger.OnShot(Object, target);
+                            Object.World.Logger.OnAttack(Object, target);
                             Weapon.Attack(target);
-                            State = StateE.Shooting;
+                            State = StateE.Attacking;
                             Mover.Target = null;
                         }
                         else
@@ -137,7 +138,7 @@ namespace cgc_compiler
 
                     return;
 
-                case StateE.Shooting:
+                case StateE.Attacking:
 
                     if (Weapon.IsReady())  // Cooldowned
                     {
@@ -145,9 +146,9 @@ namespace cgc_compiler
                         {
                             if (Weapon.IsInRange(target))  // Target is in range -> shoot
                             {
-                                Object.World.Logger.OnShot(Object, target); // To shoot
+                                Object.World.Logger.OnAttack(Object, target); // To shoot
                                 Weapon.Attack(target);
-                                State = StateE.Shooting;
+                                State = StateE.Attacking;
                             }
                             else    // Target is not in range
                             {
