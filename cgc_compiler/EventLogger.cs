@@ -43,12 +43,13 @@ namespace cgc_compiler
 
         public void OnWalk(AGameObject obj, AGameObject target)
         {
-            Logger(string.Format("WALK {0} {1} {2} {3}",
+            Logger(string.Format("WALK {0} {1} {2} {3} {4}",
                 World.Time,
                 obj.Id,
                 obj.Position,
 
-                target.Id));
+                target.Id,
+                obj.GetComponent<Mover>().Speed));
         }
 
         public void OnAttack(AGameObject obj, AGameObject target)
@@ -63,12 +64,13 @@ namespace cgc_compiler
 
         public void OnHealthUpdate(AGameObject obj)
         {
-            Logger(string.Format("HEALTH {0} {1} {2} {3}",
+            Logger(string.Format("HEALTH {0} {1} {2} {3} {4}",
                 World.Time,
                 obj.Id,
                 obj.Position,
 
-                obj.GetComponent<Health>().CurrentHealth));
+                obj.GetComponent<Health>().CurrentHealth,
+                obj.GetComponent<Health>().MaxHealth));
         }
 
         public void OnDeath(AGameObject obj)
