@@ -28,6 +28,7 @@ namespace cgc_compiler
             : base(obj)
         {
             Object.World.Logger.OnCreate(Object);
+            Object.World.Logger.OnHealthUpdate(Object);
             Weapon = Object.GetComponent<AWeapon>();
             Deploy = Object.GetComponent<Deploy>();
             Mover = Object.GetComponent<Mover>();
@@ -37,6 +38,7 @@ namespace cgc_compiler
         {
             return Object.World.GameObjects
                 .Where(o => o.Owner != Object.Owner)    // Enemy
+                .Where(o => o is ATroop || o is ATower) // Troop or tower
                 .Where(o => o.HasComponent<Deploy>() ? o.GetComponent<Deploy>().IsDeployed() : true)    // Deployed
                 .Aggregate((AGameObject)null, (a, b) => Metrics.Closest(Object, a, b));    // Closest
         }

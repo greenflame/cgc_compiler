@@ -80,6 +80,37 @@ namespace cgc_compiler
                 obj.Id,
                 obj.Position));
         }
+
+        public void OnArrowFlight(AGameObject obj, AGameObject target, float speed)
+        {
+            Logger(string.Format("ARROW_FLIGHT {0} {1} {2} {3} {4}",
+                World.Time,
+                obj.Id,
+                obj.Position,
+
+                target.Id,
+                speed));
+        }
+
+        public void OnBombFlight(AGameObject obj, AGameObject target, float speed)
+        {
+            Logger(string.Format("BOMB_FLIGHT {0} {1} {2} {3} {4}",
+                World.Time,
+                obj.Id,
+                obj.Position,
+
+                target.Id,
+                speed));
+        }
+
+        public void OnDestroy(AGameObject obj)
+        {
+            Logger(string.Format("DESTROY {0} {1} {2}",
+                World.Time,
+                obj.Id,
+                obj.Position));
+        }
+
     }
 }
 

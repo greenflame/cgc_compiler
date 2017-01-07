@@ -58,6 +58,11 @@
     <Compile Include="GameObjects\Troops\Peasant.cs" />
     <Compile Include="GameObjects\Troops\Sharpshooter.cs" />
     <Compile Include="GameObjects\Projectiles\Arrow.cs" />
+    <Compile Include="GameObjects\Troops\Halfling.cs" />
+    <Compile Include="GameObjects\Projectiles\Bomb.cs" />
+    <Compile Include="GameObjects\Projectiles\AProjectile.cs" />
+    <Compile Include="Components\Weapons\Sling.cs" />
+    <Compile Include="Components\Strategies\BombStrategy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

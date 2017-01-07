@@ -6,8 +6,7 @@ namespace cgc_compiler
     {
         public float Damage { get; private set; }
 
-        public Arrow(GameWorld world, Player owner, float positioin,
-            AGameObject target, float damage, float speed)
+        public Arrow(GameWorld world, Player owner, float positioin, AGameObject target, float damage, float speed)
             : base(world, owner, positioin)
         {
             Damage = damage;

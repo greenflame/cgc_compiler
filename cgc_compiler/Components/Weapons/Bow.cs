@@ -15,7 +15,7 @@ namespace cgc_compiler
         {
             if (Metrics.LessOrEquals(CooldownRest, Cooldown / 2) && Target != null)
             {
-                Target.GetComponent<Health>().TakeDamage(Damage);
+                Object.World.GameObjects.Add(new Arrow(Object.World, Object.Owner, Object.Position, Target, Damage, 1f));
                 Target = null;
             }
 

@@ -2,30 +2,28 @@
 
 namespace cgc_compiler
 {
-    public class ArrowStrategy : AStrategy
+    public class BombStrategy : AStrategy
     {
-        public float Damage { get; private set; }
+        float TargetPosition;
+        float Damage;
+        float DamageRadius;
 
-        public AGameObject Target { get; private set; }
+        Mover Mover;
 
-        private Mover Mover;
-
-        public ArrowStrategy(AGameObject obj, AGameObject target, float damage)
-            : base(obj)
+        public BombStrategy(AGameObject obj, float targetPos, float damage, float damageRad)
+            :base(obj)
         {
-            Mover = Object.GetComponent<Mover>();    
-            Mover.Target = target;
-
+            TargetPosition = targetPos;
             Damage = damage;
-            Target = target;
+            DamageRadius = damageRad;
 
             Object.World.Logger.OnCreate(Object);
-            Object.World.Logger.OnArrowFlight(Object, target, Mover.Speed);
+            Object.World.Logger.OnBombFlight(Object, targetPos, Mover.Speed);
         }
-
+            
         public override void Update(float deltaTime)
         {
-            if (Metrics.Equals(Metrics.Distance(Object, Target), 0))
+            if (Metrics.Equals(Metrics.Distance(Object.Position, TargetPosition), 0))
             {
                 Target.GetComponent<Health>().TakeDamage(Damage);
                 Object.World.Logger.OnDestroy(Object);

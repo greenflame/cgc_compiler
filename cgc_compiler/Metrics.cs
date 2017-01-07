@@ -8,9 +8,14 @@ namespace cgc_compiler
         {
         }
 
+        public static float Distance(float p1, float p2)
+        {
+            return Math.Abs(p2 - p1);
+        }
+
         public static float Distance(AGameObject o1, AGameObject o2)
         {
-            return Math.Abs(o1.Position - o2.Position);
+            return Distance(o1.Position, o2.Position);
         }
 
         public static void MoveTo(AGameObject obj, AGameObject aim, float dist)
@@ -44,6 +49,7 @@ namespace cgc_compiler
             return d1 < d2 ? o1 : o2;
         }
 
+        // Fuzzy compare
         public const float Epsilon = 0.001f;
 
         public static bool Equals(float a, float b)
