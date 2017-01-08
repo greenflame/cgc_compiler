@@ -4,60 +4,66 @@ namespace cgc_compiler
 {
     public abstract class Weapon : Component
     {
-        public float damage;
-        public float cooldownTime;
-        public float range;
+        public float Damage { get; private set; }
+        public float CooldownTime { get; private set; }
+        public float Range { get; private set; }
 
-        public float cooldownTimeRest;
-        public GameObject currentTarget;
+        private float CooldownTimeRest { get; set; }
+        protected GameObject CurrentTarget { get; set; }
+        private bool DamagePerformed { get; set; }
 
         public Weapon(GameObject obj, float damage, float cooldown, float radius)
             : base(obj)
         {
-            this.damage = damage;
-            this.cooldownTime = cooldown;
-            this.range = radius;
+            Damage = damage;
+            CooldownTime = cooldown;
+            Range = radius;
 
-            cooldownTimeRest = 0;
-            currentTarget = null;
+            CooldownTimeRest = 0;
+            CurrentTarget = null;
+            DamagePerformed = false;
         }
 
         public bool IsInRange(GameObject target)
         {
-            return Metrics.LessOrEquals(Metrics.Distance(gameObject, target), range);
+            return Metrics.LessOrEquals(Metrics.Distance(GameObject, target), Range);
         }
 
         public void InitiateAttack(GameObject target)
         {
             if (IsInRange(target) && IsAttackFinished())
             {
-                this.currentTarget = target;
-                cooldownTimeRest = cooldownTime;
+                this.CurrentTarget = target;
+                CooldownTimeRest = CooldownTime;
+                DamagePerformed = false;
             }
             else
             {
+
                 throw new Exception("Cann't shot");
             }
         }
 
         public void ProcessAttack(float deltaTime)
         {
-            // First appropriate moment -> core damage action
-            if (Metrics.LessOrEquals(cooldownTimeRest, cooldownTime / 2) && currentTarget != null)
+            if (Metrics.LessOrEquals(CooldownTimeRest, CooldownTime / 2) &&
+                !DamagePerformed &&
+                GameObject.gameWorld.gameObjects.Contains(CurrentTarget))
             {
                 PerformDamageAction();
-                currentTarget = null;
+                CurrentTarget = null;
             }
 
-            cooldownTimeRest = Math.Max(0, cooldownTimeRest - deltaTime);
+            CooldownTimeRest = Math.Max(0, CooldownTimeRest - deltaTime);
         }
+            
+        protected abstract void PerformDamageAction();
 
         public bool IsAttackFinished()
         {
-            return cooldownTimeRest == 0;
+            return CooldownTimeRest == 0;
         }
 
-        protected abstract void PerformDamageAction();
     }
 }
 

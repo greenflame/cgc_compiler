@@ -4,195 +4,200 @@ namespace cgc_compiler
 {
     public abstract class Troop : GameObject, IMovable, IDamagable, IDeployable
     {
-        private Health health;
-        private Mover mover;
-        private Deploy deploy;
-        protected Weapon weapon;
+        public Health Health { get; private set; }
+        public Mover Mover { get; private set; }
+        public Deploy Deploy { get; private set; }
+        public Weapon Weapon { get; private set; }
 
-        private GameObject prevMotionTarget;
-
-        private enum StateE
+        private enum TroopState
         {
-            Created,
             Deploying,
             Idle,
             Walking,
             Attacking
         }
 
-        private StateE State;
+        private TroopState CurrentState { get; set; }
+        private GameObject PreviousMotionTarget { get; set; }
 
         public Troop(GameWorld world, Player owner, float position, float health, float speed, float deployTime)
             : base(world, owner, position)
         {
-            this.health = new Health(this, health);
-            this.mover = new Mover(this, speed);
-            this.deploy = new Deploy(this, deployTime);
-            // todo weapon
+            Health = new Health(this, health);
+            Mover = new Mover(this, speed);
+            Deploy = new Deploy(this, deployTime);
+            Weapon = MakeWeapon();
+
+            CurrentState = TroopState.Deploying;
 
             gameWorld.eventLlogger.OnCreate(this);
             gameWorld.eventLlogger.OnHealthUpdate(this);
+            gameWorld.eventLlogger.OnDeploy(this);
         }
+
+        public abstract Weapon MakeWeapon();
+
+        public abstract GameObject FindTarget();
 
         public Mover GetMover()
         {
-            return mover;
+            return Mover;
         }
 
         public Health GetHealth()
         {
-            return health;
+            return Health;
         }
 
         public Deploy GetDeploy()
         {
-            return deploy;
+            return Deploy;
         }
-
-        public abstract void InitWeapon();
-
-        public abstract GameObject FindTarget();
 
         public override void Update(float deltaTime)
         {
             GameObject target = FindTarget();
 
-            switch (State)
+            switch (CurrentState)
             {
-                case StateE.Created:
-
-                    gameWorld.eventLlogger.OnDeploy(this);
-                    State = StateE.Deploying;
-                    deploy.ProcessDeploy(deltaTime);
-
+                case TroopState.Deploying:
+                    ProcessDeployingState(target, deltaTime);
                     return;
 
-                case StateE.Deploying:
-
-                    if (deploy.IsDeployed())  // Deployment finished
-                    {
-                        if (target != null)
-                        {
-                            if (weapon.IsInRange(target))  // Target is in range -> shoot
-                            {
-                                gameWorld.eventLlogger.OnAttack(this, target);
-                                State = StateE.Attacking;
-                                weapon.InitiateAttack(target);
-                                weapon.ProcessAttack(deltaTime);
-                            }
-                            else
-                            {
-                                gameWorld.eventLlogger.OnWalk(this, target); // Target is not in range -> move
-                                mover.MoveTo(target, deltaTime);
-                                prevMotionTarget = target;
-                                State = StateE.Walking;
-                            }
-                        }
-                        else    // No target -> idle
-                        {
-                            gameWorld.eventLlogger.OnIdle(this);
-                            State = StateE.Idle;
-                        }
-                    }
-                    else
-                    {
-                        deploy.ProcessDeploy(deltaTime);
-                    }
-
+                case TroopState.Idle:
+                    ProcessIdleState(target, deltaTime);
                     return;
 
-                case StateE.Idle:
-
-                    if (target != null)
-                    {
-                        if (weapon.IsInRange(target))  // Traget is in range -> shoot
-                        {
-                            gameWorld.eventLlogger.OnAttack(this, target);
-                            weapon.InitiateAttack(target);
-                            weapon.ProcessAttack(deltaTime);
-                            State = StateE.Attacking;
-                        }
-                        else    // Target is not in range -> move
-                        {
-                            gameWorld.eventLlogger.OnWalk(this, target);
-                            mover.MoveTo(target, deltaTime);
-                            prevMotionTarget = target;
-                            State = StateE.Walking;
-                        }
-                    }
-
+                case TroopState.Walking:
+                    ProcessWalkingState(target, deltaTime);
                     return;
 
-                case StateE.Walking:
-
-                    if (target != null)
-                    {
-                        if (weapon.IsInRange(target))  // Target is in range -> attack
-                        {
-                            gameWorld.eventLlogger.OnAttack(this, target);
-                            weapon.InitiateAttack(target);
-                            weapon.ProcessAttack(deltaTime);
-                            State = StateE.Attacking;
-                        }
-                        else
-                        {
-                            if (target == prevMotionTarget)   // Same target is not in range -> continue walk
-                            {
-                                mover.MoveTo(target, deltaTime);
-                            }
-                            else    // New target is not in range -> new walk
-                            {
-                                gameWorld.eventLlogger.OnWalk(this, target);
-                                mover.MoveTo(target, deltaTime);
-                                prevMotionTarget = target;
-                            }
-                        }
-                    }
-                    else    // No target -> idle
-                    {
-                        gameWorld.eventLlogger.OnIdle(this);
-                        State = StateE.Idle;
-                    }
-
+                case TroopState.Attacking:
+                    ProcessAttackingState(target, deltaTime);
                     return;
 
-                case StateE.Attacking:
+            }
+        }
 
-                    if (weapon.IsAttackFinished())  // Cooldowned
+        private void ProcessDeployingState(GameObject target, float deltaTime)
+        {
+            if (Deploy.IsDeployed())  // Deployment finished
+            {
+                if (target != null)
+                {
+                    if (Weapon.IsInRange(target))  // Target is in range -> shoot
                     {
-                        if (target != null)
-                        {
-                            if (weapon.IsInRange(this))  // Target is in range -> shoot
-                            {
-                                gameWorld.eventLlogger.OnAttack(this, target); // To shoot
-                                weapon.InitiateAttack(target);
-                                weapon.ProcessAttack(deltaTime);
-                                State = StateE.Attacking;
-                            }
-                            else    // Target is not in range
-                            {
-                                gameWorld.eventLlogger.OnWalk(this, target); // To move
-                                mover.MoveTo(target, deltaTime);
-                                prevMotionTarget = target;
-                                State = StateE.Walking;
-                            }
-                        }
-                        else    // No target
-                        {
-                            gameWorld.eventLlogger.OnIdle(this); // To idle
-                            State = StateE.Idle;
-                        }
+                        gameWorld.eventLlogger.OnAttack(this, target);
+                        CurrentState = TroopState.Attacking;
+                        Weapon.InitiateAttack(target);
+                        Weapon.ProcessAttack(deltaTime);
                     }
-                    else
+                    else    // Target is not in range -> move
                     {
-                        weapon.ProcessAttack(deltaTime);
+                        gameWorld.eventLlogger.OnWalk(this, target); 
+                        Mover.MoveTo(target, deltaTime);
+                        PreviousMotionTarget = target;
+                        CurrentState = TroopState.Walking;
                     }
+                }
+                else    // No target -> idle
+                {
+                    gameWorld.eventLlogger.OnIdle(this);
+                    CurrentState = TroopState.Idle;
+                }
+            }
+            else    // Continue deploy
+            {
+                Deploy.ProcessDeploy(deltaTime);
+            }
+        }
 
-                    return;
+        private void ProcessIdleState(GameObject target, float deltaTime)
+        {
+            if (target != null)
+            {
+                if (Weapon.IsInRange(target))  // Traget is in range -> shoot
+                {
+                    gameWorld.eventLlogger.OnAttack(this, target);
+                    Weapon.InitiateAttack(target);
+                    Weapon.ProcessAttack(deltaTime);
+                    CurrentState = TroopState.Attacking;
+                }
+                else    // Target is not in range -> move
+                {
+                    gameWorld.eventLlogger.OnWalk(this, target);
+                    Mover.MoveTo(target, deltaTime);
+                    PreviousMotionTarget = target;
+                    CurrentState = TroopState.Walking;
+                }
+            }
+        }
 
-            }   // Switch end
+        private void ProcessWalkingState(GameObject target, float deltaTime)
+        {
+            if (target != null)
+            {
+                if (Weapon.IsInRange(target))  // Target is in range -> attack
+                {
+                    gameWorld.eventLlogger.OnAttack(this, target);
+                    Weapon.InitiateAttack(target);
+                    Weapon.ProcessAttack(deltaTime);
+                    CurrentState = TroopState.Attacking;
+                }
+                else
+                {
+                    if (target == PreviousMotionTarget)   // Same target is not in range -> continue walk
+                    {
+                        Mover.MoveTo(target, deltaTime);
+                    }
+                    else    // New target is not in range -> new walk
+                    {
+                        gameWorld.eventLlogger.OnWalk(this, target);
+                        Mover.MoveTo(target, deltaTime);
+                        PreviousMotionTarget = target;
+                    }
+                }
+            }
+            else    // No target -> idle
+            {
+                gameWorld.eventLlogger.OnIdle(this);
+                CurrentState = TroopState.Idle;
+            }
+        }
 
-        }   // Func end
+        private void ProcessAttackingState(GameObject target, float deltaTime)
+        {
+            if (Weapon.IsAttackFinished())  // Attack finished
+            {
+                if (target != null)
+                {
+                    if (Weapon.IsInRange(target))  // Target is in range -> shoot
+                    {
+                        gameWorld.eventLlogger.OnAttack(this, target);
+                        Weapon.InitiateAttack(target);
+                        Weapon.ProcessAttack(deltaTime);
+                        CurrentState = TroopState.Attacking;
+                    }
+                    else    // Target is not in range -> move
+                    {
+                        gameWorld.eventLlogger.OnWalk(this, target);
+                        Mover.MoveTo(target, deltaTime);
+                        PreviousMotionTarget = target;
+                        CurrentState = TroopState.Walking;
+                    }
+                }
+                else    // No target -> idle
+                {
+                    gameWorld.eventLlogger.OnIdle(this);
+                    CurrentState = TroopState.Idle;
+                }
+            }
+            else    // Continue attack
+            {
+                Weapon.ProcessAttack(deltaTime);
+            }
+        }
+
     }
 }
 

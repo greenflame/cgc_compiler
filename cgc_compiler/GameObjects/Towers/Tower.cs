@@ -1,4 +1,19 @@
-﻿//using System;
+﻿using System;
+
+namespace cgc_compiler
+{
+    public abstract class Tower : GameObject
+    {
+        public Tower(GameWorld world, Player owner, float position, float maxHealth,
+            float damage, float cooldown, float radius)
+            : base(world, owner, position)
+        {
+        }
+    }
+}
+
+
+//using System;
 //using System.Linq;
 //
 //namespace cgc_compiler

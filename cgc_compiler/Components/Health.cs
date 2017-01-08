@@ -4,32 +4,31 @@ namespace cgc_compiler
 {
     public class Health : Component
     {
-        public float maxHealth { get; set; }
-
-        public float currentHealth { get; private set; }
+        public float MaxHealth { get; set; }
+        public float CurrentHealth { get; private set; }
 
         public Health(GameObject obj, float maxHealth)
             : base(obj)
         {
-            this.maxHealth = maxHealth;
-            currentHealth = maxHealth;
+            MaxHealth = maxHealth;
+            CurrentHealth = maxHealth;
         }
             
         public void TakeDamage(float damage)
         {
-            currentHealth = Math.Max(0, currentHealth - damage);
-            gameObject.gameWorld.eventLlogger.OnHealthUpdate(gameObject);
+            CurrentHealth = Math.Max(0, CurrentHealth - damage);
+            GameObject.gameWorld.eventLlogger.OnHealthUpdate(GameObject);
 
-            if (currentHealth == 0)
+            if (CurrentHealth == 0)
             {
-                gameObject.Destroy();
-                gameObject.gameWorld.eventLlogger.OnDeath(gameObject);
+                GameObject.Destroy();
+                GameObject.gameWorld.eventLlogger.OnDeath(GameObject);
             }
         }
 
         public bool IsAlive()
         {
-            return currentHealth != 0;
+            return CurrentHealth != 0;
         }
     }
 }

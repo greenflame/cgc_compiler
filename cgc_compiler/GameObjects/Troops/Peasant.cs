@@ -6,19 +6,29 @@ namespace cgc_compiler
     public class Peasant : Troop
     {
         private const int xp = 600;
-        private const float cooldown = 1;
         private const float speed = 1;
+        private const float deployTime = 1;
+
+        // Sword
+        private const float damage = 10;
+        private const float cooldown = 0.5f;
+        private const float range = 0.8f;
 
         public Peasant(GameWorld world, Player owner, float position)
-            : base(world, owner, position, 600, 1, 1)
+            : base(world, owner, position, xp, speed, deployTime)
         {
-            weapon = new Sword(this, 10, 0.5f, 0.8f);   // todo
+        }
+
+        public override Weapon MakeWeapon()
+        {
+            return new Sword(this, damage, cooldown, range);
         }
 
         public override GameObject FindTarget()
         {
             return gameWorld.gameObjects
                 .Where(o => o.owner != owner)    // Enemy
+                .Where(o => o is IDamagable)    // With health
                 .Where(o => o is IDeployable ? (o as IDeployable).GetDeploy().IsDeployed() : true)    // Deployed
                 .Aggregate((GameObject)null, (a, b) => Metrics.Closest(this, a, b));    // Closest
         }

@@ -11,7 +11,7 @@ namespace cgc_compiler
 
         protected override void PerformDamageAction()
         {
-            (currentTarget as IDamagable).GetHealth().TakeDamage(damage);
+            (CurrentTarget as IDamagable).GetHealth().TakeDamage(Damage);
         }
     }
 }

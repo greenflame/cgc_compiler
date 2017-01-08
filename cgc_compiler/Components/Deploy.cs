@@ -5,7 +5,6 @@ namespace cgc_compiler
     public class Deploy : Component
     {
         public float Time { get; private set; }
-
         public float TimeRest { get; private set; }
 
         public Deploy(GameObject obj, float time)

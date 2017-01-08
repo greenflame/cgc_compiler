@@ -49,7 +49,7 @@ namespace cgc_compiler
                 obj.position,
 
                 target.id,
-                (obj as IMovable).GetMover().speed));
+                (obj as IMovable).GetMover().Speed));
         }
 
         public void OnAttack(GameObject obj, GameObject target)
@@ -69,8 +69,8 @@ namespace cgc_compiler
                 obj.id,
                 obj.position,
 
-                (obj as IDamagable).GetHealth().currentHealth,
-                (obj as IDamagable).GetHealth().maxHealth));
+                (obj as IDamagable).GetHealth().CurrentHealth,
+                (obj as IDamagable).GetHealth().MaxHealth));
         }
 
         public void OnDeath(GameObject obj)
@@ -80,6 +80,35 @@ namespace cgc_compiler
                 obj.id,
                 obj.position));
         }
+
+        public void OnArrowFlight(GameObject obj, GameObject target, float speed)
+        {
+            Logger(string.Format("ARROW_FLIGHT {0} {1} {2} {3} {4}",
+                World.globalTime,
+                obj.id,
+                obj.position,
+
+                target.id,
+                speed));
+        }
+
+        public void OnBombFlight(GameObject obj, GameObject target, float speed)  // todo
+        {
+            Logger(string.Format("BOMB_FLIGHT {0} {1} {2} {3} {4}",
+                World.globalTime,
+                obj.id,
+                obj.position,
+
+                target.id,
+                speed));
+        }
+
+        public void OnDestroy(GameObject obj)
+        {
+            Logger(string.Format("DESTROY {0} {1} {2}",
+                World.globalTime,
+                obj.id,
+                obj.position));
+        }
     }
 }
-
