@@ -2,24 +2,19 @@
 
 namespace cgc_compiler
 {
-    public class Mover : AComponent
+    public class Mover : Component
     {
-        public float Speed { get; private set; }
+        public float speed { get; private set; }
 
-        public AGameObject Target { get; set; }
-
-        public Mover(AGameObject obj, float speed)
+        public Mover(GameObject obj, float speed)
             : base(obj)
         {
-            Speed = speed;
+            this.speed = speed;
         }
 
-        public override void Update(float deltaTime)
+        public void MoveTo(GameObject target, float deltaTime)
         {
-            if (Target != null)
-            {
-                Metrics.MoveTo(Object, Target, Speed * deltaTime);
-            }
+            Metrics.MoveTo(gameObject, target, speed * deltaTime);
         }
     }
 }

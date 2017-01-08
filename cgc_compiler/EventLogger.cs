@@ -14,71 +14,71 @@ namespace cgc_compiler
             Logger = logger;
         }
 
-        public void OnCreate(AGameObject obj)
+        public void OnCreate(GameObject obj)
         {
             Logger(string.Format("CREATE {0} {1} {2} {3} {4}",
-                World.Time,
-                obj.Id,
-                obj.Position,
+                World.globalTime,
+                obj.id,
+                obj.position,
 
                 obj.GetType().ToString().Split('.').Last(),
-                obj.Owner));
+                obj.owner));
         }
 
-        public void OnDeploy(AGameObject obj)
+        public void OnDeploy(GameObject obj)
         {
             Logger(string.Format("DEPLOY {0} {1} {2}",
-                World.Time,
-                obj.Id,
-                obj.Position));
+                World.globalTime,
+                obj.id,
+                obj.position));
         }
 
-        public void OnIdle(AGameObject obj)
+        public void OnIdle(GameObject obj)
         {
             Logger(string.Format("IDLE {0} {1} {2}",
-                World.Time,
-                obj.Id,
-                obj.Position));
+                World.globalTime,
+                obj.id,
+                obj.position));
         }
 
-        public void OnWalk(AGameObject obj, AGameObject target)
+        public void OnWalk(GameObject obj, GameObject target)
         {
             Logger(string.Format("WALK {0} {1} {2} {3} {4}",
-                World.Time,
-                obj.Id,
-                obj.Position,
+                World.globalTime,
+                obj.id,
+                obj.position,
 
-                target.Id,
-                obj.GetComponent<Mover>().Speed));
+                target.id,
+                (obj as IMovable).GetMover().speed));
         }
 
-        public void OnAttack(AGameObject obj, AGameObject target)
+        public void OnAttack(GameObject obj, GameObject target)
         {
             Logger(string.Format("ATTACK {0} {1} {2} {3}",
-                World.Time,
-                obj.Id,
-                obj.Position,
+                World.globalTime,
+                obj.id,
+                obj.position,
 
-                target.Id));
+                target.id));
         }
 
-        public void OnHealthUpdate(AGameObject obj)
+        public void OnHealthUpdate(GameObject obj)
         {
             Logger(string.Format("HEALTH {0} {1} {2} {3} {4}",
-                World.Time,
-                obj.Id,
-                obj.Position,
+                World.globalTime,
+                obj.id,
+                obj.position,
 
-                obj.GetComponent<Health>().CurrentHealth,
-                obj.GetComponent<Health>().MaxHealth));
+                (obj as IDamagable).GetHealth().currentHealth,
+                (obj as IDamagable).GetHealth().maxHealth));
         }
 
-        public void OnDeath(AGameObject obj)
+        public void OnDeath(GameObject obj)
         {
             Logger(string.Format("DEATH {0} {1} {2}",
-                World.Time,
-                obj.Id,
-                obj.Position));
+                World.globalTime,
+                obj.id,
+                obj.position));
         }
     }
 }

@@ -2,32 +2,35 @@
 
 namespace cgc_compiler
 {
-    public class Metrics
+    public static class Metrics
     {
-        public Metrics()
+        // Distance
+        public static float Distance(float p1, float p2)
         {
+            return Math.Abs(p1 - p2);
         }
 
-        public static float Distance(AGameObject o1, AGameObject o2)
+        public static float Distance(GameObject o1, GameObject o2)
         {
-            return Math.Abs(o1.Position - o2.Position);
+            return Distance(o1.position, o2.position);
         }
 
-        public static void MoveTo(AGameObject obj, AGameObject aim, float dist)
+        // Todo delete
+        public static void MoveTo(GameObject obj, GameObject aim, float dist)
         {
-            float d = aim.Position - obj.Position;
+            float d = aim.position - obj.position;
 
             if (Math.Abs(d) < dist)
             {
-                obj.Position += d;
+                obj.position += d;
             }
             else
             {
-                obj.Position += d / Math.Abs(d) * dist;
+                obj.position += d / Math.Abs(d) * dist;
             }
         }
 
-        public static AGameObject Closest(AGameObject obj, AGameObject o1, AGameObject o2) {
+        public static GameObject Closest(GameObject obj, GameObject o1, GameObject o2) {
             if (o1 == null)
             {
                 return o2;
@@ -44,6 +47,7 @@ namespace cgc_compiler
             return d1 < d2 ? o1 : o2;
         }
 
+        // Fuzzy compare
         public const float Epsilon = 0.001f;
 
         public static bool Equals(float a, float b)

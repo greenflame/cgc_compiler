@@ -2,20 +2,20 @@
 
 namespace cgc_compiler
 {
-    public class Deploy : AComponent
+    public class Deploy : Component
     {
         public float Time { get; private set; }
 
         public float TimeRest { get; private set; }
 
-        public Deploy(AGameObject obj, float time)
+        public Deploy(GameObject obj, float time)
             : base(obj)
         {
             Time = time;
             TimeRest = Time;
         }
 
-        public override void Update(float deltaTime)
+        public void ProcessDeploy(float deltaTime)
         {
             TimeRest = Math.Max(0, TimeRest - deltaTime);
         }

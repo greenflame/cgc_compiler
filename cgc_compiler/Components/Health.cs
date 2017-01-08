@@ -2,38 +2,34 @@
 
 namespace cgc_compiler
 {
-    public class Health : AComponent
+    public class Health : Component
     {
-        public float MaxHealth { get; set; }
+        public float maxHealth { get; set; }
 
-        public float CurrentHealth { get; private set; }
+        public float currentHealth { get; private set; }
 
-        public Health(AGameObject obj, float maxHealth)
+        public Health(GameObject obj, float maxHealth)
             : base(obj)
         {
-            MaxHealth = maxHealth;
-            CurrentHealth = MaxHealth;
+            this.maxHealth = maxHealth;
+            currentHealth = maxHealth;
         }
-
-        public override void Update(float deltaTime)
-        {
-        }
-
+            
         public void TakeDamage(float damage)
         {
-            CurrentHealth = Math.Max(0, CurrentHealth - damage);
-            Object.World.Logger.OnHealthUpdate(Object);
+            currentHealth = Math.Max(0, currentHealth - damage);
+            gameObject.gameWorld.eventLlogger.OnHealthUpdate(gameObject);
 
-            if (CurrentHealth == 0)
+            if (currentHealth == 0)
             {
-                Object.World.Logger.OnDeath(Object);
-                Object.Destroy();
+                gameObject.Destroy();
+                gameObject.gameWorld.eventLlogger.OnDeath(gameObject);
             }
         }
 
         public bool IsAlive()
         {
-            return CurrentHealth != 0;
+            return currentHealth != 0;
         }
     }
 }
