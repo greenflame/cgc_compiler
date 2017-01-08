@@ -12,22 +12,26 @@ namespace cgc_compiler
 
         public static float Distance(GameObject o1, GameObject o2)
         {
-            return Distance(o1.position, o2.position);
+            return Distance(o1.Position, o2.Position);
         }
-
-        // Todo delete
-        public static void MoveTo(GameObject obj, GameObject aim, float dist)
+            
+        public static void MoveTo(GameObject obj, float target, float dist)
         {
-            float d = aim.position - obj.position;
+            float d = target - obj.Position;
 
             if (Math.Abs(d) < dist)
             {
-                obj.position += d;
+                obj.Position += d;
             }
             else
             {
-                obj.position += d / Math.Abs(d) * dist;
+                obj.Position += d / Math.Abs(d) * dist;
             }
+        }
+
+        public static void MoveTo(GameObject obj, GameObject target, float dist)
+        {
+            MoveTo(obj, target.Position, dist);
         }
 
         public static GameObject Closest(GameObject obj, GameObject o1, GameObject o2) {

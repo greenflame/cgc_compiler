@@ -6,29 +6,29 @@ namespace cgc_compiler
 {
     public abstract class GameObject : IDynamic
     {
-        public Player owner { get; set; }
+        public Player Owner { get; set; }
 
-        public float position { get; set; }
+        public float Position { get; set; }
 
-        public GameWorld gameWorld { get; private set; }
+        public GameWorld GameWorld { get; private set; }
 
-        public int id { get; private set; }
+        public int Id { get; private set; }
 
-        private static int nextId = 0;
+        private static int NextId = 0;
 
         public GameObject(GameWorld world, Player owner, float position)
         {
-            this.owner = owner;
-            this.position = position;
-            gameWorld = world;
-            id = nextId++;
+            Owner = owner;
+            Position = position;
+            GameWorld = world;
+            Id = NextId++;
         }
 
         public abstract void Update(float deltaTime);
 
         public void Destroy()
         {
-            gameWorld.gameObjects.Remove(this);
+            GameWorld.GameObjects.Remove(this);
         }
     }
 }

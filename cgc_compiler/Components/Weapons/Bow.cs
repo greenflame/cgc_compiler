@@ -6,16 +6,16 @@ namespace cgc_compiler
     {
         public float ArrowSpeed { get; private set; }
 
-        public Bow(GameObject obj, float damage, float cooldown, float radius, float arrowSpeed)
-            : base(obj, damage, cooldown, radius)
+        public Bow(GameObject obj, float damage, float cooldown, float range, float arrowSpeed)
+            : base(obj, damage, cooldown, range)
         {
             ArrowSpeed = arrowSpeed;
         }
 
         protected override void PerformDamageAction()
         {
-            GameObject.gameWorld.gameObjects.Add(
-                new Arrow(GameObject.gameWorld, GameObject.owner, GameObject.position, CurrentTarget, Damage, ArrowSpeed));
+            GameObject.GameWorld.GameObjects.Add(
+                new Arrow(GameObject.GameWorld, GameObject.Owner, GameObject.Position, CurrentTarget, Damage, ArrowSpeed));
         }
 
     }

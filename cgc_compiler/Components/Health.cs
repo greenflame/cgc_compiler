@@ -17,12 +17,12 @@ namespace cgc_compiler
         public void TakeDamage(float damage)
         {
             CurrentHealth = Math.Max(0, CurrentHealth - damage);
-            GameObject.gameWorld.eventLlogger.OnHealthUpdate(GameObject);
+            GameObject.GameWorld.EventLlogger.OnHealthUpdate(GameObject);
 
             if (CurrentHealth == 0)
             {
                 GameObject.Destroy();
-                GameObject.gameWorld.eventLlogger.OnDeath(GameObject);
+                GameObject.GameWorld.EventLlogger.OnDeath(GameObject);
             }
         }
 

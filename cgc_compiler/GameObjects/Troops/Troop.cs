@@ -30,9 +30,9 @@ namespace cgc_compiler
 
             CurrentState = TroopState.Deploying;
 
-            gameWorld.eventLlogger.OnCreate(this);
-            gameWorld.eventLlogger.OnHealthUpdate(this);
-            gameWorld.eventLlogger.OnDeploy(this);
+            GameWorld.EventLlogger.OnCreate(this);
+            GameWorld.EventLlogger.OnHealthUpdate(this);
+            GameWorld.EventLlogger.OnDeploy(this);
         }
 
         public abstract Weapon MakeWeapon();
@@ -87,14 +87,14 @@ namespace cgc_compiler
                 {
                     if (Weapon.IsInRange(target))  // Target is in range -> shoot
                     {
-                        gameWorld.eventLlogger.OnAttack(this, target);
+                        GameWorld.EventLlogger.OnAttack(this, target);
                         CurrentState = TroopState.Attacking;
                         Weapon.InitiateAttack(target);
                         Weapon.ProcessAttack(deltaTime);
                     }
                     else    // Target is not in range -> move
                     {
-                        gameWorld.eventLlogger.OnWalk(this, target); 
+                        GameWorld.EventLlogger.OnWalk(this, target); 
                         Mover.MoveTo(target, deltaTime);
                         PreviousMotionTarget = target;
                         CurrentState = TroopState.Walking;
@@ -102,7 +102,7 @@ namespace cgc_compiler
                 }
                 else    // No target -> idle
                 {
-                    gameWorld.eventLlogger.OnIdle(this);
+                    GameWorld.EventLlogger.OnIdle(this);
                     CurrentState = TroopState.Idle;
                 }
             }
@@ -118,14 +118,14 @@ namespace cgc_compiler
             {
                 if (Weapon.IsInRange(target))  // Traget is in range -> shoot
                 {
-                    gameWorld.eventLlogger.OnAttack(this, target);
+                    GameWorld.EventLlogger.OnAttack(this, target);
                     Weapon.InitiateAttack(target);
                     Weapon.ProcessAttack(deltaTime);
                     CurrentState = TroopState.Attacking;
                 }
                 else    // Target is not in range -> move
                 {
-                    gameWorld.eventLlogger.OnWalk(this, target);
+                    GameWorld.EventLlogger.OnWalk(this, target);
                     Mover.MoveTo(target, deltaTime);
                     PreviousMotionTarget = target;
                     CurrentState = TroopState.Walking;
@@ -139,7 +139,7 @@ namespace cgc_compiler
             {
                 if (Weapon.IsInRange(target))  // Target is in range -> attack
                 {
-                    gameWorld.eventLlogger.OnAttack(this, target);
+                    GameWorld.EventLlogger.OnAttack(this, target);
                     Weapon.InitiateAttack(target);
                     Weapon.ProcessAttack(deltaTime);
                     CurrentState = TroopState.Attacking;
@@ -152,7 +152,7 @@ namespace cgc_compiler
                     }
                     else    // New target is not in range -> new walk
                     {
-                        gameWorld.eventLlogger.OnWalk(this, target);
+                        GameWorld.EventLlogger.OnWalk(this, target);
                         Mover.MoveTo(target, deltaTime);
                         PreviousMotionTarget = target;
                     }
@@ -160,7 +160,7 @@ namespace cgc_compiler
             }
             else    // No target -> idle
             {
-                gameWorld.eventLlogger.OnIdle(this);
+                GameWorld.EventLlogger.OnIdle(this);
                 CurrentState = TroopState.Idle;
             }
         }
@@ -173,14 +173,14 @@ namespace cgc_compiler
                 {
                     if (Weapon.IsInRange(target))  // Target is in range -> shoot
                     {
-                        gameWorld.eventLlogger.OnAttack(this, target);
+                        GameWorld.EventLlogger.OnAttack(this, target);
                         Weapon.InitiateAttack(target);
                         Weapon.ProcessAttack(deltaTime);
                         CurrentState = TroopState.Attacking;
                     }
                     else    // Target is not in range -> move
                     {
-                        gameWorld.eventLlogger.OnWalk(this, target);
+                        GameWorld.EventLlogger.OnWalk(this, target);
                         Mover.MoveTo(target, deltaTime);
                         PreviousMotionTarget = target;
                         CurrentState = TroopState.Walking;
@@ -188,7 +188,7 @@ namespace cgc_compiler
                 }
                 else    // No target -> idle
                 {
-                    gameWorld.eventLlogger.OnIdle(this);
+                    GameWorld.EventLlogger.OnIdle(this);
                     CurrentState = TroopState.Idle;
                 }
             }
@@ -197,7 +197,7 @@ namespace cgc_compiler
                 Weapon.ProcessAttack(deltaTime);
             }
         }
-
+            
     }
 }
 

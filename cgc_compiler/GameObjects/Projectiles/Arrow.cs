@@ -15,22 +15,22 @@ namespace cgc_compiler
             Damage = damage;
             Mover = new Mover(this, speed);
 
-            gameWorld.eventLlogger.OnCreate(this);
-            gameWorld.eventLlogger.OnArrowFlight(this, target, Mover.Speed);
+            GameWorld.EventLlogger.OnCreate(this);
+            GameWorld.EventLlogger.OnArrowFlight(this, target, Mover.Speed);
         }
 
         public override void Update(float deltaTime)
         {
-            if (!gameWorld.gameObjects.Contains(Target))    // Target died
+            if (!GameWorld.GameObjects.Contains(Target))    // Target died
             {
-                gameWorld.eventLlogger.OnDestroy(this);
+                GameWorld.EventLlogger.OnDestroy(this);
                 Destroy();
             }
 
             if (Metrics.Equals(Mover.DistanceTo(Target), 0))    // Target reached
             {
                 (Target as IDamagable).GetHealth().TakeDamage(Damage);
-                gameWorld.eventLlogger.OnDestroy(this);
+                GameWorld.EventLlogger.OnDestroy(this);
                 Destroy();
             }
             else    // Flying
@@ -38,6 +38,7 @@ namespace cgc_compiler
                 Mover.MoveTo(Target, deltaTime);
             }
         }
+
     }
 }
 

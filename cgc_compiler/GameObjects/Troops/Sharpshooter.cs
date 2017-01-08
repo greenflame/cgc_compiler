@@ -27,8 +27,8 @@ namespace cgc_compiler
 
         public override GameObject FindTarget()
         {
-            return gameWorld.gameObjects
-                .Where(o => o.owner != owner)    // Enemy
+            return GameWorld.GameObjects
+                .Where(o => o.Owner != Owner)    // Enemy
                 .Where(o => o is IDamagable)
                 .Where(o => o is IDeployable ? (o as IDeployable).GetDeploy().IsDeployed() : true)    // Deployed
                 .Aggregate((GameObject)null, (a, b) => Metrics.Closest(this, a, b));    // Closest

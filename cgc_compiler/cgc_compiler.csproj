@@ -58,6 +58,9 @@
     <Compile Include="IDeployable.cs" />
     <Compile Include="GameObjects\Projectiles\Projectile.cs" />
     <Compile Include="GameObjects\Towers\Tower.cs" />
+    <Compile Include="GameObjects\Troops\Halfling.cs" />
+    <Compile Include="Components\Weapons\Sling.cs" />
+    <Compile Include="GameObjects\Projectiles\Stone.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

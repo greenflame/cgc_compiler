@@ -48,7 +48,7 @@ namespace cgc_compiler
         {
             if (Metrics.LessOrEquals(CooldownTimeRest, CooldownTime / 2) &&
                 !DamagePerformed &&
-                GameObject.gameWorld.gameObjects.Contains(CurrentTarget))
+                GameObject.GameWorld.GameObjects.Contains(CurrentTarget))
             {
                 PerformDamageAction();
                 CurrentTarget = null;

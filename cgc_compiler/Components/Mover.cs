@@ -12,9 +12,19 @@ namespace cgc_compiler
             Speed = speed;
         }
 
+        public float DistanceTo(float target)
+        {
+            return Metrics.Distance(GameObject.Position, target);
+        }
+
         public float DistanceTo(GameObject target)
         {
             return Metrics.Distance(GameObject, target);
+        }
+
+        public void MoveTo(float target, float deltaTime)
+        {
+            Metrics.MoveTo(GameObject, target, Speed * deltaTime);
         }
 
         public void MoveTo(GameObject target, float deltaTime)
