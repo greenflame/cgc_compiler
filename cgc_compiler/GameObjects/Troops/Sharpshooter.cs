@@ -13,13 +13,13 @@ namespace cgc_compiler
         private const float damage = 41;
         private const float cooldown = 1.2f;
         private const float range = 5;
-        private const float arrowSpeed = 2;
+        private const float arrowSpeed = 4;
 
         public Sharpshooter(GameWorld world, Player owner, float position)
             : base(world, owner, position, xp, speed, deployTime)
         {
         }
-            
+
         public override Weapon MakeWeapon()
         {
             return new Bow(this, damage, cooldown, range, arrowSpeed);

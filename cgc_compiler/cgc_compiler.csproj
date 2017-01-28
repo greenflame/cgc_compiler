@@ -44,7 +44,6 @@
     <Compile Include="Components\Weapons\Bow.cs" />
     <Compile Include="Components\Weapons\Sword.cs" />
     <Compile Include="Components\Deploy.cs" />
-    <Compile Include="GameObjects\Towers\Forge.cs" />
     <Compile Include="GameObjects\Troops\Peasant.cs" />
     <Compile Include="GameObjects\Troops\Sharpshooter.cs" />
     <Compile Include="GameObjects\Projectiles\Arrow.cs" />
@@ -57,10 +56,12 @@
     <Compile Include="IDamagable.cs" />
     <Compile Include="IDeployable.cs" />
     <Compile Include="GameObjects\Projectiles\Projectile.cs" />
-    <Compile Include="GameObjects\Towers\Tower.cs" />
     <Compile Include="GameObjects\Troops\Halfling.cs" />
     <Compile Include="Components\Weapons\Sling.cs" />
     <Compile Include="GameObjects\Projectiles\Stone.cs" />
+    <Compile Include="GameObjects\Turrets\Forge.cs" />
+    <Compile Include="GameObjects\Turrets\Tower.cs" />
+    <Compile Include="GameObjects\Turrets\Turret.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,7 +69,7 @@
     <Folder Include="GameObjects\" />
     <Folder Include="Components\Weapons\" />
     <Folder Include="GameObjects\Troops\" />
-    <Folder Include="GameObjects\Towers\" />
     <Folder Include="GameObjects\Projectiles\" />
+    <Folder Include="GameObjects\Turrets\" />
   </ItemGroup>
 </Project>

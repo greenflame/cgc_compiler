@@ -27,7 +27,7 @@ namespace cgc_compiler
                 Destroy();
             }
 
-            if (Metrics.Equals(Mover.DistanceTo(Target), 0))    // Target reached
+			if (Metrics.Equals(Mover.DistanceTo(Target), 0, Mover.Speed * deltaTime))    // Target reached
             {
                 (Target as IDamagable).GetHealth().TakeDamage(Damage);
                 GameWorld.EventLlogger.OnDestroy(this);

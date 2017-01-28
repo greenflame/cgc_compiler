@@ -20,21 +20,25 @@ namespace cgc_compiler
 
                     gameWorld.GameObjects.Add(new Halfling(gameWorld, Player.RightPlayer, 10));
                     gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 9));
-//                    gameWorld.gameObjects.Add(new Sharpshooter(gameWorld, Player.RightPlayer, 8));
+
+					//                    gameWorld.gameObjects.Add(new Sharpshooter(gameWorld, Player.RightPlayer, 8));
                     //            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
 
-                    for (int i = 0; i < 50; i++)
+                    for (int i = 0; i < 500; i++)
                     {
-                        gameWorld.Update(0.1f);
+                        gameWorld.Update(0.01f);
                     }
-                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 1));
-                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 2));
+
+					gameWorld.GameObjects.Add(new Tower(gameWorld, Player.LeftPlayer, 0));
+
+//                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 1));
+//                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 2));
 
                     //            gameWorld.GameObjects.Add(new Forge(gameWorld, Player.LeftPlayer, 0));
 
-                    for (int i = 0; i < 2000; i++)
+                    for (int i = 0; i < 20000; i++)
                     {
-                        gameWorld.Update(0.1f);
+                        gameWorld.Update(0.01f);
                     } 
                 }
             }

@@ -54,29 +54,29 @@ namespace cgc_compiler
         // Fuzzy compare
         public const float Epsilon = 0.001f;
 
-        public static bool Equals(float a, float b)
+		public static bool Equals(float a, float b, float epsilon = Epsilon)
         {
-            return Math.Abs(a - b) < Epsilon;
+            return Math.Abs(a - b) < epsilon;
         }
 
-        public static bool Less(float a, float b)
+		public static bool Less(float a, float b, float epsilon = Epsilon)
         {
-            return a < b && !Equals(a, b);
+			return a < b && !Equals(a, b, epsilon);
         }
 
-        public static bool Greater(float a, float b)
+		public static bool Greater(float a, float b, float epsilon = Epsilon)
         {
-            return a > b && !Equals(a, b);
+			return a > b && !Equals(a, b, epsilon);
         }
 
-        public static bool LessOrEquals(float a, float b)
+		public static bool LessOrEquals(float a, float b, float epsilon = Epsilon)
         {
-            return !Greater(a, b);
+			return !Greater(a, b,  epsilon);
         }
 
-        public static bool GreaterOrEquals(float a, float b)
+		public static bool GreaterOrEquals(float a, float b, float epsilon = Epsilon)
         {
-            return !Less(a, b);
+			return !Less(a, b, epsilon);
         }
     }
 }
