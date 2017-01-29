@@ -16,12 +16,23 @@ namespace cgc_compiler
 
         public void OnCreate(GameObject obj)
         {
+			string objType;
+
+			if (obj is Projectile)
+			{
+				objType = (obj as Projectile).Sprite.ToString();
+			}
+			else
+			{
+				objType = obj.GetType ().ToString ().Split ('.').Last ();
+			}
+
             Logger(string.Format("CREATE {0} {1} {2} {3} {4}",
                 World.GlobalTime,
                 obj.Id,
                 obj.Position,
 
-                obj.GetType().ToString().Split('.').Last(),
+				objType,
                 obj.Owner));
         }
 

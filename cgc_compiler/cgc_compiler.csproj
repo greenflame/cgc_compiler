@@ -41,12 +41,9 @@
     <Compile Include="Player.cs" />
     <Compile Include="Metrics.cs" />
     <Compile Include="EventLogger.cs" />
-    <Compile Include="Components\Weapons\Bow.cs" />
-    <Compile Include="Components\Weapons\Sword.cs" />
     <Compile Include="Components\Deploy.cs" />
     <Compile Include="GameObjects\Troops\Peasant.cs" />
     <Compile Include="GameObjects\Troops\Sharpshooter.cs" />
-    <Compile Include="GameObjects\Projectiles\Arrow.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Components\Weapons\Weapon.cs" />
     <Compile Include="Components\Component.cs" />
@@ -57,11 +54,16 @@
     <Compile Include="IDeployable.cs" />
     <Compile Include="GameObjects\Projectiles\Projectile.cs" />
     <Compile Include="GameObjects\Troops\Halfling.cs" />
-    <Compile Include="Components\Weapons\Sling.cs" />
-    <Compile Include="GameObjects\Projectiles\Stone.cs" />
     <Compile Include="GameObjects\Turrets\Forge.cs" />
     <Compile Include="GameObjects\Turrets\Tower.cs" />
     <Compile Include="GameObjects\Turrets\Turret.cs" />
+    <Compile Include="GameObjects\Projectiles\SingleTargetProjectile.cs" />
+    <Compile Include="GameObjects\Projectiles\AreaDmageProjectile.cs" />
+    <Compile Include="Components\Weapons\AreaDamageMeleeWeapon.cs" />
+    <Compile Include="Components\Weapons\AreaDamageRangedWeapon.cs" />
+    <Compile Include="Components\Weapons\SingleTargetMeleeWeapon.cs" />
+    <Compile Include="Components\Weapons\SingleTargetRangerWeapon.cs" />
+    <Compile Include="GameObjects\Projectiles\ProjectileSprite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

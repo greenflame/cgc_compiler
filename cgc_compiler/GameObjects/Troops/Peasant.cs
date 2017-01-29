@@ -21,7 +21,7 @@ namespace cgc_compiler
 
         public override Weapon MakeWeapon()
         {
-            return new Sword(this, damage, cooldown, range);
+			return new SingleTargetMeleeWeapon(this, damage, cooldown, range);
         }
 
         public override GameObject FindTarget()

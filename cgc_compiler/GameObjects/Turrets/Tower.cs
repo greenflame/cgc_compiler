@@ -20,7 +20,7 @@ namespace cgc_compiler
 
 		public override Weapon MakeWeapon ()
 		{
-			return new Bow (this, damage, cooldown, range, arrowSpeed);
+			return new SingleTargetRangedWeapon(this, damage, cooldown, range, arrowSpeed, ProjectileSprite.Fireball);
 		}
 
 		public override GameObject FindTarget ()

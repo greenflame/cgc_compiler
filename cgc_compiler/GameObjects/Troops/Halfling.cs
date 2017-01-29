@@ -23,7 +23,7 @@ namespace cgc_compiler
             
         public override Weapon MakeWeapon()
         {
-            return new Sling(this, damage, cooldown, range, stoneSpeed, damageRange);
+			return new AreaDamageRangedWeapon(this, damage, cooldown, range, stoneSpeed, damageRange, ProjectileSprite.Stone);
         }
 
         public override GameObject FindTarget()
