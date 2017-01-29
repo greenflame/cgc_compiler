@@ -9,7 +9,7 @@ namespace cgc_compiler
         private const float speed = 1;
         private const float deployTime = 1;
 
-        // Sword
+        // Sword - melee single
         private const float damage = 10;
         private const float cooldown = 0.5f;
         private const float range = 0.8f;
@@ -26,11 +26,7 @@ namespace cgc_compiler
 
         public override GameObject FindTarget()
         {
-            return GameWorld.GameObjects
-                .Where(o => o.Owner != Owner)    // Enemy
-                .Where(o => o is IDamagable)    // With health
-                .Where(o => o is IDeployable ? (o as IDeployable).GetDeploy().IsDeployed() : true)    // Deployed
-                .Aggregate((GameObject)null, (a, b) => Metrics.Closest(this, a, b));    // Closest
+			return TargetSelectors.ClosestDamagableDeployedEnemy(this);
         }
     }
 }

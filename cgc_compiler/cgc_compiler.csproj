@@ -64,6 +64,9 @@
     <Compile Include="Components\Weapons\SingleTargetMeleeWeapon.cs" />
     <Compile Include="Components\Weapons\SingleTargetRangerWeapon.cs" />
     <Compile Include="GameObjects\Projectiles\ProjectileSprite.cs" />
+    <Compile Include="GameObjects\Troops\Gog.cs" />
+    <Compile Include="GameObjects\Troops\Skeleton.cs" />
+    <Compile Include="TargetSelectors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

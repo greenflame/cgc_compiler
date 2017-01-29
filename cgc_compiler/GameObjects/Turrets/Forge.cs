@@ -1,12 +1,33 @@
-﻿//using System;
-//
-//namespace cgc_compiler
-//{
-//    public class Forge : ATower
-//    {
-//        public Forge(GameWorld world, Player owner, float position)
-//            : base(world, owner, position, 2400, 50, 1, 7)
-//        {
-//        }
-//    }
-//}
+﻿using System;
+using System.Linq;
+
+namespace cgc_compiler
+{
+	public class Forge : Turret
+	{
+		private const int xp = 1400;
+
+		// Gun - single target, ranged
+		private const float damage = 50;
+		private const float cooldown = 0.8f;
+		private const float range = 7.5f;
+		private const float arrowSpeed = 4;
+		private const ProjectileSprite sprite = ProjectileSprite.Arrow;
+
+		public Forge(GameWorld world, Player owner, float position)
+			: base(world, owner, position, xp)
+		{
+		}
+
+		public override Weapon MakeWeapon ()
+		{
+			return new SingleTargetRangedWeapon(this, damage, cooldown, range, arrowSpeed, sprite);
+		}
+
+		public override GameObject FindTarget ()
+		{
+			return TargetSelectors.ClosestDamagableDeployedEnemyTroop(this);
+		}
+
+	}
+}

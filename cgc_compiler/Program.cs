@@ -29,12 +29,17 @@ namespace cgc_compiler
                         gameWorld.Update(0.01f);
                     }
 
-//					gameWorld.GameObjects.Add(new Tower(gameWorld, Player.LeftPlayer, 0));
+					gameWorld.GameObjects.Add(new Tower(gameWorld, Player.LeftPlayer, 0));
 
-                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 1));
-                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 2));
+//                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 1));
+//                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 2));
 
-                    //            gameWorld.GameObjects.Add(new Forge(gameWorld, Player.LeftPlayer, 0));
+					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0));
+					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0.5f));
+					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 1));
+
+					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2));
+					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2.5f));
 
                     for (int i = 0; i < 20000; i++)
                     {
