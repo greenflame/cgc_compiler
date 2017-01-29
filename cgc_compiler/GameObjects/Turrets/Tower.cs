@@ -5,18 +5,18 @@ namespace cgc_compiler
 {
 	public class Tower : Turret
     {
-		private const int xp = 2400;
+		private const int xp = 1400;
 
-		// Bow
+		// Gun - single target, ranged
 		private const float damage = 50;
-		private const float cooldown = 1;
-		private const float range = 7;
+		private const float cooldown = 0.8f;
+		private const float range = 7.5f;
 		private const float arrowSpeed = 4;
 		private const ProjectileSprite sprite = ProjectileSprite.Arrow;
 
 		public Tower(GameWorld world, Player owner, float position)
 			: base(world, owner, position, xp)
-        {
+		{
         }
 
 		public override Weapon MakeWeapon ()
@@ -28,6 +28,5 @@ namespace cgc_compiler
 		{
 			return TargetSelectors.ClosestDamagableDeployedEnemyTroop(this);
 		}
-
     }
 }

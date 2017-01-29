@@ -5,12 +5,12 @@ namespace cgc_compiler
 {
 	public class Forge : Turret
 	{
-		private const int xp = 1400;
+		private const int xp = 2400;
 
-		// Gun - single target, ranged
+		// Bow
 		private const float damage = 50;
-		private const float cooldown = 0.8f;
-		private const float range = 7.5f;
+		private const float cooldown = 1;
+		private const float range = 7;
 		private const float arrowSpeed = 4;
 		private const ProjectileSprite sprite = ProjectileSprite.Arrow;
 
@@ -28,6 +28,5 @@ namespace cgc_compiler
 		{
 			return TargetSelectors.ClosestDamagableDeployedEnemyTroop(this);
 		}
-
 	}
 }

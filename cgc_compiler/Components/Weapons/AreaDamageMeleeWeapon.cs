@@ -7,8 +7,7 @@ namespace cgc_compiler
 	{
 		public float DamageRange { get; set; }
 
-		public AreaDamageMeleeWeapon(GameObject obj, float damage, float cooldown, float range,
-			float projectileSpeed, float damageRange)
+		public AreaDamageMeleeWeapon(GameObject obj, float damage, float cooldown, float range, float damageRange)
 			: base(obj, damage, cooldown, range)
 		{
 			DamageRange = damageRange;

@@ -67,6 +67,10 @@
     <Compile Include="GameObjects\Troops\Gog.cs" />
     <Compile Include="GameObjects\Troops\Skeleton.cs" />
     <Compile Include="TargetSelectors.cs" />
+    <Compile Include="GameObjects\Troops\Elemental.cs" />
+    <Compile Include="GameObjects\Troops\Archer.cs" />
+    <Compile Include="GameObjects\Troops\Halebardier.cs" />
+    <Compile Include="GameObjects\Troops\Crusader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

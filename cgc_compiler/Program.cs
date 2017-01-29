@@ -18,27 +18,35 @@ namespace cgc_compiler
                         tw.WriteLine(s);
                     });
 
-                    gameWorld.GameObjects.Add(new Halfling(gameWorld, Player.RightPlayer, 10));
-                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 9));
+//                    gameWorld.GameObjects.Add(new Halfling(gameWorld, Player.RightPlayer, 10));
+//                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 9));
+//					gameWorld.GameObjects.Add(new Elemental(gameWorld, Player.RightPlayer, 8));
 
 					//                    gameWorld.gameObjects.Add(new Sharpshooter(gameWorld, Player.RightPlayer, 8));
-                    //            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
+					//            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
+	
+					gameWorld.GameObjects.Add(new Crusader(gameWorld, Player.RightPlayer, 8));
+
 
                     for (int i = 0; i < 500; i++)
                     {
                         gameWorld.Update(0.01f);
                     }
 
-					gameWorld.GameObjects.Add(new Tower(gameWorld, Player.LeftPlayer, 0));
+					gameWorld.GameObjects.Add(new Forge(gameWorld, Player.LeftPlayer, 0));
+
+//					gameWorld.GameObjects.Add(new Archer(gameWorld, Player.LeftPlayer, 0));
+//					gameWorld.GameObjects.Add(new Archer(gameWorld, Player.LeftPlayer, 0.1f));
 
 //                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 1));
 //                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.LeftPlayer, 2));
 
-					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0));
-					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0.5f));
-					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 1));
+//					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0));
+//					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0.5f));
+//					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 1));
 
 					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2));
+					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2.1f));
 					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2.5f));
 
                     for (int i = 0; i < 20000; i++)

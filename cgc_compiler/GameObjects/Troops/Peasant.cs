@@ -5,7 +5,7 @@ namespace cgc_compiler
 {
     public class Peasant : Troop
     {
-        private const int xp = 600;
+        private const int xp = 660;
         private const float speed = 1;
         private const float deployTime = 1;
 
