@@ -6,7 +6,7 @@ namespace cgc_compiler
 	public class Gog : Troop
 	{
 		private const int xp = 52;
-		private const float speed = 2;
+		private static float speed = Configuration.BaseMotionSpeed * 2;
 		private const float deployTime = 1;
 
 		// Bow - ranged single

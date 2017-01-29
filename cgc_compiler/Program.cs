@@ -13,7 +13,7 @@ namespace cgc_compiler
             {
                 using (StreamWriter tw = new StreamWriter(fs))
                 {
-                    GameWorld gameWorld = new GameWorld(s => {
+                    GameWorld gameWorld = new GameWorld(10, s => {
                         Console.WriteLine(s);
                         tw.WriteLine(s);
                     });
@@ -22,10 +22,10 @@ namespace cgc_compiler
 //                    gameWorld.GameObjects.Add(new Peasant(gameWorld, Player.RightPlayer, 9));
 //					gameWorld.GameObjects.Add(new Elemental(gameWorld, Player.RightPlayer, 8));
 
-					//                    gameWorld.gameObjects.Add(new Sharpshooter(gameWorld, Player.RightPlayer, 8));
-					//            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
+//                    gameWorld.gameObjects.Add(new Sharpshooter(gameWorld, Player.RightPlayer, 8));
+//            gameWorld.GameObjects.Add(new Knight(gameWorld, Player.LeftPlayer, 8));
 	
-					gameWorld.GameObjects.Add(new Crusader(gameWorld, Player.RightPlayer, 8));
+					gameWorld.GameObjects.Add(new Crusader(gameWorld, Player.Right, 8));
 
 
                     for (int i = 0; i < 500; i++)
@@ -33,7 +33,7 @@ namespace cgc_compiler
                         gameWorld.Update(0.01f);
                     }
 
-					gameWorld.GameObjects.Add(new Forge(gameWorld, Player.LeftPlayer, 0));
+					gameWorld.GameObjects.Add(new Forge(gameWorld, Player.Left, 0));
 
 //					gameWorld.GameObjects.Add(new Archer(gameWorld, Player.LeftPlayer, 0));
 //					gameWorld.GameObjects.Add(new Archer(gameWorld, Player.LeftPlayer, 0.1f));
@@ -45,9 +45,9 @@ namespace cgc_compiler
 //					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 0.5f));
 //					gameWorld.GameObjects.Add (new Gog (gameWorld, Player.LeftPlayer, 1));
 
-					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2));
-					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2.1f));
-					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.LeftPlayer, 2.5f));
+					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.Left, 2));
+					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.Left, 2.1f));
+					gameWorld.GameObjects.Add (new Skeleton (gameWorld, Player.Left, 2.5f));
 
                     for (int i = 0; i < 20000; i++)
                     {

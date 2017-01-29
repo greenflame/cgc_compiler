@@ -6,7 +6,7 @@ namespace cgc_compiler
 	public class Archer : Troop
 	{
 		private const int xp = 340;
-		private const float speed = 1;
+		private static float speed = Configuration.BaseMotionSpeed;
 		private const float deployTime = 1;
 
 		// Bow - ranged single

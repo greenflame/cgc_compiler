@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace cgc_compiler
 {
     public class GameWorld : IDynamic
     {
+		public float Length { get; private set; }
         public List<GameObject> GameObjects { get; private set; }
         public float GlobalTime { get; private set; }
         public EventLogger EventLlogger { get; private set; }
 
-        public GameWorld(Action<string> loggerDelegate)
+        public GameWorld(float length, Action<string> loggerDelegate)
         {
+			Length = length;
             GameObjects = new List<GameObject>();
             EventLlogger = new EventLogger(this, loggerDelegate);
         }
@@ -25,6 +28,11 @@ namespace cgc_compiler
 
             GlobalTime += deltaTime;
         }
+
+		public float InvertPosition(float position)
+		{
+			return Length - position;
+		}
     }
 }
 
