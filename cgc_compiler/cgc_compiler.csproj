@@ -35,7 +35,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GameWorld.cs" />
     <Compile Include="Components\Health.cs" />
     <Compile Include="Components\Deploy.cs" />
     <Compile Include="GameObjects\Troops\Peasant.cs" />
@@ -70,11 +69,15 @@
     <Compile Include="Utilites\EventLogger.cs" />
     <Compile Include="Utilites\Metrics.cs" />
     <Compile Include="Utilites\TargetSelectors.cs" />
-    <Compile Include="Judge.cs" />
     <Compile Include="Utilites\Executer.cs" />
-    <Compile Include="PlayerController.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="Configuration.cs" />
+    <Compile Include="GameWorld\GameWorld.cs" />
+    <Compile Include="GameWorld\Judge.cs" />
+    <Compile Include="GameWorld\Player.cs" />
+    <Compile Include="GameWorld\PlayerController.cs" />
+    <Compile Include="Utilites\Configuration.cs" />
+    <Compile Include="GameWorld\ManaController.cs" />
+    <Compile Include="GameWorld\CardQueueController.cs" />
+    <Compile Include="GameWorld\Card.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -86,5 +89,6 @@
     <Folder Include="GameObjects\Turrets\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Utilites\" />
+    <Folder Include="GameWorld\" />
   </ItemGroup>
 </Project>

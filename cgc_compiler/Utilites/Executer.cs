@@ -54,6 +54,7 @@ namespace cgc_compiler
 			localDriteProgramDirectory = Path.Combine(Path.GetTempPath(), TempSubdir, randomStr);
 			#else
 			localDriteProgramDirectory = Path.Combine(Path.Combine(Path.GetTempPath(), TempSubdir), randomStr);
+//			localDriteProgramDirectory = "test";
 			#endif
 			Init();
 		}

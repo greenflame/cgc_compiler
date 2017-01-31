@@ -9,7 +9,7 @@ namespace cgc_compiler
 		public static float MeleeRange = 0.8f;
 
 		// World config
-		public const float WorldLength = 10;
+		public const float WorldLength = 20;
 		public const float ForgePosition = 0;
 		public const float FirstTowerPosition = 5;
 
