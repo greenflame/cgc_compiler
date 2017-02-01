@@ -2,7 +2,7 @@
 
 namespace cgc_compiler
 {
-	public enum ProjectileSprite
+	public enum ProjectileType
 	{
 		Arrow,
 		Stone,

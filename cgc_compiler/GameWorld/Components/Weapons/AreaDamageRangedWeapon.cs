@@ -6,10 +6,10 @@ namespace cgc_compiler
 	{
 		public float ProjectileSpeed { get; private set; }
 		public float DamageRange { get; set; }
-		public ProjectileSprite ProjectileSprite { get; private set; }
+		public ProjectileType ProjectileSprite { get; private set; }
 
 		public AreaDamageRangedWeapon(GameObject obj, float damage, float cooldown, float range,
-			float projectileSpeed, float damageRange, ProjectileSprite projectileSprite)
+			float projectileSpeed, float damageRange, ProjectileType projectileSprite)
 			: base(obj, damage, cooldown, range)
 		{
 			ProjectileSpeed = projectileSpeed;

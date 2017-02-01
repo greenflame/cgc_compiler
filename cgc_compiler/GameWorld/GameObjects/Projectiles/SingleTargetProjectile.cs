@@ -8,7 +8,7 @@ namespace cgc_compiler
 		public float Damage { get; private set; }
 		public Mover Mover { get; private set; }
 
-		public SingleTargetProjectile(GameWorld world, Player owner, float positioin, ProjectileSprite sprite,
+		public SingleTargetProjectile(GameWorld world, Player owner, float positioin, ProjectileType sprite,
 			GameObject target, float damage, float speed)
 			: base(world, owner, positioin, sprite)
 		{

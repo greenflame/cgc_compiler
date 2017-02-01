@@ -44,18 +44,22 @@ namespace cgc_compiler
             }
         }
 
-        public void ProcessAttack(float deltaTime)
-        {
-            if (Metrics.LessOrEquals(CooldownTimeRest, CooldownTime / 2) &&
-                !DamagePerformed &&
-                GameObject.GameWorld.GameObjects.Contains(CurrentTarget))
-            {
-                PerformDamageAction();
-                CurrentTarget = null;
-            }
+		public void ProcessAttack(float deltaTime)
+		{
+			if (!GameObject.GameWorld.GameObjects.Contains(CurrentTarget))	// Target disappeared
+			{
+				CooldownTimeRest = 0;
+				return;
+			}
 
-            CooldownTimeRest = Math.Max(0, CooldownTimeRest - deltaTime);
-        }
+			if (Metrics.LessOrEquals(CooldownTimeRest, CooldownTime / 2) && !DamagePerformed)	// Appropriate time
+			{
+				PerformDamageAction ();
+				CurrentTarget = null;
+			}
+
+			CooldownTimeRest = Math.Max(0, CooldownTimeRest - deltaTime);
+		}
             
         protected abstract void PerformDamageAction();
 

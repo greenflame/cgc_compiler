@@ -24,7 +24,7 @@ namespace cgc_compiler
 			CardQueueController = new CardQueueController ();
 		}
 
-		private void SpawnTroop(Card card, float position)
+		private void SpawnTroop(CardType card, float position)
 		{
 			if (!Metrics.LessOrEquals(position, GameWorld.Length / 2))
 			{
@@ -43,42 +43,42 @@ namespace cgc_compiler
 
 			switch (card)
 			{
-			case Card.Archer:
+			case CardType.Archer:
 				ManaController.Consume (4);
 				GameWorld.GameObjects.Add (new Archer (GameWorld, Player, position));
 				break;
-			case Card.Crusader:
+			case CardType.Crusader:
 				ManaController.Consume (4);
 				GameWorld.GameObjects.Add (new Crusader (GameWorld, Player, position));
 				break;
-			case Card.Elemental:
+			case CardType.Elemental:
 				ManaController.Consume (5);
 				GameWorld.GameObjects.Add (new Elemental (GameWorld, Player, position));
 				break;
-			case Card.Gogs:
+			case CardType.Gogs:
 				ManaController.Consume (2);
 				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position - 0.2f));
 				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position));
 				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position + 0.2f));
 				break;
-			case Card.Halebardier:
+			case CardType.Halebardier:
 				ManaController.Consume (4);
 				GameWorld.GameObjects.Add (new Halebardier (GameWorld, Player, position));
 				break;
-			case Card.Halfling:
+			case CardType.Halfling:
 				ManaController.Consume (3);
 				GameWorld.GameObjects.Add (new Halfling (GameWorld, Player, position));
 				break;
-			case Card.Peasant:
+			case CardType.Peasant:
 				ManaController.Consume (3);
 				GameWorld.GameObjects.Add (new Peasant (GameWorld, Player, position));
 				break;
-			case Card.Sharpshooters:
+			case CardType.Sharpshooters:
 				ManaController.Consume (3);
 				GameWorld.GameObjects.Add (new Sharpshooter (GameWorld, Player, position - 0.1f));
 				GameWorld.GameObjects.Add (new Sharpshooter (GameWorld, Player, position + 0.1f));
 				break;
-			case Card.Skeletons:
+			case CardType.Skeletons:
 				ManaController.Consume (2);
 				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position - 0.2f));
 				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position));
@@ -147,10 +147,10 @@ namespace cgc_compiler
 						return;
 					}
 
-					Card card;
+					CardType card;
 					try
 					{
-						card = (Card)Enum.Parse(typeof(Card), arguments[0]);
+						card = (CardType)Enum.Parse(typeof(CardType), arguments[0]);
 					}
 					catch
 					{

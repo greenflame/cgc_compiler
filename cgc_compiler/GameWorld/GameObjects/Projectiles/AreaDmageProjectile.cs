@@ -10,7 +10,7 @@ namespace cgc_compiler
 		public float DamageRange { get; set; }
 		public Mover Mover { get; private set; }
 
-		public AreaDmageProjectile(GameWorld world, Player owner, float positioin, ProjectileSprite sprite,
+		public AreaDmageProjectile(GameWorld world, Player owner, float positioin, ProjectileType sprite,
 			float target, float damage, float speed, float damageRange)
 			: base(world, owner, positioin, sprite)
 		{

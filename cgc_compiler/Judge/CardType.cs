@@ -2,7 +2,7 @@
 
 namespace cgc_compiler
 {
-	public enum Card
+	public enum CardType
 	{
 		Peasant,	// Knight
 //		[He is a single-target, melee troop with moderate-high hitpoints and moderate damage.]

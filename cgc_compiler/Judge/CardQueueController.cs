@@ -5,11 +5,11 @@ namespace cgc_compiler
 {
 	public class CardQueueController
 	{
-		public List<Card> Queue { get; private set; }
+		public List<CardType> Queue { get; private set; }
 
 		public CardQueueController ()
 		{
-			Queue = new List<Card> ();
+			Queue = new List<CardType> ();
 			GenerateCardQueue ();
 		}
 
@@ -19,18 +19,18 @@ namespace cgc_compiler
 
 			for (int i = Queue.Count; i < Configuration.AvailableCards; i++)
 			{
-				Array values = Enum.GetValues (typeof(Card));
-				Card card = (Card)values.GetValue(r.Next (values.Length));
+				Array values = Enum.GetValues (typeof(CardType));
+				CardType card = (CardType)values.GetValue(r.Next (values.Length));
 				Queue.Add (card);
 			}
 		}
 
-		public bool IsCardAvailable(Card card)
+		public bool IsCardAvailable(CardType card)
 		{
 			return Queue.Contains (card);
 		}
 
-		public void RemoveCard(Card card)
+		public void RemoveCard(CardType card)
 		{
 			if (!IsCardAvailable (card))
 			{
