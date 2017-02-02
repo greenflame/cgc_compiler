@@ -75,9 +75,9 @@
     <Compile Include="Judge\Judge.cs" />
     <Compile Include="Judge\PlayerController.cs" />
     <Compile Include="Judge\ManaController.cs" />
-    <Compile Include="Judge\CardType.cs" />
     <Compile Include="GameWorld\Metrics.cs" />
     <Compile Include="GameWorld\TargetSelectors.cs" />
+    <Compile Include="Judge\CardType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

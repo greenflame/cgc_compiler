@@ -13,7 +13,7 @@ namespace cgc_compiler
 		private const float HitSpeed = 1.2f;
 		private const float Range = 5;
 		private const float ArrowSpeed = Configuration.ProjectileSpeed;
-		private const ProjectileType ProjectileType = ProjectileType.Arrow;
+		private static ProjectileType ProjectileType = ProjectileType.Arrow;
 
         public Sharpshooter(GameWorld world, Player owner, float position)
             : base(world, owner, position, Hitpoints, Speed, DeployTime)

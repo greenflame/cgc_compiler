@@ -10,94 +10,81 @@ namespace cgc_compiler
 		public Executer LeftExecuter { get; private set; }
 		public Executer RightExecuter { get; private set; }
 
-		public const string InputFile = "input.txt";
-		public const string OutputFile = "output.txt";
-
 		public PlayerController LeftController { get; private set; }
 		public PlayerController RightController { get; private set; }
 
+		public int TurnNum { get; private set; } = 0;
+
 		public Judge(string leftProgramm, string rightProgramm, Action<string> gameLogger, Action<string> executionLogger)
 		{
-			GameWorld = new GameWorld (Configuration.WorldLength, gameLogger);
+			GameWorld = new GameWorld(Configuration.WorldLength, gameLogger);
 			ExecutionLogger = executionLogger;
 
-			LeftExecuter = new Executer (leftProgramm, InputFile, OutputFile, "");
-			RightExecuter = new Executer (rightProgramm, InputFile, OutputFile, "");
+			LeftExecuter = new Executer(leftProgramm, Configuration.InputFile, Configuration.OutputFile);
+			RightExecuter = new Executer(rightProgramm, Configuration.InputFile, Configuration.OutputFile);
 
-			LeftController = new PlayerController (GameWorld, Player.Left);
-			RightController = new PlayerController (GameWorld, Player.Right);
+			LeftController = new PlayerController(GameWorld, Player.Left);
+			RightController = new PlayerController(GameWorld, Player.Right);
 
 			InitGameWorld();
 		}
 
 		private void InitGameWorld()
 		{
-			ExecutionLogger ("Game world initialization...");
-
 			GameWorld.GameObjects.Add(new Forge(GameWorld, Player.Left, Configuration.ForgePosition));
 			GameWorld.GameObjects.Add(new Tower(GameWorld, Player.Left, Configuration.FirstTowerPosition));
 
-			GameWorld.GameObjects.Add(new Forge(GameWorld, Player.Right,
-				GameWorld.InvertPosition(Configuration.ForgePosition)));
-			GameWorld.GameObjects.Add(new Tower(GameWorld, Player.Right,
-				GameWorld.InvertPosition(Configuration.FirstTowerPosition)));
+			GameWorld.GameObjects.Add(new Forge(GameWorld, Player.Right, GameWorld.InvertPosition(Configuration.ForgePosition)));
+			GameWorld.GameObjects.Add(new Tower(GameWorld, Player.Right, GameWorld.InvertPosition(Configuration.FirstTowerPosition)));
 		}
 
-		public void Simulate(float simulationStep, float maxSimulationTime, float strategyRunInterval)
+		public void RunSimulation(float simulationStep, float maxSimulationTime, float strategyRunInterval)
 		{
 			while (GameWorld.GlobalTime < maxSimulationTime)
 			{
-				for (float i = 0; i < strategyRunInterval; i += simulationStep)
+				while (GameWorld.GlobalTime < strategyRunInterval * TurnNum)
 				{
-					GameWorld.Update (simulationStep);
+					GameWorld.Update(simulationStep);
 
-					LeftController.ManaController.Produce (simulationStep);
-					RightController.ManaController.Produce (simulationStep);
+					LeftController.ManaController.Produce(simulationStep);
+					RightController.ManaController.Produce(simulationStep);
 				}
 
-				RunStrategies ();
+				RunStrategies();
+				TurnNum++;
 			}
 		}
 
 		private void RunStrategies()
 		{
-			string leftInput = LeftController.GenerateInput ();
-			string rightInput = RightController.GenerateInput ();
+			ExecutionLogger(string.Format("---------- Turn: {0} World time: {1} ----------", TurnNum, GameWorld.GlobalTime));
 
-//			string leftInput = string.Join("\r\n", LeftController.GenerateInput ().Split('\n'));
-//			string rightInput = string.Join("\r\n", RightController.GenerateInput ().Split('\n'));
+			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftExecuter.ProgramExecutable));
+			RunStrategy(LeftExecuter, LeftController);
 
-			string leftOutput, rightOutput;
-			string leftComment, rightComment;
+			ExecutionLogger(string.Format("----- Right strategy: {0}", RightExecuter.ProgramExecutable));
+			RunStrategy(RightExecuter, RightController);
+		}
 
-			ExecuteResult leftResult = LeftExecuter.Execute (leftInput, Configuration.MaxExecutionTime, out leftOutput, out leftComment);
-			ExecutionLogger (string.Format("Left programm execution result: {0}", leftResult));
+		private void RunStrategy(Executer executer, PlayerController controller)
+		{
+			string input = controller.GenerateInput();
 
-			if (leftResult == ExecuteResult.Ok)
+			ExecutionLogger("----- Input:");
+			ExecutionLogger(input);
+
+			string output, comment;
+			ExecuteResult result = executer.Execute(input, Configuration.MaxExecutionTime, out output, out comment);
+
+			ExecutionLogger(string.Format("----- Executer verdict: {0} Comment: {1}", result, comment));
+
+			if (result == ExecuteResult.Ok)
 			{
-				try
-				{
-					LeftController.ProcessOutput (leftOutput, ExecutionLogger);
-				}
-				catch (Exception err)
-				{
-					ExecutionLogger (err.Message);
-				}
-			}
+				ExecutionLogger("----- Output:");
+				ExecutionLogger(output);
 
-			ExecuteResult rightResult = LeftExecuter.Execute (rightInput, Configuration.MaxExecutionTime, out rightOutput, out rightComment);
-			ExecutionLogger (string.Format("Right programm execution result: {0}", rightResult));
-
-			if (rightResult == ExecuteResult.Ok)
-			{
-				try
-				{
-					RightController.ProcessOutput (rightOutput, ExecutionLogger);
-				}
-				catch (Exception err)
-				{
-					ExecutionLogger (err.Message);
-				}
+				ExecutionLogger("----- Output processor:");
+				controller.ProcessOutput(output, ExecutionLogger);
 			}
 		}
 	}

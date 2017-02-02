@@ -14,7 +14,7 @@ namespace cgc_compiler
 		private const float Range = 4.5f;
 		private const float StoneSpeed = Configuration.ProjectileSpeed;
 		private const float DamageRange = Configuration.AreaDamageRange;
-		private const ProjectileType ProjectileType = ProjectileType.Stone;
+		private static ProjectileType ProjectileType = ProjectileType.Stone;
 
         public Halfling(GameWorld world, Player owner, float position)
             : base(world, owner, position, Hitpoints, Speed, DeployTime)

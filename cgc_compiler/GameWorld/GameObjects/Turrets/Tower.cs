@@ -11,7 +11,7 @@ namespace cgc_compiler
 		private const float HitSpeed = 0.8f;
 		private const float Range = 7.5f;
 		private const float ArrowSpeed = Configuration.ProjectileSpeed;
-		private const ProjectileType ProjectileType = ProjectileType.Arrow;
+		private static ProjectileType ProjectileType = ProjectileType.Arrow;
 
 		public Tower(GameWorld world, Player owner, float position)
 			: base(world, owner, position, Hitpoints)

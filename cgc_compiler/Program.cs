@@ -9,11 +9,31 @@ namespace cgc_compiler
         {
             Console.WriteLine("Hello World!");
 
-            using (FileStream fs = File.Open("/Users/Alexander/Desktop/log1", FileMode.Create))
-            using (StreamWriter tw = new StreamWriter(fs))
+			if (args.Length != 2)
+			{
+				Console.WriteLine ("Invalid arguments length");
+				return;
+			}
+
+			string LeftAiExecutionString = args [0];
+			string RightAiExecutionString = args [0];
+
+			using (FileStream glfs = File.Open("game_log.txt", FileMode.Create))
+			using (StreamWriter gameLog = new StreamWriter(glfs))
+			using (FileStream elfs = File.Open("execution_log.txt", FileMode.Create))
+			using (StreamWriter executionLog = new StreamWriter(elfs))
             {
-				Judge judge = new Judge ("ai1.out", "ai2.out", tw.WriteLine, Console.WriteLine);
-				judge.Simulate (0.01f, 180, 1);
+				Judge judge = new Judge (
+					LeftAiExecutionString,
+					RightAiExecutionString,
+					gameLog.WriteLine,
+					s => { Console.WriteLine(s); executionLog.WriteLine(s); }
+				);
+				judge.RunSimulation (
+					Configuration.simulationStep,
+					Configuration.maxSimulationTime,
+					Configuration.strategyRunInterval
+				);
 			}
         }
     }

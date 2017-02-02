@@ -9,52 +9,61 @@ namespace cgc_compiler
 {
 	public enum ExecuteResult
 	{
-		Ok,                // все хорошо
-		InternalError,     // ошибка в процессе выполнения внешней программы
-		TimeOut,           // слишком длительное время выполнения внешней программы
-		WriteInputError,   // ошибка записи входных данных для внешней программы
-		NoOutput,          // отсутствует файл выходных данных
-		ReadOutputError,   // ошибка в процессе чтения выходных данных
-		EmptyOutput,       // пустой файл выходных данных
-		NotStarted,        // не удалось запустить внешнюю программы
-		WrongInputData,    // неверные входные данные (обрабатывается в наследниках ExternalProgramExecuter)
-		WrongOutputFormat, // неверный формат выходных данных (обрабатывается в наследниках ExternalProgramExecuter)
-		WrongOutputData,   // неверные выходные данные (обрабатывается в наследниках ExternalProgramExecuter)
-		OutputTooBig,      //слишком большой файл
-		OtherError         // другая ошибка
+		Ok,                 // все хорошо
+		InternalError,      // ошибка в процессе выполнения внешней программы
+		TimeOut,            // слишком длительное время выполнения внешней программы
+		WriteInputError,    // ошибка записи входных данных для внешней программы
+		NoOutput,           // отсутствует файл выходных данных
+		ReadOutputError,    // ошибка в процессе чтения выходных данных
+		EmptyOutput,        // пустой файл выходных данных
+		NotStarted,         // не удалось запустить внешнюю программы
+		WrongInputData,		// неверные входные данные (обрабатывается в наследниках ExternalProgramExecuter)
+		WrongOutputFormat, 	// неверный формат выходных данных (обрабатывается в наследниках ExternalProgramExecuter)
+		WrongOutputData,    // неверные выходные данные (обрабатывается в наследниках ExternalProgramExecuter)
+		OutputTooBig,       // слишком большой файл
+		OtherError          // другая ошибка
 	}
 
 
 	public class Executer
 	{
-		/*
-          Интервал, с которым опрашивается состояние запущенного внешнего процесса (в миллисекундах)
-        */
 		public const int ProcessCheckTimeInterval = 10;
 
-		private string programExecutable;
-		private string localDriteProgramDirectory;
-		private string inputFileName,
-		outputFileName;
-		private string _javaPath;
+		public string ProgramExecutable { get; private set; }
+		public string ExecutionTemplate { get; private set; }
 
-		public Executer(string programExecutable,
-			string inputFileName, string outputFileName, string javaPath)
+		public string ProgramExecutableFilnameOnly { get { return Path.GetFileName(ProgramExecutable); } }
+		public string LocalDriveProgramDirectory { get; private set; }
+		public string LocalDriveProgramExecutable { get { return Path.Combine(LocalDriveProgramDirectory, ProgramExecutableFilnameOnly); } }
+		public string InputFileName { get; private set; }
+		public string OutputFileName { get; private set; }
+		private const string TempSubdir = "Temp1";
+
+
+		public Executer(string executionString, string inputFileName, string outputFileName)
 		{
-			_javaPath = javaPath;
-			this.programExecutable = programExecutable;
-			this.inputFileName = inputFileName;
-			this.outputFileName = outputFileName;
+			if (!executionString.Contains("|"))
+			{
+				executionString += "|{0}#";
+			}
+
+			ProgramExecutable = executionString.Split('|')[0];
+			ExecutionTemplate = executionString.Split('|')[1];
+
+			InputFileName = inputFileName;
+			OutputFileName = outputFileName;
+
+			// Junk
 			Random rnd = new Random();
-			rnd = new Random(rnd.Next() + programExecutable.GetHashCode());
+			rnd = new Random(rnd.Next() + executionString.GetHashCode());
 			string randomStr = "";
 			for (int i = 0; i < 8; i++)
 				randomStr += "0123456789ABCDEF"[rnd.Next(16)];
+
 			#if NET40
-			localDriteProgramDirectory = Path.Combine(Path.GetTempPath(), TempSubdir, randomStr);
+			LocalDriveProgramDirectory = Path.Combine(Path.GetTempPath(), TempSubdir, randomStr);
 			#else
-			localDriteProgramDirectory = Path.Combine(Path.Combine(Path.GetTempPath(), TempSubdir), randomStr);
-//			localDriteProgramDirectory = "test";
+			LocalDriveProgramDirectory = Path.Combine(Path.Combine(Path.GetTempPath(), TempSubdir), randomStr);
 			#endif
 			Init();
 		}
@@ -64,7 +73,7 @@ namespace cgc_compiler
 		{
 			DeleteLocalDriveProgramDirectory();
 			int attemptCount = 50;
-			Exception lastException=null;
+			Exception lastException = null;
 			while (attemptCount-- > 0)
 			{
 				try
@@ -75,7 +84,10 @@ namespace cgc_compiler
 						break;
 					}
 				}
-				catch (Exception e) { lastException = e; }
+				catch (Exception e)
+				{
+					lastException = e;
+				}
 
 			}
 
@@ -117,7 +129,7 @@ namespace cgc_compiler
 			}
 			catch (Exception e)
 			{
-				if(Debugger.IsAttached)
+				if (Debugger.IsAttached)
 					throw new ExecuterException(string.Format("Error deleting temp subdir ({0})", TempSubdir), e);
 			}
 		}
@@ -129,13 +141,13 @@ namespace cgc_compiler
           maxTime - максимальное время выполнения в секундах, после чего процесс убивается
         */
 		public virtual ExecuteResult Execute(string inputFileContent, double maxTime,
-			out string outputFileContent, out string comment)
+		                                     out string outputFileContent, out string comment)
 		{
 			outputFileContent = null;
-			comment = null;
+			comment = "No comment";
 
-			string inputFileName = Path.Combine(LocalDriveProgramDirectory, this.inputFileName),
-			outputFileName = Path.Combine(LocalDriveProgramDirectory, this.outputFileName);
+			string inputFileName = Path.Combine(LocalDriveProgramDirectory, InputFileName),
+			outputFileName = Path.Combine(LocalDriveProgramDirectory, OutputFileName);
 			Process process = null;
 			try
 			{
@@ -149,15 +161,11 @@ namespace cgc_compiler
 				}
 				process = new Process();
 				process.StartInfo.WorkingDirectory = LocalDriveProgramDirectory;
-				if (ProgramExecutableFilnameOnly.Substring(ProgramExecutableFilnameOnly.Length - 4) == ".jar")
-				{
-					process.StartInfo.FileName = _javaPath;
-					process.StartInfo.Arguments = "-jar " + LocalDriveProgramExecutable;
-				}
-				else
-				{
-					process.StartInfo.FileName = LocalDriveProgramExecutable;
-				}
+
+				string subst = string.Format(ExecutionTemplate, LocalDriveProgramExecutable);
+				process.StartInfo.FileName = subst.Split('#')[0];
+				process.StartInfo.Arguments = subst.Split('#')[1];
+
 				process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 				if (process.Start())
 				{
@@ -244,21 +252,14 @@ namespace cgc_compiler
 					if (process != null && !process.HasExited)
 						process.Kill();
 				}
-				catch (Exception) { }
+				catch (Exception)
+				{
+				}
 
 				//        throw;
 			}
 		}
 
-
-		public static string TempSubdir { get { return "Temp1"; } }
-
-		public string ProgramExecutable { get { return programExecutable; } }
-		public string ProgramExecutableFilnameOnly { get { return Path.GetFileName(programExecutable); } }
-		public string LocalDriveProgramDirectory { get { return localDriteProgramDirectory; } }
-		public string LocalDriveProgramExecutable { get { return Path.Combine(LocalDriveProgramDirectory, ProgramExecutableFilnameOnly); } }
-		public string InputFileName { get { return inputFileName; } }
-		public string OutputFileName { get { return outputFileName; } }
 	}
 
 

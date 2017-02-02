@@ -11,7 +11,7 @@ namespace cgc_compiler
 		private const float HitSpeed = 1;
 		private const float Range = 7;
 		private const float ArrowSpeed = Configuration.ProjectileSpeed;
-		private const ProjectileType ProjectileType = ProjectileType.Arrow;
+		private static ProjectileType ProjectileType = ProjectileType.Arrow;
 
 		public Forge(GameWorld world, Player owner, float position)
 			: base(world, owner, position, Hitpoints)

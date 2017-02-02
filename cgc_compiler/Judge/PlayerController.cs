@@ -13,8 +13,6 @@ namespace cgc_compiler
 		public ManaController ManaController { get; private set; }
 		public CardQueueController CardQueueController { get; private set; }
 
-		private int CurrentAvailableCards { get; set; }
-
 		public PlayerController (GameWorld gameWorld, Player player)
 		{
 			GameWorld = gameWorld;
@@ -26,12 +24,12 @@ namespace cgc_compiler
 
 		private void SpawnTroop(CardType card, float position)
 		{
-			if (!Metrics.LessOrEquals(position, GameWorld.Length / 2))
+			if (!IsPositionAvailable(position))
 			{
-				throw new Exception ("Invalid positioin. You can spawn troops only in your half of game world.");
+				throw new Exception ("Invalid positioin");
 			}
 
-			if (!CardQueueController.IsCardAvailable (card))
+			if (!CardQueueController.IsCardAvailable(card))
 			{
 				throw new Exception ("Card is not availible");
 			}
@@ -57,9 +55,9 @@ namespace cgc_compiler
 				break;
 			case CardType.Gogs:
 				ManaController.Consume (2);
-				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position - 0.2f));
+				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position - Configuration.SpawnDispersion));
 				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position));
-				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position + 0.2f));
+				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position + Configuration.SpawnDispersion));
 				break;
 			case CardType.Halebardier:
 				ManaController.Consume (4);
@@ -75,18 +73,43 @@ namespace cgc_compiler
 				break;
 			case CardType.Sharpshooters:
 				ManaController.Consume (3);
-				GameWorld.GameObjects.Add (new Sharpshooter (GameWorld, Player, position - 0.1f));
-				GameWorld.GameObjects.Add (new Sharpshooter (GameWorld, Player, position + 0.1f));
+				GameWorld.GameObjects.Add (new Sharpshooter (GameWorld, Player, position - Configuration.SpawnDispersion / 2f));
+				GameWorld.GameObjects.Add (new Sharpshooter (GameWorld, Player, position + Configuration.SpawnDispersion / 2f));
 				break;
 			case CardType.Skeletons:
 				ManaController.Consume (2);
-				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position - 0.2f));
+				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position - Configuration.SpawnDispersion));
 				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position));
-				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position + 0.2f));
+				GameWorld.GameObjects.Add (new Skeleton (GameWorld, Player, position + Configuration.SpawnDispersion));
 				break;
 			}
 
 			CardQueueController.RemoveCard (card);
+		}
+
+		private bool IsPositionAvailable(float position)
+		{
+			if (Metrics.Less(position, 0))
+			{
+				return false;
+			}
+
+			if (Metrics.LessOrEquals(position, Configuration.MaxSpawnPosFirstPhase))
+			{
+				return true;
+			}
+
+			bool enemyTowerExists = GameWorld.GameObjects
+				.Where (o => o is Tower)
+				.Where (o => o.Owner != Player)
+				.Count () > 0;
+
+			if (!enemyTowerExists && Metrics.LessOrEquals(position, Configuration.MaxSpawnPosSecondPhase))
+			{
+				return true;
+			}
+
+			return false;
 		}
 			
 		public static Player InvertPlayer(Player player)
@@ -107,7 +130,6 @@ namespace cgc_compiler
 
 			input.AppendLine (ManaController.CurrentMana.ToString());
 
-			// Todo next card
 			CardQueueController.Queue
 				.ForEach(i => input.AppendLine(i.ToString()));
 
@@ -128,7 +150,6 @@ namespace cgc_compiler
 			input.AppendLine (gameObjects.Count.ToString());
 			gameObjects.ForEach(i => input.AppendLine(i));
 
-//			Console.WriteLine (input.ToString());
 			return input.ToString ();
 		}
 
@@ -137,39 +158,45 @@ namespace cgc_compiler
 			output
 				.Split (new String[] { Environment.NewLine }, StringSplitOptions.None)
 				.ToList ()
-				.ForEach (l => {
-					executionLogger(l);
-					List<string> arguments = l.Split(' ').ToList();
+				.ForEach (command => {
 
-					if (arguments.Count != 2)
+					if (string.IsNullOrEmpty(command))
 					{
-						executionLogger("Invalid arguments count (!= 2)");
+						return;
+					}
+
+					executionLogger(string.Format("Processing command: {0}", command));
+
+					List<string> parameters = command.Split(' ').ToList();
+
+					if (parameters.Count < 2)
+					{
+						executionLogger("Invalid parameters length");
 						return;
 					}
 
 					CardType card;
 					try
 					{
-						card = (CardType)Enum.Parse(typeof(CardType), arguments[0]);
+						card = (CardType)Enum.Parse(typeof(CardType), parameters[0]);
 					}
 					catch
 					{
-						executionLogger("Cann't parse first argument - card type");
+						executionLogger("Cann't parse card type");
 						return;
 					}
 
 					float position;
-					if (!float.TryParse (arguments [1], out position))
+					if (!float.TryParse (parameters [1], out position))
 					{
-						executionLogger("Cann't parse second argument - float position");
+						executionLogger("Cann't parse spawn position");
 						return;
 					}
-
-					executionLogger(string.Format("tr: {0} cm: {1}", card, ManaController.CurrentMana));
 
 					try 
 					{
 						SpawnTroop (card, position);
+						executionLogger("Successfull");
 					}
 					catch (Exception ex)
 					{

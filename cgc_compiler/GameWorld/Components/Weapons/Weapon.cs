@@ -46,13 +46,14 @@ namespace cgc_compiler
 
 		public void ProcessAttack(float deltaTime)
 		{
-			if (!GameObject.GameWorld.GameObjects.Contains(CurrentTarget))	// Target disappeared
+			if (CurrentTarget != null && !GameObject.GameWorld.GameObjects.Contains(CurrentTarget))	// Target disappeared
 			{
 				CooldownTimeRest = 0;
 				return;
 			}
 
-			if (Metrics.LessOrEquals(CooldownTimeRest, CooldownTime / 2) && !DamagePerformed)	// Appropriate time
+			if (Metrics.LessOrEquals(CooldownTimeRest, CooldownTime / 2) && !DamagePerformed
+				&& GameObject.GameWorld.GameObjects.Contains(CurrentTarget))	// Appropriate time
 			{
 				PerformDamageAction ();
 				CurrentTarget = null;
@@ -60,7 +61,7 @@ namespace cgc_compiler
 
 			CooldownTimeRest = Math.Max(0, CooldownTimeRest - deltaTime);
 		}
-            
+        
         protected abstract void PerformDamageAction();
 
         public bool IsAttackFinished()
