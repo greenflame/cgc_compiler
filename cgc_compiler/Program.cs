@@ -16,7 +16,7 @@ namespace cgc_compiler
 			}
 
 			string LeftAiExecutionString = args [0];
-			string RightAiExecutionString = args [0];
+			string RightAiExecutionString = args [1];
 
 			using (FileStream glfs = File.Open("game_log.txt", FileMode.Create))
 			using (StreamWriter gameLog = new StreamWriter(glfs))
@@ -27,7 +27,8 @@ namespace cgc_compiler
 					LeftAiExecutionString,
 					RightAiExecutionString,
 					gameLog.WriteLine,
-					s => { Console.WriteLine(s); executionLog.WriteLine(s); }
+					executionLog.WriteLine,
+					Console.WriteLine
 				);
 				judge.RunSimulation (
 					Configuration.simulationStep,
@@ -38,26 +39,3 @@ namespace cgc_compiler
         }
     }
 }
-
-/*
-#include<fstream>
-#include <string>
-
-using namespace std;
-
-int main()
-{
-    ifstream fin("input.txt");
-    ofstream fout("output.txt");
-
-    string s1, s2;
-    fin >> s1 >> s2;
-    fout << s2 << " 7" << endl;
-
-    fin.close();
-    fout.close();
-
-
-    return 0;
-}
-*/

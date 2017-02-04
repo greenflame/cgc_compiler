@@ -8,7 +8,6 @@ namespace cgc_compiler
 		public float Target { get; private set; }
 		public float Damage { get; private set; }
 		public float DamageRange { get; set; }
-		public Mover Mover { get; private set; }
 
 		public AreaDmageProjectile(GameWorld world, Player owner, float positioin, ProjectileType sprite,
 			float target, float damage, float speed, float damageRange)
@@ -19,8 +18,7 @@ namespace cgc_compiler
 			DamageRange = damageRange;
 			Mover = new Mover(this, speed);
 
-			GameWorld.EventLlogger.OnCreate(this);
-			GameWorld.EventLlogger.OnBombFlight(this, target, Mover.Speed);
+			GameWorld.EventLlogger.ProjectilePosShot(this, target);
 		}
 
 		public override void Update(float deltaTime)
@@ -35,7 +33,7 @@ namespace cgc_compiler
 					.ToList()
 					.ForEach(o => (o as IDamagable).GetHealth().TakeDamage(Damage));
 
-				GameWorld.EventLlogger.OnDestroy(this);
+				GameWorld.EventLlogger.Destroy(this);
 				Destroy();
 			}
 			else    // Flying

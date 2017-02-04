@@ -17,12 +17,24 @@ namespace cgc_compiler
         public void TakeDamage(float damage)
         {
             CurrentHealth = Math.Max(0, CurrentHealth - damage);
-            GameObject.GameWorld.EventLlogger.OnHealthUpdate(GameObject);
+			GameObject.GameWorld.EventLlogger.SetHealth(GameObject);
 
             if (CurrentHealth == 0)
             {
-                GameObject.Destroy();
-                GameObject.GameWorld.EventLlogger.OnDeath(GameObject);
+				if (GameObject is Troop)
+				{
+					GameObject.GameWorld.EventLlogger.TroopDie(GameObject);
+					GameObject.Destroy();
+				}
+				else if (GameObject is Turret)
+				{
+					GameObject.GameWorld.EventLlogger.TurretDestroy(GameObject);
+					GameObject.Destroy();
+				}
+				else
+				{
+					GameObject.Destroy();
+				}
             }
         }
 

@@ -23,8 +23,7 @@ namespace cgc_compiler
 
 			CurrentState = TurretState.Idle;
 
-			GameWorld.EventLlogger.OnCreate(this);
-			GameWorld.EventLlogger.OnHealthUpdate(this);
+			GameWorld.EventLlogger.TurretCreate(this);
 		}
 
 		public abstract Weapon MakeWeapon();

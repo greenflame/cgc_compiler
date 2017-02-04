@@ -30,9 +30,7 @@ namespace cgc_compiler
 
             CurrentState = TroopState.Deploying;
 
-            GameWorld.EventLlogger.OnCreate(this);
-            GameWorld.EventLlogger.OnHealthUpdate(this);
-            GameWorld.EventLlogger.OnDeploy(this);
+			GameWorld.EventLlogger.TroopSpawn(this);
         }
 
         public abstract Weapon MakeWeapon();
@@ -87,14 +85,14 @@ namespace cgc_compiler
                 {
                     if (Weapon.IsInRange(target))  // Target is in range -> shoot
                     {
-                        GameWorld.EventLlogger.OnAttack(this, target);
+						GameWorld.EventLlogger.TroopAttack(this, target);
                         CurrentState = TroopState.Attacking;
                         Weapon.InitiateAttack(target);
                         Weapon.ProcessAttack(deltaTime);
                     }
                     else    // Target is not in range -> move
                     {
-                        GameWorld.EventLlogger.OnWalk(this, target); 
+						GameWorld.EventLlogger.TroopWalk(this, target);
                         Mover.MoveTo(target, deltaTime);
                         PreviousMotionTarget = target;
                         CurrentState = TroopState.Walking;
@@ -102,7 +100,7 @@ namespace cgc_compiler
                 }
                 else    // No target -> idle
                 {
-                    GameWorld.EventLlogger.OnIdle(this);
+					GameWorld.EventLlogger.TroopIdle(this);
                     CurrentState = TroopState.Idle;
                 }
             }
@@ -118,14 +116,14 @@ namespace cgc_compiler
             {
                 if (Weapon.IsInRange(target))  // Traget is in range -> shoot
                 {
-                    GameWorld.EventLlogger.OnAttack(this, target);
+					GameWorld.EventLlogger.TroopAttack(this, target);
                     Weapon.InitiateAttack(target);
                     Weapon.ProcessAttack(deltaTime);
                     CurrentState = TroopState.Attacking;
                 }
                 else    // Target is not in range -> move
                 {
-                    GameWorld.EventLlogger.OnWalk(this, target);
+					GameWorld.EventLlogger.TroopWalk(this, target);
                     Mover.MoveTo(target, deltaTime);
                     PreviousMotionTarget = target;
                     CurrentState = TroopState.Walking;
@@ -139,7 +137,7 @@ namespace cgc_compiler
             {
                 if (Weapon.IsInRange(target))  // Target is in range -> attack
                 {
-                    GameWorld.EventLlogger.OnAttack(this, target);
+					GameWorld.EventLlogger.TroopAttack(this, target);
                     Weapon.InitiateAttack(target);
                     Weapon.ProcessAttack(deltaTime);
                     CurrentState = TroopState.Attacking;
@@ -152,7 +150,7 @@ namespace cgc_compiler
                     }
                     else    // New target is not in range -> new walk
                     {
-                        GameWorld.EventLlogger.OnWalk(this, target);
+						GameWorld.EventLlogger.TroopWalk(this, target);
                         Mover.MoveTo(target, deltaTime);
                         PreviousMotionTarget = target;
                     }
@@ -160,7 +158,7 @@ namespace cgc_compiler
             }
             else    // No target -> idle
             {
-                GameWorld.EventLlogger.OnIdle(this);
+				GameWorld.EventLlogger.TroopIdle(this);
                 CurrentState = TroopState.Idle;
             }
         }
@@ -173,14 +171,14 @@ namespace cgc_compiler
                 {
                     if (Weapon.IsInRange(target))  // Target is in range -> shoot
                     {
-                        GameWorld.EventLlogger.OnAttack(this, target);
+                        GameWorld.EventLlogger.TroopAttack(this, target);
                         Weapon.InitiateAttack(target);
                         Weapon.ProcessAttack(deltaTime);
                         CurrentState = TroopState.Attacking;
                     }
                     else    // Target is not in range -> move
                     {
-                        GameWorld.EventLlogger.OnWalk(this, target);
+                        GameWorld.EventLlogger.TroopWalk(this, target);
                         Mover.MoveTo(target, deltaTime);
                         PreviousMotionTarget = target;
                         CurrentState = TroopState.Walking;
@@ -188,7 +186,7 @@ namespace cgc_compiler
                 }
                 else    // No target -> idle
                 {
-                    GameWorld.EventLlogger.OnIdle(this);
+                    GameWorld.EventLlogger.TroopIdle(this);
                     CurrentState = TroopState.Idle;
                 }
             }

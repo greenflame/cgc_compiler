@@ -6,6 +6,7 @@ namespace cgc_compiler
 	{
 		public GameWorld GameWorld { get; private set; }
 		public Action<string> ExecutionLogger { get; private set; }
+		public Action<string> BriefInfoLogger { get; private set; }
 
 		public Executer LeftExecuter { get; private set; }
 		public Executer RightExecuter { get; private set; }
@@ -15,10 +16,11 @@ namespace cgc_compiler
 
 		public int TurnNum { get; private set; } = 0;
 
-		public Judge(string leftProgramm, string rightProgramm, Action<string> gameLogger, Action<string> executionLogger)
+		public Judge(string leftProgramm, string rightProgramm, Action<string> gameLogger, Action<string> executionLogger, Action<string> briefInfoLogger)
 		{
 			GameWorld = new GameWorld(Configuration.WorldLength, gameLogger);
 			ExecutionLogger = executionLogger;
+			BriefInfoLogger = briefInfoLogger;
 
 			LeftExecuter = new Executer(leftProgramm, Configuration.InputFile, Configuration.OutputFile);
 			RightExecuter = new Executer(rightProgramm, Configuration.InputFile, Configuration.OutputFile);
@@ -57,6 +59,7 @@ namespace cgc_compiler
 
 		private void RunStrategies()
 		{
+			BriefInfoLogger(string.Format("Turn: {0} World time: {1}", TurnNum, GameWorld.GlobalTime));
 			ExecutionLogger(string.Format("---------- Turn: {0} World time: {1} ----------", TurnNum, GameWorld.GlobalTime));
 
 			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftExecuter.ProgramExecutable));
@@ -76,6 +79,7 @@ namespace cgc_compiler
 			string output, comment;
 			ExecuteResult result = executer.Execute(input, Configuration.MaxExecutionTime, out output, out comment);
 
+			BriefInfoLogger(string.Format("Player: {0} Verdict: {1}", controller.Player, result));
 			ExecutionLogger(string.Format("----- Executer verdict: {0} Comment: {1}", result, comment));
 
 			if (result == ExecuteResult.Ok)
