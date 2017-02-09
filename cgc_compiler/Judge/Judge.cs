@@ -59,17 +59,21 @@ namespace cgc_compiler
 
 		private void RunStrategies()
 		{
-			BriefInfoLogger(string.Format("Turn: {0} World time: {1}", TurnNum, GameWorld.GlobalTime));
+			string briefLogStr = string.Format("Turn: {0} / {1}", TurnNum,
+				(int)Math.Floor(Configuration.maxSimulationTime / Configuration.strategyRunInterval));
+			
 			ExecutionLogger(string.Format("---------- Turn: {0} World time: {1} ----------", TurnNum, GameWorld.GlobalTime));
 
 			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftExecuter.ProgramExecutable));
-			RunStrategy(LeftExecuter, LeftController);
+			RunStrategy(LeftExecuter, LeftController, ref briefLogStr);
 
 			ExecutionLogger(string.Format("----- Right strategy: {0}", RightExecuter.ProgramExecutable));
-			RunStrategy(RightExecuter, RightController);
+			RunStrategy(RightExecuter, RightController, ref briefLogStr);
+
+			BriefInfoLogger(briefLogStr);
 		}
 
-		private void RunStrategy(Executer executer, PlayerController controller)
+		private void RunStrategy(Executer executer, PlayerController controller, ref string briefLogStr)
 		{
 			string input = controller.GenerateInput();
 
@@ -79,7 +83,7 @@ namespace cgc_compiler
 			string output, comment;
 			ExecuteResult result = executer.Execute(input, Configuration.MaxExecutionTime, out output, out comment);
 
-			BriefInfoLogger(string.Format("Player: {0} Verdict: {1}", controller.Player, result));
+			briefLogStr += string.Format(" {0}: {1}", controller.Player, result);
 			ExecutionLogger(string.Format("----- Executer verdict: {0} Comment: {1}", result, comment));
 
 			if (result == ExecuteResult.Ok)

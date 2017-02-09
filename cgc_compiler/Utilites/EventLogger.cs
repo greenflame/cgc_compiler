@@ -241,5 +241,29 @@ namespace cgc_compiler
 				World.GlobalTime,
 				obj.Id));
 		}
+
+		public void InvertoryUpdate(PlayerController controller)
+		{
+			CardsUpdate(controller.CardQueueController, controller.Player);
+			ManaUpdate(controller.ManaController, controller.Player);
+		}
+
+		public void CardsUpdate(CardQueueController controller, Player player)
+		{
+			Logger(string.Format("CARDS_UPDATE {0} {1} {2}",
+				World.GlobalTime,
+
+				player.ToString(),
+				string.Join(" ", controller.Queue.Select(i => i.ToString()))));
+		}
+
+		public void ManaUpdate(ManaController controller, Player player)
+		{
+			Logger(string.Format("MANA_UPDATE {0} {1} {2}",
+				World.GlobalTime,
+
+				player.ToString(),
+				controller.CurrentMana));
+		}
     }
 }
