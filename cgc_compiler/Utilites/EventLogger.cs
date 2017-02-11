@@ -265,5 +265,14 @@ namespace cgc_compiler
 				player.ToString(),
 				controller.CurrentMana));
 		}
+
+		public void NameUpdate(Player player, string name)
+		{
+			Logger(string.Format("NAME_UPDATE {0} {1} {2}",
+				World.GlobalTime,
+
+				player.ToString(),
+				name));
+		}
     }
 }

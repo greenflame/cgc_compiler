@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace cgc_compiler
 {
@@ -28,6 +29,9 @@ namespace cgc_compiler
 			LeftController = new PlayerController(GameWorld, Player.Left);
 			RightController = new PlayerController(GameWorld, Player.Right);
 
+			GameWorld.EventLlogger.NameUpdate(Player.Left, ExtractStrategyName(leftProgramm));
+			GameWorld.EventLlogger.NameUpdate(Player.Right, ExtractStrategyName(rightProgramm));
+
 			InitGameWorld();
 		}
 
@@ -38,6 +42,13 @@ namespace cgc_compiler
 
 			GameWorld.GameObjects.Add(new Forge(GameWorld, Player.Right, GameWorld.InvertPosition(Configuration.ForgePosition)));
 			GameWorld.GameObjects.Add(new Tower(GameWorld, Player.Right, GameWorld.InvertPosition(Configuration.FirstTowerPosition)));
+		}
+
+		private string ExtractStrategyName(string executionString)
+		{
+			string path = executionString.Split('|')[0];
+			string name = Path.GetFileNameWithoutExtension(path);
+			return name.Replace(" ", "_");
 		}
 
 		public void RunSimulation(float simulationStep, float maxSimulationTime, float strategyRunInterval)
