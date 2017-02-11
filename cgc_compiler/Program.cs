@@ -31,9 +31,9 @@ namespace cgc_compiler
 					Console.WriteLine
 				);
 				judge.RunSimulation (
-					Configuration.simulationStep,
-					Configuration.maxSimulationTime,
-					Configuration.strategyRunInterval
+					Configuration.SimulationStep,
+					Configuration.MaxSimulationTime,
+					Configuration.StrategyRunInterval
 				);
 			}
         }

@@ -94,6 +94,7 @@ namespace cgc_compiler
 					if (IsAnyoneWin())
 					{
 						GameWorld.EventLogger.GameEnd(GetWinner());
+						BriefInfoLogger(GetWinner().ToString() + " strategy won");
 						return;
 					}
 				}
@@ -104,12 +105,13 @@ namespace cgc_compiler
 
 			// Time limit exceeded
 			GameWorld.EventLogger.GameEnd(GetWinner());
+			BriefInfoLogger(GetWinner().ToString() + " strategy won");
 		}
 
 		private void RunStrategies()
 		{
 			string briefLogStr = string.Format("Turn: {0} / {1}", TurnNum,
-				(int)Math.Floor(Configuration.maxSimulationTime / Configuration.strategyRunInterval));
+				(int)Math.Floor(Configuration.MaxSimulationTime / Configuration.StrategyRunInterval));
 			
 			ExecutionLogger(string.Format("---------- Turn: {0} World time: {1} ----------", TurnNum, GameWorld.GlobalTime));
 

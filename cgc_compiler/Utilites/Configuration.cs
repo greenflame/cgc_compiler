@@ -35,9 +35,10 @@ namespace cgc_compiler
 		// Judge
 		public const string InputFile = "input.txt";
 		public const string OutputFile = "output.txt";
-		public const float simulationStep = 0.01f;
-		public const float maxSimulationTime = 180;
-		public const float strategyRunInterval = 1;
+
+		public const float SimulationStep = 0.01f;
+		public const float MaxSimulationTime = 180;
+		public const float StrategyRunInterval = 1;
 	}
 }
 
