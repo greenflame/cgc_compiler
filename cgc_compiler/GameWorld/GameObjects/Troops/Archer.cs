@@ -11,7 +11,7 @@ namespace cgc_compiler
 
 		private const float Damage = 100;
 		private const float HitSpeed = 1.1f;
-		private const float Range = 6;
+		private const float Range = 5;
 		private const float ArrowSpeed = Configuration.ProjectileSpeed;
 		private static ProjectileType ProjectileType = ProjectileType.Arrow;
 

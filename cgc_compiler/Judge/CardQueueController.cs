@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace cgc_compiler
@@ -20,8 +22,12 @@ namespace cgc_compiler
 
 			for (int i = Queue.Count; i < Configuration.AvailableCards; i++)
 			{
-				Array values = Enum.GetValues (typeof(CardType));
-				CardType card = (CardType)values.GetValue(r.Next (values.Length));
+				List<CardType> values = Enum.GetValues (typeof(CardType))
+					.Cast<CardType>()
+					.Where(c => !Queue.Contains(c))
+					.ToList();
+				
+				CardType card = values[r.Next (values.Count)];
 				Queue.Add (card);
 				queueChanged = true;
 			}
