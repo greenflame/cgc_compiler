@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace cgc_compiler
 {
@@ -29,8 +30,8 @@ namespace cgc_compiler
 			LeftController = new PlayerController(GameWorld, Player.Left);
 			RightController = new PlayerController(GameWorld, Player.Right);
 
-			GameWorld.EventLlogger.NameUpdate(Player.Left, ExtractStrategyName(leftProgramm));
-			GameWorld.EventLlogger.NameUpdate(Player.Right, ExtractStrategyName(rightProgramm));
+			GameWorld.EventLogger.NameUpdate(Player.Left, ExtractStrategyName(leftProgramm));
+			GameWorld.EventLogger.NameUpdate(Player.Right, ExtractStrategyName(rightProgramm));
 
 			InitGameWorld();
 		}
@@ -51,6 +52,34 @@ namespace cgc_compiler
 			return name.Replace(" ", "_");
 		}
 
+		private bool IsAnyoneWin()
+		{
+			return GameWorld.GameObjects
+				.Where(o => o is Forge)
+				.Count() != 2;
+		}
+
+		private float GetBuildingsHealth(Player player)
+		{
+			return GameWorld.GameObjects
+				.Where(o => o is Turret)
+				.Where(o => o.Owner == player)
+				.Select(o => (o as IDamagable).GetHealth().CurrentHealth)
+				.Sum();
+		}
+
+		private Player GetWinner()
+		{
+			if (GetBuildingsHealth(Player.Left) > GetBuildingsHealth(Player.Right))
+			{
+				return Player.Left;
+			}
+			else
+			{
+				return Player.Right;
+			}
+		}
+
 		public void RunSimulation(float simulationStep, float maxSimulationTime, float strategyRunInterval)
 		{
 			while (GameWorld.GlobalTime < maxSimulationTime)
@@ -61,11 +90,20 @@ namespace cgc_compiler
 
 					LeftController.ManaController.Produce(simulationStep);
 					RightController.ManaController.Produce(simulationStep);
+
+					if (IsAnyoneWin())
+					{
+						GameWorld.EventLogger.GameEnd(GetWinner());
+						return;
+					}
 				}
 
 				RunStrategies();
 				TurnNum++;
 			}
+
+			// Time limit exceeded
+			GameWorld.EventLogger.GameEnd(GetWinner());
 		}
 
 		private void RunStrategies()
@@ -96,6 +134,7 @@ namespace cgc_compiler
 
 			briefLogStr += string.Format(" {0}: {1}", controller.Player, result);
 			ExecutionLogger(string.Format("----- Executer verdict: {0} Comment: {1}", result, comment));
+			GameWorld.EventLogger.VerdictUpdate(controller.Player, result.ToString());
 
 			if (result == ExecuteResult.Ok)
 			{

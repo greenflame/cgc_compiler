@@ -274,5 +274,22 @@ namespace cgc_compiler
 				player.ToString(),
 				name));
 		}
+
+		public void VerdictUpdate(Player player, string verdict)
+		{
+			Logger(string.Format("VERDICT_UPDATE {0} {1} {2}",
+				World.GlobalTime,
+
+				player.ToString(),
+				verdict));
+		}
+
+		public void GameEnd(Player winner)
+		{
+			Logger(string.Format("GAME_END {0} {1}",
+				World.GlobalTime,
+
+				winner.ToString()));
+		}
     }
 }

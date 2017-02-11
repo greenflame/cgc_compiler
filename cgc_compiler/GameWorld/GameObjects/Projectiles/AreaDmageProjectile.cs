@@ -18,7 +18,7 @@ namespace cgc_compiler
 			DamageRange = damageRange;
 			Mover = new Mover(this, speed);
 
-			GameWorld.EventLlogger.ProjectilePosShot(this, target);
+			GameWorld.EventLogger.ProjectilePosShot(this, target);
 		}
 
 		public override void Update(float deltaTime)
@@ -33,7 +33,7 @@ namespace cgc_compiler
 					.ToList()
 					.ForEach(o => (o as IDamagable).GetHealth().TakeDamage(Damage));
 
-				GameWorld.EventLlogger.Destroy(this);
+				GameWorld.EventLogger.Destroy(this);
 				Destroy();
 			}
 			else    // Flying
