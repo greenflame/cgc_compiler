@@ -11,7 +11,7 @@ namespace cgc_compiler
 		Skeletons,
 		Elemental,
 		Archer,
-		Halebardier,
+		Halberdier,
 		Crusader
 	}
 }

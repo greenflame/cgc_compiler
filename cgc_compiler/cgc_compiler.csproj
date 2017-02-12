@@ -58,7 +58,6 @@
     <Compile Include="GameWorld\GameObjects\Troops\Crusader.cs" />
     <Compile Include="GameWorld\GameObjects\Troops\Elemental.cs" />
     <Compile Include="GameWorld\GameObjects\Troops\Gog.cs" />
-    <Compile Include="GameWorld\GameObjects\Troops\Halebardier.cs" />
     <Compile Include="GameWorld\GameObjects\Troops\Halfling.cs" />
     <Compile Include="GameWorld\GameObjects\Troops\Peasant.cs" />
     <Compile Include="GameWorld\GameObjects\Troops\Sharpshooter.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="GameWorld\Metrics.cs" />
     <Compile Include="GameWorld\TargetSelectors.cs" />
     <Compile Include="Judge\CardType.cs" />
+    <Compile Include="GameWorld\GameObjects\Troops\Halberdier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

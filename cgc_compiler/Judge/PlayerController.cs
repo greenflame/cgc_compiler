@@ -61,9 +61,9 @@ namespace cgc_compiler
 				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position));
 				GameWorld.GameObjects.Add (new Gog (GameWorld, Player, position + Configuration.SpawnDispersion));
 				break;
-			case CardType.Halebardier:
+			case CardType.Halberdier:
 				ManaController.Consume (4);
-				GameWorld.GameObjects.Add (new Halebardier (GameWorld, Player, position));
+				GameWorld.GameObjects.Add (new Halberdier (GameWorld, Player, position));
 				break;
 			case CardType.Halfling:
 				ManaController.Consume (3);

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace cgc_compiler
 {
-	public class Halebardier : Troop
+	public class Halberdier : Troop
 	{
 		private const int Hitpoints = 600;
 		private static float Speed = Configuration.BaseMotionSpeed * 90;
@@ -13,7 +13,7 @@ namespace cgc_compiler
 		private const float Cooldown = 1.8f;
 		private static float Range = Configuration.MeleeRange;
 
-		public Halebardier(GameWorld world, Player owner, float position)
+		public Halberdier(GameWorld world, Player owner, float position)
 			: base(world, owner, position, Hitpoints, Speed, DeployTime)
 		{
 		}
