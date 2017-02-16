@@ -21,7 +21,7 @@ namespace cgc_compiler
 			ManaController = new ManaController ();
 			CardQueueController = new CardQueueController ();
 
-			GameWorld.EventLogger.InvertoryUpdate(this);
+			GameWorld.EventLogger.InventoryUpdate(this);
 		}
 
 		private void SpawnTroop(CardType card, float position)
@@ -208,7 +208,7 @@ namespace cgc_compiler
 
 			if (CardQueueController.GenerateCardQueue())
 			{
-				GameWorld.EventLogger.InvertoryUpdate(this);
+				GameWorld.EventLogger.InventoryUpdate(this);
 			}
 		}
 	}

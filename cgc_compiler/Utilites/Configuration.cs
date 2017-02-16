@@ -39,6 +39,9 @@ namespace cgc_compiler
 		public const float SimulationStep = 0.01f;
 		public const float MaxSimulationTime = 180;
 		public const float StrategyRunInterval = 1;
+
+		public const float VsMessageTime = 4;
+		public const float VictoryMessageTime = 180;
 	}
 }
 

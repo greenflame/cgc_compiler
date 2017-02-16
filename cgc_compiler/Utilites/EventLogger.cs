@@ -242,7 +242,7 @@ namespace cgc_compiler
 				obj.Id));
 		}
 
-		public void InvertoryUpdate(PlayerController controller)
+		public void InventoryUpdate(PlayerController controller)
 		{
 			CardsUpdate(controller.CardQueueController, controller.Player);
 			ManaUpdate(controller.ManaController, controller.Player);
@@ -284,12 +284,23 @@ namespace cgc_compiler
 				verdict));
 		}
 
-		public void GameEnd(Player winner)
+		public void VsMessage(string leftName, string rightName)
 		{
-			Logger(string.Format("GAME_END {0} {1}",
+			FreezeMessage(Configuration.VsMessageTime, string.Format("{0}   vs   {1}", leftName, rightName));
+		}
+
+		public void Victory(string name)
+		{
+			FreezeMessage(Configuration.VictoryMessageTime, string.Format("{0}   wins!", name));
+		}
+
+		public void FreezeMessage(float time, string message)
+		{
+			Logger(string.Format("FREEZE_MESSAGE {0} {1} {2}",
 				World.GlobalTime,
 
-				winner.ToString()));
+				time,
+				message));
 		}
     }
 }

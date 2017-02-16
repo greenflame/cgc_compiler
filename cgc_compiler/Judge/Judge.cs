@@ -16,6 +16,9 @@ namespace cgc_compiler
 		public PlayerController LeftController { get; private set; }
 		public PlayerController RightController { get; private set; }
 
+		public string LeftName { get; private set; }
+		public string RightName { get; private set; }
+
 		public int TurnNum { get; private set; } = 0;
 
 		public Judge(string leftProgramm, string rightProgramm, Action<string> gameLogger, Action<string> executionLogger, Action<string> briefInfoLogger)
@@ -30,10 +33,16 @@ namespace cgc_compiler
 			LeftController = new PlayerController(GameWorld, Player.Left);
 			RightController = new PlayerController(GameWorld, Player.Right);
 
-			GameWorld.EventLogger.NameUpdate(Player.Left, ExtractStrategyName(leftProgramm));
-			GameWorld.EventLogger.NameUpdate(Player.Right, ExtractStrategyName(rightProgramm));
+			LeftName = ExtractStrategyName(leftProgramm);
+			RightName = ExtractStrategyName(rightProgramm);
 
 			InitGameWorld();
+
+			// Events
+			GameWorld.EventLogger.NameUpdate(Player.Left, LeftName);
+			GameWorld.EventLogger.NameUpdate(Player.Right, RightName);
+
+			GameWorld.EventLogger.VsMessage(LeftName, RightName);
 		}
 
 		private void InitGameWorld()
@@ -80,6 +89,11 @@ namespace cgc_compiler
 			}
 		}
 
+		private string PlayerName(Player player)
+		{
+			return player == Player.Left ? LeftName : RightName;
+		}
+
 		public void RunSimulation(float simulationStep, float maxSimulationTime, float strategyRunInterval)
 		{
 			while (GameWorld.GlobalTime < maxSimulationTime)
@@ -93,7 +107,7 @@ namespace cgc_compiler
 
 					if (IsAnyoneWin())
 					{
-						GameWorld.EventLogger.GameEnd(GetWinner());
+						GameWorld.EventLogger.Victory(PlayerName(GetWinner()));
 						BriefInfoLogger(GetWinner().ToString() + " strategy won");
 						return;
 					}
@@ -104,7 +118,7 @@ namespace cgc_compiler
 			}
 
 			// Time limit exceeded
-			GameWorld.EventLogger.GameEnd(GetWinner());
+			GameWorld.EventLogger.Victory(PlayerName(GetWinner()));
 			BriefInfoLogger(GetWinner().ToString() + " strategy won");
 		}
 
