@@ -41,7 +41,7 @@ namespace cgc_compiler
 		public const float StrategyRunInterval = 1;
 
 		public const float VsMessageTime = 4;
-		public const float VictoryMessageTime = 180;
+		public const float VictoryMessageTime = float.MaxValue;
 	}
 }
 

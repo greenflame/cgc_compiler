@@ -23,18 +23,26 @@ namespace cgc_compiler
 			using (FileStream elfs = File.Open("execution_log.txt", FileMode.Create))
 			using (StreamWriter executionLog = new StreamWriter(elfs))
             {
-				Judge judge = new Judge (
-					LeftAiExecutionString,
-					RightAiExecutionString,
-					gameLog.WriteLine,
-					executionLog.WriteLine,
-					Console.WriteLine
-				);
-				judge.RunSimulation (
-					Configuration.SimulationStep,
-					Configuration.MaxSimulationTime,
-					Configuration.StrategyRunInterval
-				);
+				try {
+					executionLog.WriteLine(string.Format("Left execution string: ", args[0]));
+					executionLog.WriteLine(string.Format("Right execution string: ", args[1]));
+
+					Judge judge = new Judge (
+						LeftAiExecutionString,
+						RightAiExecutionString,
+						gameLog.WriteLine,
+						executionLog.WriteLine,
+						Console.WriteLine
+					);
+					judge.RunSimulation (
+						Configuration.SimulationStep,
+						Configuration.MaxSimulationTime,
+						Configuration.StrategyRunInterval
+					);
+				} catch (Exception ex) {
+					executionLog.WriteLine(ex.Message);
+					Console.WriteLine(ex.Message);
+				}
 			}
         }
     }
