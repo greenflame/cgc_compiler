@@ -22,7 +22,7 @@ namespace cgc_compiler
 		public const float MaxSpawnPosSecondPhase = 15;
 
 		// Executer
-		public const float MaxExecutionTime = 1;
+		public const int MaxExecutionTime = 1000;
 
 		// Mana controller
 		public const float InitialMana = 5;

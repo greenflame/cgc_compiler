@@ -3,281 +3,214 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 
 
 namespace cgc_compiler
 {
-	public enum ExecuteResult
+	public enum ExecutionResult
 	{
-		Ok,                 // все хорошо
-		InternalError,      // ошибка в процессе выполнения внешней программы
-		TimeOut,            // слишком длительное время выполнения внешней программы
-		WriteInputError,    // ошибка записи входных данных для внешней программы
-		NoOutput,           // отсутствует файл выходных данных
-		ReadOutputError,    // ошибка в процессе чтения выходных данных
-		EmptyOutput,        // пустой файл выходных данных
-		NotStarted,         // не удалось запустить внешнюю программы
-		WrongInputData,		// неверные входные данные (обрабатывается в наследниках ExternalProgramExecuter)
-		WrongOutputFormat, 	// неверный формат выходных данных (обрабатывается в наследниках ExternalProgramExecuter)
-		WrongOutputData,    // неверные выходные данные (обрабатывается в наследниках ExternalProgramExecuter)
-		OutputTooBig,       // слишком большой файл
-		OtherError          // другая ошибка
+		Sucess,
+		RuntimeError,
+		Timeout,
+		NotStarted,
+
+		EmptyOutput,
+		NoOutput,
+		BigOutput,
+
+		ExecuterException
 	}
 
 
 	public class Executer
 	{
-		public const int ProcessCheckTimeInterval = 10;
-
-		public string ProgramExecutable { get; private set; }
+		public string PrimaryExecutable { get; private set; }
 		public string ExecutionTemplate { get; private set; }
 
-		public string ProgramExecutableFilnameOnly { get { return Path.GetFileName(ProgramExecutable); } }
-		public string LocalDriveProgramDirectory { get; private set; }
-		public string LocalDriveProgramExecutable { get { return Path.Combine(LocalDriveProgramDirectory, ProgramExecutableFilnameOnly); } }
-		public string InputFileName { get; private set; }
-		public string OutputFileName { get; private set; }
-		private const string TempSubdir = "Temp1";
+		public string TempDir { get; private set; }
+		public string TempExecutable { get; private set; }
 
+		public string InputName { get; private set; }
+		public string OutputName { get; private set; }
 
-		public Executer(string executionString, string inputFileName, string outputFileName)
+		public string InputPath  { get; private set; }
+		public string OutputPath  { get; private set; }
+
+		public const string TempSubdir = "TowerDefence";
+		public const int SleepInterval = 20;
+		public const int DirectoryCreateAttempts = 50;
+		public const string EmptyComment = "No comment";
+		public const int MaxKillTimeMs = 1000;
+		public const int MaxOutputReadTimeMs = 1000;
+
+		public Executer(string executionString, string inputName, string outputName)
 		{
 			if (!executionString.Contains("|"))
 			{
 				executionString += "|{0}#";
 			}
-
-			ProgramExecutable = executionString.Split('|')[0];
+				
+			PrimaryExecutable = executionString.Split('|')[0];
 			ExecutionTemplate = executionString.Split('|')[1];
 
-			InputFileName = inputFileName;
-			OutputFileName = outputFileName;
+			InputName = inputName;
+			OutputName = outputName;
 
-			// Junk
-			Random rnd = new Random();
-			rnd = new Random(rnd.Next() + executionString.GetHashCode());
-			string randomStr = "";
-			for (int i = 0; i < 8; i++)
-				randomStr += "0123456789ABCDEF"[rnd.Next(16)];
+			TempDir = Path.Combine(Path.GetTempPath(), TempSubdir, RandomString(10));
+			RecreateTempDir();
 
-			#if NET40
-			LocalDriveProgramDirectory = Path.Combine(Path.GetTempPath(), TempSubdir, randomStr);
-			#else
-			LocalDriveProgramDirectory = Path.Combine(Path.Combine(Path.GetTempPath(), TempSubdir), randomStr);
-			#endif
-			Init();
+			TempExecutable = Path.Combine(TempDir, Path.GetFileName(PrimaryExecutable));
+
+			InputPath = Path.Combine(TempDir, InputName);
+			OutputPath = Path.Combine(TempDir, OutputName);
+
+			File.Copy(PrimaryExecutable, TempExecutable);
 		}
 
-
-		public void Init()
+		private string RandomString(int length)
 		{
-			DeleteLocalDriveProgramDirectory();
-			int attemptCount = 50;
-			Exception lastException = null;
-			while (attemptCount-- > 0)
+			Random random = new Random();
+			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			return new string(Enumerable.Repeat(chars, length)
+				.Select(s => s[random.Next(s.Length)]).ToArray());
+		}
+
+		private void RecreateTempDir()
+		{
+			if (Directory.Exists(TempDir))
+			{
+				Directory.Delete(TempDir, true);
+			}
+
+			for (int i = 0; i < DirectoryCreateAttempts; i++)
 			{
 				try
 				{
-					Directory.CreateDirectory(LocalDriveProgramDirectory);
-					if (Directory.Exists(LocalDriveProgramDirectory))
+					Directory.CreateDirectory(TempDir);
+
+					if (Directory.Exists(TempDir))
 					{
 						break;
 					}
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					lastException = e;
+					Debugger.Log(0, "execution", ex.Message);
 				}
 
 			}
 
-			if (attemptCount == 0)
+			if (!Directory.Exists(TempDir))
 			{
-				throw new ExecuterException(string.Format("Error creating subdir ({0})", LocalDriveProgramDirectory), lastException);
-			}
-
-			try
-			{
-				File.Copy(ProgramExecutable, LocalDriveProgramExecutable);
-			}
-			catch (Exception e)
-			{
-				throw new ExecuterException(string.Format("Error coping file ({0}) into file ({1})", ProgramExecutable, LocalDriveProgramExecutable), e);
+				throw new Exception(string.Format("Cann't create temp dir: ({0})", TempDir));
 			}
 		}
 
+		public delegate bool CheckDelegate();
 
-		public void DeleteLocalDriveProgramDirectory()
+		public void WaitFor(CheckDelegate checkDelegate, int maxTimeMs)
 		{
-			try
+			for (DateTime startTime = DateTime.Now;
+				(DateTime.Now - startTime).TotalMilliseconds < maxTimeMs && !checkDelegate(); )
 			{
-				if (Directory.Exists(LocalDriveProgramDirectory))
-					Directory.Delete(LocalDriveProgramDirectory, true);
-			}
-			catch (Exception e)
-			{
-				throw new ExecuterException(string.Format("Error deleting subdir ({0})", LocalDriveProgramDirectory), e);
+				Thread.Sleep(SleepInterval);
 			}
 		}
 
-
-		public static void DeleteTempSubdir()
+		public bool TryReadAllText(string path, out string text)
 		{
+			text = string.Empty;
+
 			try
 			{
-				Directory.Delete(Path.Combine(Path.GetTempPath(), TempSubdir), true);
-			}
-			catch (Exception e)
-			{
-				if (Debugger.IsAttached)
-					throw new ExecuterException(string.Format("Error deleting temp subdir ({0})", TempSubdir), e);
-			}
-		}
-
-
-		/*
-          Исполняет программу, подсовывая в качестве входных данных inputFileContent;
-          воpащает код выполнения и через outputFileContent содержимое выходного файла;
-          maxTime - максимальное время выполнения в секундах, после чего процесс убивается
-        */
-		public virtual ExecuteResult Execute(string inputFileContent, double maxTime,
-		                                     out string outputFileContent, out string comment)
-		{
-			outputFileContent = null;
-			comment = "No comment";
-
-			string inputFileName = Path.Combine(LocalDriveProgramDirectory, InputFileName),
-			outputFileName = Path.Combine(LocalDriveProgramDirectory, OutputFileName);
-			Process process = null;
-			try
-			{
-				try
-				{
-					File.WriteAllText(inputFileName, inputFileContent, Encoding.Default);
-				}
-				catch (Exception)
-				{
-					return ExecuteResult.WriteInputError;
-				}
-				process = new Process();
-				process.StartInfo.WorkingDirectory = LocalDriveProgramDirectory;
-
-				string subst = string.Format(ExecutionTemplate, LocalDriveProgramExecutable);
-				process.StartInfo.FileName = subst.Split('#')[0];
-				process.StartInfo.Arguments = subst.Split('#')[1];
-
-				process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-				if (process.Start())
-				{
-					DateTime startTime = DateTime.Now;
-					while (!process.HasExited)
-					{
-						Thread.Sleep(ProcessCheckTimeInterval);
-						if ((DateTime.Now - startTime).TotalSeconds > maxTime)
-							break;
-					}
-					if (process.HasExited)
-					{
-						if (process.ExitCode == 0)
-						{
-							if (File.Exists(outputFileName))
-							{
-								bool readSuccessfully = false;
-								int k = 50; //максимум полсекунды ждем
-								while (!readSuccessfully && k-- > 0)
-								{
-									try
-									{
-										outputFileContent = File.ReadAllText(outputFileName, Encoding.Default);
-										readSuccessfully = true;
-									}
-									catch
-									{
-										Thread.Sleep(10);
-									}
-								}
-
-								if (readSuccessfully)
-								{
-									if (outputFileContent == null || outputFileContent.Trim() == "")
-										return ExecuteResult.EmptyOutput;
-									if (outputFileContent.Length > 10000)
-									{
-										outputFileContent = "";
-										return ExecuteResult.OutputTooBig;
-									}
-									return ExecuteResult.Ok;
-								}
-								else
-								{
-									return ExecuteResult.ReadOutputError;
-								}
-							}
-							else
-								return ExecuteResult.NoOutput;
-						}
-						else
-						{
-							comment = string.Format("ExitCode = {0}", process.ExitCode);
-							return ExecuteResult.InternalError;
-						}
-					}
-					else
-					{
-						try
-						{
-							process.Kill();
-							while (!process.HasExited)
-								Thread.Sleep(ProcessCheckTimeInterval);
-						}
-						catch (Exception)
-						{
-						}
-						return ExecuteResult.TimeOut;
-					}
-				}
-				else
-					return ExecuteResult.NotStarted;
+				text = File.ReadAllText(path, Encoding.Default);
+				return true;
 			}
 			catch
 			{
-				comment = string.Format("ExitCode = {0}", process.ExitCode);
-				return ExecuteResult.InternalError;
+				return false;
 			}
-			finally
+		}
+
+		public ExecutionResult Execute(string input, int MaxTimeMs, out string output)
+		{
+			// Default output
+			output = "";
+
+			// Write input
+			File.WriteAllText(InputPath, input, Encoding.Default);
+
+			// Run process
+			Process process  = new Process();
+
+			string tmp = string.Format(ExecutionTemplate, TempExecutable);
+			process.StartInfo.FileName = tmp.Split('#')[0];
+			process.StartInfo.Arguments = tmp.Split('#')[1];
+
+			process.StartInfo.WorkingDirectory = TempDir;
+			process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+			if (!process.Start())
 			{
-				// еще одна попытка убить если вдруг работающий процесс
-				try
-				{
-					if (process != null && !process.HasExited)
-						process.Kill();
-				}
-				catch (Exception)
-				{
-				}
-
-				//        throw;
+				return ExecutionResult.NotStarted;
 			}
-		}
+				
+			// Wait for process
+			WaitFor(() => process.HasExited, MaxTimeMs);
 
-	}
+			// TL -> kill
+			if (!process.HasExited)
+			{
+				process.Kill();
 
+				WaitFor(() => process.HasExited, MaxKillTimeMs);
 
-	public class ExecuterException : ApplicationException
-	{
-		public ExecuterException()
-			: base()
-		{
-		}
+				if (!process.HasExited)
+				{
+					throw new Exception("Cann't kill process");
+				}
 
-		public ExecuterException(string message)
-			: base(message)
-		{
-		}
+				return ExecutionResult.Timeout;
+			}
 
-		public ExecuterException(string message, Exception innerException)
-			: base(message, innerException)
-		{
+			// Runtime error
+			if (process.ExitCode != 0)
+			{
+				return ExecutionResult.RuntimeError;
+			}
+				
+			// No output
+			if (!File.Exists(OutputPath))
+			{
+				return ExecutionResult.NoOutput;
+			}
+
+			// Read output
+			string tmpOut;
+
+			WaitFor(() => TryReadAllText(OutputPath, out tmpOut), MaxOutputReadTimeMs);
+
+			if (!TryReadAllText(OutputPath, out tmpOut))
+			{
+				throw new Exception("Cann't read output");
+			}
+
+			output = tmpOut;
+
+			// Empty output
+			if (string.IsNullOrEmpty(output.Trim()))
+			{
+				return ExecutionResult.EmptyOutput;
+			}
+
+			// Long output
+			if (output.Length > 10000)
+			{
+				return ExecutionResult.BigOutput;
+			}
+
+			return ExecutionResult.Sucess;
 		}
 	}
 }

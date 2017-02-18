@@ -129,10 +129,10 @@ namespace cgc_compiler
 			
 			ExecutionLogger(string.Format("---------- Turn: {0} World time: {1} ----------", TurnNum, GameWorld.GlobalTime));
 
-			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftExecuter.ProgramExecutable));
+			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftName));
 			RunStrategy(LeftExecuter, LeftController, ref briefLogStr);
 
-			ExecutionLogger(string.Format("----- Right strategy: {0}", RightExecuter.ProgramExecutable));
+			ExecutionLogger(string.Format("----- Right strategy: {0}", RightName));
 			RunStrategy(RightExecuter, RightController, ref briefLogStr);
 
 			BriefInfoLogger(briefLogStr);
@@ -145,14 +145,30 @@ namespace cgc_compiler
 			ExecutionLogger("----- Input:");
 			ExecutionLogger(input);
 
-			string output, comment;
-			ExecuteResult result = executer.Execute(input, Configuration.MaxExecutionTime, out output, out comment);
+			string output = string.Empty;
+			ExecutionResult result;
+			Exception executerException = null;
+
+			try
+			{
+				result = executer.Execute(input, Configuration.MaxExecutionTime, out output);
+			}
+			catch(Exception ex)
+			{
+				result = ExecutionResult.ExecuterException;
+				executerException = ex;
+			}
 
 			briefLogStr += string.Format(" {0}: {1}", controller.Player, result);
-			ExecutionLogger(string.Format("----- Executer verdict: {0} Comment: {1}", result, comment));
+			ExecutionLogger(string.Format("----- Executer verdict: {0}", result));
 			GameWorld.EventLogger.VerdictUpdate(controller.Player, result.ToString());
 
-			if (result == ExecuteResult.Ok)
+			if (executerException != null)
+			{
+				ExecutionLogger(executerException.Message);
+			}
+
+			if (result == ExecutionResult.Sucess)
 			{
 				ExecutionLogger("----- Output:");
 				ExecutionLogger(output);

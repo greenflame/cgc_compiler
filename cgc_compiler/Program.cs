@@ -9,6 +9,8 @@ namespace cgc_compiler
         {
             Console.WriteLine("Hello World!");
 
+			FitCultureInfo();
+
 			if (args.Length != 2)
 			{
 				Console.WriteLine ("Invalid arguments length");
@@ -45,5 +47,15 @@ namespace cgc_compiler
 				}
 			}
         }
+
+		private static void FitCultureInfo()
+		{
+			System.Globalization.CultureInfo currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+			System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)currentCulture.Clone();
+
+			customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+			System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+		}
     }
 }
