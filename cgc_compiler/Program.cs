@@ -59,7 +59,7 @@ namespace cgc_compiler
 		}
 
         public static void BuildGame(string LeftAiExecutionString, string RightAiExecutionString,
-            Action<string> GameLogger, Action<String> ExecutionLogger, Action<String> BriefLogger)
+            Action<string> GameLogger, Action<string> ExecutionLogger, Action<string> BriefLogger)
         {
             FitCultureInfo();
 

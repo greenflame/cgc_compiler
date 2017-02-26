@@ -57,10 +57,13 @@
             this.listBoxGames = new System.Windows.Forms.ListBox();
             this.buttonBrowsePlayer = new System.Windows.Forms.Button();
             this.buttonBatch = new System.Windows.Forms.Button();
+            this.numericUpDownBatch = new System.Windows.Forms.NumericUpDown();
+            this.labelBatchProgress = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageBrief.SuspendLayout();
             this.tabPageExecution.SuspendLayout();
             this.tabPageGame.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBatch)).BeginInit();
             this.SuspendLayout();
             // 
             // listBoxStrategies
@@ -228,7 +231,7 @@
             // 
             // buttonBuild
             // 
-            this.buttonBuild.Location = new System.Drawing.Point(397, 360);
+            this.buttonBuild.Location = new System.Drawing.Point(327, 360);
             this.buttonBuild.Name = "buttonBuild";
             this.buttonBuild.Size = new System.Drawing.Size(75, 23);
             this.buttonBuild.TabIndex = 22;
@@ -337,12 +340,35 @@
             this.buttonBatch.TabIndex = 29;
             this.buttonBatch.Text = "Batch build";
             this.buttonBatch.UseVisualStyleBackColor = true;
+            this.buttonBatch.Click += new System.EventHandler(this.buttonBatch_Click);
+            // 
+            // numericUpDownBatch
+            // 
+            this.numericUpDownBatch.Location = new System.Drawing.Point(408, 363);
+            this.numericUpDownBatch.Name = "numericUpDownBatch";
+            this.numericUpDownBatch.Size = new System.Drawing.Size(64, 20);
+            this.numericUpDownBatch.TabIndex = 30;
+            this.numericUpDownBatch.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // labelBatchProgress
+            // 
+            this.labelBatchProgress.AutoSize = true;
+            this.labelBatchProgress.Location = new System.Drawing.Point(12, 365);
+            this.labelBatchProgress.Name = "labelBatchProgress";
+            this.labelBatchProgress.Size = new System.Drawing.Size(0, 13);
+            this.labelBatchProgress.TabIndex = 31;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(904, 393);
+            this.Controls.Add(this.labelBatchProgress);
+            this.Controls.Add(this.numericUpDownBatch);
             this.Controls.Add(this.buttonBatch);
             this.Controls.Add(this.buttonBrowsePlayer);
             this.Controls.Add(this.label6);
@@ -372,6 +398,7 @@
             this.tabPageBrief.ResumeLayout(false);
             this.tabPageExecution.ResumeLayout(false);
             this.tabPageGame.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBatch)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -408,6 +435,8 @@
         private System.Windows.Forms.ListBox listBoxGames;
         private System.Windows.Forms.Button buttonBrowsePlayer;
         private System.Windows.Forms.Button buttonBatch;
+        private System.Windows.Forms.NumericUpDown numericUpDownBatch;
+        private System.Windows.Forms.Label labelBatchProgress;
     }
 }
 

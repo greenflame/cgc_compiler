@@ -83,7 +83,12 @@ namespace cgc_compiler
 				Directory.Delete(TempDir, true);
 			}
 
-			for (int i = 0; i < DirectoryCreateAttempts; i++)
+            if (Directory.Exists(TempDir))
+            {
+                Directory.Delete(TempDir, true);
+            }
+
+            for (int i = 0; i < DirectoryCreateAttempts; i++)
 			{
 				try
 				{
@@ -135,11 +140,15 @@ namespace cgc_compiler
 
 		public ExecutionResult Execute(string input, int MaxTimeMs, out string output)
 		{
-			// Default output
-			output = "";
+            RecreateTempDir();
+            File.Copy(PrimaryExecutable, TempExecutable);
+
+            // Default output
+            output = "";
 
 			// Write input
 			File.WriteAllText(InputPath, input, Encoding.Default);
+            //Thread.Sleep(50);
 
 			// Run process
 			Process process  = new Process();
@@ -174,8 +183,10 @@ namespace cgc_compiler
 				return ExecutionResult.Timeout;
 			}
 
-			// Runtime error
-			if (process.ExitCode != 0)
+            Thread.Sleep(30);
+
+            // Runtime error
+            if (process.ExitCode != 0)
 			{
 				return ExecutionResult.RuntimeError;
 			}

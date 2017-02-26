@@ -245,9 +245,6 @@ namespace show_builder
         {
             try
             {
-                left = (StrategyInfo)listBoxStrategies.SelectedItems[0];
-                right = (StrategyInfo)listBoxStrategies.SelectedItems[1];
-
                 InterruptBuilder = false;
                 GameBuilt = false;
                 GameName = string.Format("{0} vs {1}", left.Name, right.Name);
@@ -257,8 +254,8 @@ namespace show_builder
                 BriefLog = "";
 
                 MainClass.BuildGame(
-                    CombineExecutionString((StrategyInfo)listBoxStrategies.SelectedItems[0]),
-                    CombineExecutionString((StrategyInfo)listBoxStrategies.SelectedItems[1]),
+                    CombineExecutionString(left),
+                    CombineExecutionString(right),
                     s =>
                     {
                         GameLog += s + Environment.NewLine;
@@ -338,6 +335,9 @@ namespace show_builder
                 return;
             }
 
+            left = (StrategyInfo)listBoxStrategies.SelectedItems[0];
+            right = (StrategyInfo)listBoxStrategies.SelectedItems[1];
+
             BuildThread = new Thread(Builder);
             BuildThread.Start();
         }
@@ -349,13 +349,15 @@ namespace show_builder
 
         private void listBoxGames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listBoxGames.SelectedIndex != -1)
+            if (listBoxGames.SelectedIndex != -1 && (BuildThread == null || !BuildThread.IsAlive))
             {
                 GameSave save = (GameSave)listBoxGames.SelectedItem;
 
                 BriefLog = save.BriefLog;
                 ExecutionLog = save.ExecutionLog;
                 GameLog = save.GameLog;
+
+                UpdateLogsTimer_Tick(null, null);
             }
         }
 
@@ -390,6 +392,37 @@ namespace show_builder
             if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
             {
                 PlayerExecutable = dialog.FileName;
+            }
+        }
+
+        private void buttonBatch_Click(object sender, EventArgs e)
+        { 
+            for (int i = 0; i < listBoxStrategies.Items.Count - 1; i++)
+            {
+                for (int j = i + 1; j < listBoxStrategies.Items.Count; j++)
+                {
+                    for (int game = 0; game < numericUpDownBatch.Value; game++)
+                    {
+                        left = (StrategyInfo)listBoxStrategies.Items[i];
+                        right = (StrategyInfo)listBoxStrategies.Items[j];
+
+                        BuildThread = new Thread(Builder);
+                        BuildThread.Start();
+
+                        while (BuildThread.IsAlive)
+                        {
+                            if (InterruptBuilder)
+                            {
+                                return;
+                            }
+
+                            Thread.Sleep(100);
+                            Application.DoEvents();
+                        }
+
+                        UpdateLogsTimer_Tick(null, null);
+                    }
+                }
             }
         }
     }
