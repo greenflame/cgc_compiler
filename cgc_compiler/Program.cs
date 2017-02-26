@@ -3,7 +3,7 @@ using System.IO;
 
 namespace cgc_compiler
 {
-    class MainClass
+    public class MainClass
     {
         public static void Main(string[] args)
         {
@@ -48,7 +48,7 @@ namespace cgc_compiler
 			}
         }
 
-		private static void FitCultureInfo()
+		public static void FitCultureInfo()
 		{
 			System.Globalization.CultureInfo currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
 			System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)currentCulture.Clone();
@@ -57,5 +57,24 @@ namespace cgc_compiler
 
 			System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 		}
+
+        public static void BuildGame(string LeftAiExecutionString, string RightAiExecutionString,
+            Action<string> GameLogger, Action<String> ExecutionLogger, Action<String> BriefLogger)
+        {
+            FitCultureInfo();
+
+            Judge judge = new Judge(
+                LeftAiExecutionString,
+                RightAiExecutionString,
+                GameLogger,
+                ExecutionLogger,
+                BriefLogger
+            );
+            judge.RunSimulation(
+                Configuration.SimulationStep,
+                Configuration.MaxSimulationTime,
+                Configuration.StrategyRunInterval
+            );
+        }
     }
 }
