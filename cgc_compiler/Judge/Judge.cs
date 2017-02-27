@@ -94,16 +94,16 @@ namespace cgc_compiler
 			return player == Player.Left ? LeftName : RightName;
 		}
 
-		public void RunSimulation(float simulationStep, float maxSimulationTime, float strategyRunInterval)
+		public void RunSimulation()
 		{
-			while (GameWorld.GlobalTime < maxSimulationTime)
+			while (GameWorld.GlobalTime < Configuration.MaxSimulationTime)
 			{
-				while (GameWorld.GlobalTime < strategyRunInterval * TurnNum)
+				while (GameWorld.GlobalTime < Configuration.StrategyRunInterval * TurnNum)
 				{
-					GameWorld.Update(simulationStep);
+					GameWorld.Update(Configuration.SimulationStep);
 
-					LeftController.ManaController.Produce(simulationStep);
-					RightController.ManaController.Produce(simulationStep);
+					LeftController.ManaController.Produce(Configuration.SimulationStep);
+					RightController.ManaController.Produce(Configuration.SimulationStep);
 
 					if (IsAnyoneWin())
 					{

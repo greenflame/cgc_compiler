@@ -36,11 +36,7 @@ namespace cgc_compiler
 						executionLog.WriteLine,
 						Console.WriteLine
 					);
-					judge.RunSimulation (
-						Configuration.SimulationStep,
-						Configuration.MaxSimulationTime,
-						Configuration.StrategyRunInterval
-					);
+					judge.RunSimulation ();
 				} catch (Exception ex) {
 					executionLog.WriteLine(ex.Message);
 					Console.WriteLine(ex.Message);
@@ -57,24 +53,5 @@ namespace cgc_compiler
 
 			System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 		}
-
-        public static void BuildGame(string LeftAiExecutionString, string RightAiExecutionString,
-            Action<string> GameLogger, Action<string> ExecutionLogger, Action<string> BriefLogger)
-        {
-            FitCultureInfo();
-
-            Judge judge = new Judge(
-                LeftAiExecutionString,
-                RightAiExecutionString,
-                GameLogger,
-                ExecutionLogger,
-                BriefLogger
-            );
-            judge.RunSimulation(
-                Configuration.SimulationStep,
-                Configuration.MaxSimulationTime,
-                Configuration.StrategyRunInterval
-            );
-        }
     }
 }

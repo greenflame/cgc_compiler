@@ -12,212 +12,17 @@ namespace show_builder
 {
     public partial class FormMain : Form
     {
-        class StrategyInfo
-        {
-            public string Name { get; set; }
-            public string Executable { get; set; }
-            public string Interpreter { get; set; }
-            public string ExecutionPattern { get; set; }
-            public int Wins { get; set; } = 0;
-
-            public StrategyInfo(string name, string executable, string interpreter, string executionPattern)
-            {
-                Name = name;
-                Executable = executable;
-                Interpreter = interpreter;
-                ExecutionPattern = executionPattern;
-            }
-
-            public StrategyInfo()
-            {
-                Name = "New strategy name";
-                Executable = "Full path to executable";
-                Interpreter = "Full path to interpreter";
-                ExecutionPattern = FormMain.ExecutionPattern.DefaultPattern.Pattern;
-            }
-
-            public override string ToString()
-            {
-                return string.Format("{0} wins:{1}", Name, Wins);
-            }
-        }
-
-        class ExecutionPattern
-        {
-            public string Name { get; set; }
-            public string Pattern { get; set; }
-
-            public ExecutionPattern(string name, string pattern)
-            {
-                Name = name;
-                Pattern = pattern;
-            }
-
-            public override string ToString()
-            {
-                return Name;
-            }
-
-            public static ExecutionPattern DefaultPattern { get; private set; }
-            public static ExecutionPattern CustomPattern { get; private set; }
-
-            public static List<ExecutionPattern> AllPatterns { get; private set; } = new List<ExecutionPattern>();
-
-            static ExecutionPattern()
-            {
-                DefaultPattern = new ExecutionPattern("No interpreter", "{e}#");
-                CustomPattern = new ExecutionPattern("Custom", "{i}#-magic_param {e}");
-
-                AllPatterns.Add(DefaultPattern);
-                AllPatterns.Add(new ExecutionPattern("No interpreter", "{e}#"));
-                AllPatterns.Add(new ExecutionPattern("Java", "{i}#-jar {e}"));
-                AllPatterns.Add(new ExecutionPattern("Python / Node", "{i}#{e}"));
-                AllPatterns.Add(CustomPattern);
-            }
-        }
 
         public FormMain()
         {
             InitializeComponent();
 
-            ExecutionPattern.AllPatterns.ForEach(p => comboBoxPattern.Items.Insert(comboBoxPattern.Items.Count, p));
+
 
             UpdateLogsTimer = new System.Windows.Forms.Timer();
             UpdateLogsTimer.Tick += UpdateLogsTimer_Tick;
             UpdateLogsTimer.Interval = 1000;
             UpdateLogsTimer.Start();
-        }
-
-        private void listBoxStrategies_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedIndex != -1)
-            {
-                StrategyInfo si = (StrategyInfo)listBoxStrategies.SelectedItem;
-                textBoxName.Text = si.Name;
-                textBoxExecutable.Text = si.Executable;
-                textBoxInterpreter.Text = si.Interpreter;
-                textBoxExecutionPattern.Text = si.ExecutionPattern;
-            }
-        }
-
-        private void buttonAdd_Click(object sender, EventArgs e)
-        {
-            listBoxStrategies.Items.Add(new StrategyInfo());
-        }
-
-        private void buttonDelete_Click(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedIndex != -1)
-            {
-                listBoxStrategies.Items.RemoveAt(listBoxStrategies.SelectedIndex);
-            }
-        }
-
-        private void textBoxName_TextChanged(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedIndex != -1)
-            {
-                ((StrategyInfo)listBoxStrategies.SelectedItem).Name = textBoxName.Text;
-                listBoxStrategies.Items[listBoxStrategies.SelectedIndex] = listBoxStrategies.Items[listBoxStrategies.SelectedIndex];
-            }
-        }
-
-        private void textBoxExecutable_TextChanged(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedIndex != -1)
-            {
-                ((StrategyInfo)listBoxStrategies.SelectedItem).Executable = textBoxExecutable.Text;
-                listBoxStrategies.Items[listBoxStrategies.SelectedIndex] = listBoxStrategies.Items[listBoxStrategies.SelectedIndex];
-            }
-        }
-
-        private void textBoxInterpreter_TextChanged(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedIndex != -1)
-            {
-                ((StrategyInfo)listBoxStrategies.SelectedItem).Interpreter = textBoxInterpreter.Text;
-                listBoxStrategies.Items[listBoxStrategies.SelectedIndex] = listBoxStrategies.Items[listBoxStrategies.SelectedIndex];
-            }
-        }
-
-        bool UpdatePatternText = true;
-
-        private void textBoxExecutionPattern_TextChanged(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedIndex != -1)
-            {
-                ((StrategyInfo)listBoxStrategies.SelectedItem).ExecutionPattern = textBoxExecutionPattern.Text;
-                listBoxStrategies.Items[listBoxStrategies.SelectedIndex] = listBoxStrategies.Items[listBoxStrategies.SelectedIndex];
-            }
-
-            List<ExecutionPattern> currentPattern = ExecutionPattern.AllPatterns.Where(p => p.Pattern == textBoxExecutionPattern.Text).ToList();
-
-            if (currentPattern.Count != 0)
-            {
-                comboBoxPattern.SelectedItem = currentPattern[0];
-            }
-            else
-            {
-                UpdatePatternText = false;
-                comboBoxPattern.SelectedItem = ExecutionPattern.CustomPattern;
-                UpdatePatternText = true;
-            }
-        }
-
-        private void comboBoxPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxPattern.SelectedIndex != -1 && UpdatePatternText)
-            {
-                textBoxExecutionPattern.Text = ((ExecutionPattern)comboBoxPattern.SelectedItem).Pattern;
-            }
-        }
-
-        private void buttonBrowseExecutable_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-
-            if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
-            {
-                textBoxExecutable.Text = dialog.FileName;
-                textBoxName.Text = Path.GetFileNameWithoutExtension(dialog.FileName);
-            }
-        }
-
-        private void buttonBrowseInterpreter_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.ShowDialog();
-            textBoxInterpreter.Text = dialog.FileName;
-        }
-
-        private string CombineExecutionString(StrategyInfo info)
-        {
-            string template = info.ExecutionPattern
-                .Replace("{i}", info.Interpreter)
-                .Replace("{e}", "{0}");
-
-            return string.Format("{0}|{1}", info.Executable, template);
-        }
-
-        class GameSave
-        {
-            public string Name { get; private set; }
-            public string GameLog { get; private set; }
-            public string ExecutionLog { get; private set; }
-            public string BriefLog { get; private set; }
-
-            public GameSave(string name, string gl, string el, string bl)
-            {
-                Name = name;
-                GameLog = gl;
-                ExecutionLog = el;
-                BriefLog = bl;
-            }
-
-            public override string ToString()
-            {
-                return Name;
-            }
         }
 
         Thread BuildThread;
@@ -226,8 +31,8 @@ namespace show_builder
         bool InterruptBuilder;
         bool GameBuilt;
         string GameName = "";
-        StrategyInfo left;
-        StrategyInfo right;
+        Strategy left;
+        Strategy right;
 
         string GameLog = "";
         string ExecutionLog = "";
@@ -253,9 +58,9 @@ namespace show_builder
                 ExecutionLog = "";
                 BriefLog = "";
 
-                MainClass.BuildGame(
-                    CombineExecutionString(left),
-                    CombineExecutionString(right),
+                Judge judge =  new Judge(
+                    left.CombineExecutionString(),
+                    right.CombineExecutionString(),
                     s =>
                     {
                         GameLog += s + Environment.NewLine;
@@ -273,6 +78,8 @@ namespace show_builder
                     }
                 );
 
+                judge.RunSimulation();
+
                 GameBuilt = true;
             }
             catch (Exception ex)
@@ -283,7 +90,7 @@ namespace show_builder
 
         private void UpdateLogsTimer_Tick(object sender, EventArgs e)
         {
-            if (richTextBoxBrief.Text != BriefLog.Replace("\r\n", "\n"))
+            if (richTextBoxBrief.Text != BriefLog.Replace("\r\n", "\n") || richTextBoxGame.Text != GameLog.Replace("\r\n", "\n"))
             {
                 richTextBoxBrief.Text = BriefLog;
                 richTextBoxExecution.Text = ExecutionLog;
@@ -303,16 +110,16 @@ namespace show_builder
             {
                 GameBuilt = false;
 
-                listBoxGames.Items.Add(new GameSave(GameName, GameLog, ExecutionLog, BriefLog));
+                listBoxGames.Items.Add(new Game(GameName, GameLog, ExecutionLog, BriefLog));
 
-                if (BriefLog.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Last().Split(' ')[0].Contains("Left"))
-                {
-                    left.Wins++;
-                }
-                else
-                {
-                    right.Wins++;
-                }
+                //if (BriefLog.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Last().Split(' ')[0].Contains("Left"))
+                //{
+                //    left.Wins++;
+                //}
+                //else
+                //{
+                //    right.Wins++;
+                //}
 
                 for (int i = 0; i < listBoxStrategies.Items.Count; i++)
                 {
@@ -335,8 +142,8 @@ namespace show_builder
                 return;
             }
 
-            left = (StrategyInfo)listBoxStrategies.SelectedItems[0];
-            right = (StrategyInfo)listBoxStrategies.SelectedItems[1];
+            left = (Strategy)listBoxStrategies.SelectedItems[0];
+            right = (Strategy)listBoxStrategies.SelectedItems[1];
 
             BuildThread = new Thread(Builder);
             BuildThread.Start();
@@ -351,7 +158,7 @@ namespace show_builder
         {
             if (listBoxGames.SelectedIndex != -1 && (BuildThread == null || !BuildThread.IsAlive))
             {
-                GameSave save = (GameSave)listBoxGames.SelectedItem;
+                Game save = (Game)listBoxGames.SelectedItem;
 
                 BriefLog = save.BriefLog;
                 ExecutionLog = save.ExecutionLog;
@@ -365,7 +172,7 @@ namespace show_builder
         {
             if (listBoxGames.SelectedItem != null)
             {
-                GameSave save = (GameSave)listBoxGames.SelectedItem;
+                Game save = (Game)listBoxGames.SelectedItem;
 
                 try
                 {
@@ -403,8 +210,8 @@ namespace show_builder
                 {
                     for (int game = 0; game < numericUpDownBatch.Value; game++)
                     {
-                        left = (StrategyInfo)listBoxStrategies.Items[i];
-                        right = (StrategyInfo)listBoxStrategies.Items[j];
+                        left = (Strategy)listBoxStrategies.Items[i];
+                        right = (Strategy)listBoxStrategies.Items[j];
 
                         BuildThread = new Thread(Builder);
                         BuildThread.Start();
@@ -423,6 +230,109 @@ namespace show_builder
                         UpdateLogsTimer_Tick(null, null);
                     }
                 }
+            }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FolderBrowserDialog dialog = new FolderBrowserDialog();
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    for (int i = 0; i < listBoxGames.Items.Count; i++)
+                    {
+                        Game save = (Game)listBoxGames.Items[i];
+
+                        string name = save.Name + ".txt";
+                        int p = 1;
+
+                        while (File.Exists(Path.Combine(dialog.SelectedPath, name)))
+                        {
+                            name = string.Format("{0}_{1}.txt", save.Name, p++);
+                        }
+
+                        File.WriteAllText(Path.Combine(dialog.SelectedPath, name), save.GameLog);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonLoad_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                listBoxGames.Items.Clear();
+
+                FolderBrowserDialog dialog = new FolderBrowserDialog();
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string[] files = Directory.GetFiles(dialog.SelectedPath);
+
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        Game save = new Game(
+                            Path.GetFileNameWithoutExtension(files[i]),
+                            File.ReadAllText(files[i]),
+                            "",
+                            ""
+                            );
+
+                        listBoxGames.Items.Add(save);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            listBoxGames.Items.Clear();
+        }
+
+        // New
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            Strategy strategy = new Strategy();
+            FormStrategy dialog = new FormStrategy(strategy);
+
+            dialog.ShowDialog();
+
+            if (dialog.DialogResult == DialogResult.OK)
+            {
+                listBoxStrategies.Items.Add(strategy);
+            }
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            if (listBoxStrategies.SelectedItem == null)
+            {
+                return;
+            }
+
+            Strategy strategy = (Strategy)listBoxStrategies.SelectedItem;
+            FormStrategy dialog = new FormStrategy(strategy);
+
+            dialog.ShowDialog();
+
+            int ind = listBoxStrategies.Items.IndexOf(strategy);
+            listBoxStrategies.Items[ind] = listBoxStrategies.Items[ind];
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            if (listBoxStrategies.SelectedItem != null)
+            {
+                listBoxStrategies.Items.Remove(listBoxStrategies.SelectedItem);
             }
         }
     }
