@@ -19,9 +19,11 @@ namespace show_builder
         {
             InitializeComponent();
 
-            ExecutionPattern.AllPatterns.ForEach(p => comboBoxPattern.Items.Insert(comboBoxPattern.Items.Count, p));
+            comboBoxPattern.DataSource = ExecutionPattern.AllPatterns;
 
             Strategy = strategy;
+            Text = Strategy.Name;
+
             SyncModelToView();
         }
 
@@ -58,23 +60,14 @@ namespace show_builder
 
         private void textBoxExecutionPattern_TextChanged(object sender, EventArgs e)
         {
-            ExecutionPattern currentPattern = ExecutionPattern.AllPatterns.Where(p => p.Pattern == textBoxExecutionPattern.Text).FirstOrDefault();
-
-            if (currentPattern != null)
-            {
-                comboBoxPattern.SelectedItem = currentPattern;
-            }
-            else
-            {
-                UpdatePatternText = false;
-                comboBoxPattern.SelectedItem = ExecutionPattern.CustomPattern;
-                UpdatePatternText = true;
-            }
+            UpdatePatternText = false;
+            comboBoxPattern.SelectedItem = ExecutionPattern.Suggest(textBoxExecutionPattern.Text);
+            UpdatePatternText = true;
         }
 
         private void comboBoxPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxPattern.SelectedIndex != -1 && UpdatePatternText)
+            if (comboBoxPattern.SelectedItem != null && UpdatePatternText)
             {
                 textBoxExecutionPattern.Text = ((ExecutionPattern)comboBoxPattern.SelectedItem).Pattern;
             }

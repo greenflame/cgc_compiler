@@ -37,5 +37,19 @@ namespace show_builder
             AllPatterns.Add(new ExecutionPattern("Python / Node", "{i}#{e}"));
             AllPatterns.Add(CustomPattern);
         }
+
+        public static ExecutionPattern Suggest(string pattern)
+        {
+            ExecutionPattern recognized = AllPatterns.Where(p => p.Pattern == pattern).FirstOrDefault();
+
+            if (recognized != null)
+            {
+                return recognized;
+            }
+            else
+            {
+                return CustomPattern;
+            }
+        }
     }
 }

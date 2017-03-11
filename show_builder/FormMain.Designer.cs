@@ -29,34 +29,19 @@
         private void InitializeComponent()
         {
             this.listBoxStrategies = new System.Windows.Forms.ListBox();
-            this.buttonAdd = new System.Windows.Forms.Button();
-            this.buttonDelete = new System.Windows.Forms.Button();
+            this.buttonAddStrategy = new System.Windows.Forms.Button();
+            this.buttonDeleteStrategy = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.richTextBoxBrief = new System.Windows.Forms.RichTextBox();
-            this.richTextBoxExecution = new System.Windows.Forms.RichTextBox();
-            this.richTextBoxGame = new System.Windows.Forms.RichTextBox();
-            this.buttonBuild = new System.Windows.Forms.Button();
-            this.buttonPlay = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPageBrief = new System.Windows.Forms.TabPage();
-            this.tabPageExecution = new System.Windows.Forms.TabPage();
-            this.tabPageGame = new System.Windows.Forms.TabPage();
-            this.buttonInterrupt = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.listBoxGames = new System.Windows.Forms.ListBox();
+            this.buttonEditStrategy = new System.Windows.Forms.Button();
+            this.buttonCreateGame = new System.Windows.Forms.Button();
+            this.buttonGameDetails = new System.Windows.Forms.Button();
+            this.buttonDeleteGame = new System.Windows.Forms.Button();
+            this.buttonBuildGame = new System.Windows.Forms.Button();
+            this.buttonPlayGame = new System.Windows.Forms.Button();
+            this.buttonStopBuild = new System.Windows.Forms.Button();
             this.buttonBrowsePlayer = new System.Windows.Forms.Button();
-            this.buttonBatch = new System.Windows.Forms.Button();
-            this.numericUpDownBatch = new System.Windows.Forms.NumericUpDown();
-            this.labelBatchProgress = new System.Windows.Forms.Label();
-            this.buttonSave = new System.Windows.Forms.Button();
-            this.buttonLoad = new System.Windows.Forms.Button();
-            this.buttonClear = new System.Windows.Forms.Button();
-            this.buttonEdit = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
-            this.tabPageBrief.SuspendLayout();
-            this.tabPageExecution.SuspendLayout();
-            this.tabPageGame.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBatch)).BeginInit();
             this.SuspendLayout();
             // 
             // listBoxStrategies
@@ -65,28 +50,28 @@
             this.listBoxStrategies.Location = new System.Drawing.Point(15, 25);
             this.listBoxStrategies.Name = "listBoxStrategies";
             this.listBoxStrategies.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxStrategies.Size = new System.Drawing.Size(253, 134);
+            this.listBoxStrategies.Size = new System.Drawing.Size(360, 134);
             this.listBoxStrategies.TabIndex = 0;
             // 
-            // buttonAdd
+            // buttonAddStrategy
             // 
-            this.buttonAdd.Location = new System.Drawing.Point(31, 165);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(75, 23);
-            this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "Add";
-            this.buttonAdd.UseVisualStyleBackColor = true;
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAddStrategy.Location = new System.Drawing.Point(15, 165);
+            this.buttonAddStrategy.Name = "buttonAddStrategy";
+            this.buttonAddStrategy.Size = new System.Drawing.Size(123, 23);
+            this.buttonAddStrategy.TabIndex = 1;
+            this.buttonAddStrategy.Text = "1. Add strategy";
+            this.buttonAddStrategy.UseVisualStyleBackColor = true;
+            this.buttonAddStrategy.Click += new System.EventHandler(this.buttonStrategyAdd_Click);
             // 
-            // buttonDelete
+            // buttonDeleteStrategy
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(193, 165);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(75, 23);
-            this.buttonDelete.TabIndex = 2;
-            this.buttonDelete.Text = "Delete";
-            this.buttonDelete.UseVisualStyleBackColor = true;
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDeleteStrategy.Location = new System.Drawing.Point(183, 194);
+            this.buttonDeleteStrategy.Name = "buttonDeleteStrategy";
+            this.buttonDeleteStrategy.Size = new System.Drawing.Size(75, 23);
+            this.buttonDeleteStrategy.TabIndex = 2;
+            this.buttonDeleteStrategy.Text = "Delete";
+            this.buttonDeleteStrategy.UseVisualStyleBackColor = true;
+            this.buttonDeleteStrategy.Click += new System.EventHandler(this.buttonStrategyDelete_Click);
             // 
             // label1
             // 
@@ -97,111 +82,10 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Strategies:";
             // 
-            // richTextBoxBrief
-            // 
-            this.richTextBoxBrief.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBoxBrief.Location = new System.Drawing.Point(3, 3);
-            this.richTextBoxBrief.Name = "richTextBoxBrief";
-            this.richTextBoxBrief.Size = new System.Drawing.Size(346, 153);
-            this.richTextBoxBrief.TabIndex = 16;
-            this.richTextBoxBrief.Text = "";
-            // 
-            // richTextBoxExecution
-            // 
-            this.richTextBoxExecution.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBoxExecution.Location = new System.Drawing.Point(3, 3);
-            this.richTextBoxExecution.Name = "richTextBoxExecution";
-            this.richTextBoxExecution.Size = new System.Drawing.Size(346, 153);
-            this.richTextBoxExecution.TabIndex = 17;
-            this.richTextBoxExecution.Text = "";
-            // 
-            // richTextBoxGame
-            // 
-            this.richTextBoxGame.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBoxGame.Location = new System.Drawing.Point(3, 3);
-            this.richTextBoxGame.Name = "richTextBoxGame";
-            this.richTextBoxGame.Size = new System.Drawing.Size(346, 153);
-            this.richTextBoxGame.TabIndex = 21;
-            this.richTextBoxGame.Text = "";
-            // 
-            // buttonBuild
-            // 
-            this.buttonBuild.Location = new System.Drawing.Point(529, 386);
-            this.buttonBuild.Name = "buttonBuild";
-            this.buttonBuild.Size = new System.Drawing.Size(75, 23);
-            this.buttonBuild.TabIndex = 22;
-            this.buttonBuild.Text = "Build";
-            this.buttonBuild.UseVisualStyleBackColor = true;
-            this.buttonBuild.Click += new System.EventHandler(this.buttonBuild_Click);
-            // 
-            // buttonPlay
-            // 
-            this.buttonPlay.Location = new System.Drawing.Point(842, 386);
-            this.buttonPlay.Name = "buttonPlay";
-            this.buttonPlay.Size = new System.Drawing.Size(172, 23);
-            this.buttonPlay.TabIndex = 23;
-            this.buttonPlay.Text = "Play";
-            this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabPageBrief);
-            this.tabControl1.Controls.Add(this.tabPageExecution);
-            this.tabControl1.Controls.Add(this.tabPageGame);
-            this.tabControl1.Location = new System.Drawing.Point(476, 195);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(360, 185);
-            this.tabControl1.TabIndex = 24;
-            // 
-            // tabPageBrief
-            // 
-            this.tabPageBrief.Controls.Add(this.richTextBoxBrief);
-            this.tabPageBrief.Location = new System.Drawing.Point(4, 22);
-            this.tabPageBrief.Name = "tabPageBrief";
-            this.tabPageBrief.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageBrief.Size = new System.Drawing.Size(352, 159);
-            this.tabPageBrief.TabIndex = 0;
-            this.tabPageBrief.Text = "Brief logger";
-            this.tabPageBrief.UseVisualStyleBackColor = true;
-            // 
-            // tabPageExecution
-            // 
-            this.tabPageExecution.Controls.Add(this.richTextBoxExecution);
-            this.tabPageExecution.Location = new System.Drawing.Point(4, 22);
-            this.tabPageExecution.Name = "tabPageExecution";
-            this.tabPageExecution.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageExecution.Size = new System.Drawing.Size(352, 159);
-            this.tabPageExecution.TabIndex = 1;
-            this.tabPageExecution.Text = "Execution logger";
-            this.tabPageExecution.UseVisualStyleBackColor = true;
-            // 
-            // tabPageGame
-            // 
-            this.tabPageGame.Controls.Add(this.richTextBoxGame);
-            this.tabPageGame.Location = new System.Drawing.Point(4, 22);
-            this.tabPageGame.Name = "tabPageGame";
-            this.tabPageGame.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGame.Size = new System.Drawing.Size(352, 159);
-            this.tabPageGame.TabIndex = 2;
-            this.tabPageGame.Text = "Game logger";
-            this.tabPageGame.UseVisualStyleBackColor = true;
-            // 
-            // buttonInterrupt
-            // 
-            this.buttonInterrupt.Location = new System.Drawing.Point(761, 386);
-            this.buttonInterrupt.Name = "buttonInterrupt";
-            this.buttonInterrupt.Size = new System.Drawing.Size(75, 23);
-            this.buttonInterrupt.TabIndex = 25;
-            this.buttonInterrupt.Text = "Interrupt";
-            this.buttonInterrupt.UseVisualStyleBackColor = true;
-            this.buttonInterrupt.Click += new System.EventHandler(this.buttonInterrupt_Click);
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(839, 35);
+            this.label6.Location = new System.Drawing.Point(378, 9);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(43, 13);
             this.label6.TabIndex = 27;
@@ -210,123 +94,113 @@
             // listBoxGames
             // 
             this.listBoxGames.FormattingEnabled = true;
-            this.listBoxGames.Location = new System.Drawing.Point(842, 51);
+            this.listBoxGames.Location = new System.Drawing.Point(381, 25);
             this.listBoxGames.Name = "listBoxGames";
             this.listBoxGames.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxGames.Size = new System.Drawing.Size(253, 303);
+            this.listBoxGames.Size = new System.Drawing.Size(400, 134);
             this.listBoxGames.TabIndex = 26;
-            this.listBoxGames.SelectedIndexChanged += new System.EventHandler(this.listBoxGames_SelectedIndexChanged);
+            // 
+            // buttonEditStrategy
+            // 
+            this.buttonEditStrategy.Location = new System.Drawing.Point(183, 165);
+            this.buttonEditStrategy.Name = "buttonEditStrategy";
+            this.buttonEditStrategy.Size = new System.Drawing.Size(75, 23);
+            this.buttonEditStrategy.TabIndex = 35;
+            this.buttonEditStrategy.Text = "Edit";
+            this.buttonEditStrategy.UseVisualStyleBackColor = true;
+            this.buttonEditStrategy.Click += new System.EventHandler(this.buttonStrategyEdit_Click);
+            // 
+            // buttonCreateGame
+            // 
+            this.buttonCreateGame.Location = new System.Drawing.Point(381, 165);
+            this.buttonCreateGame.Name = "buttonCreateGame";
+            this.buttonCreateGame.Size = new System.Drawing.Size(123, 23);
+            this.buttonCreateGame.TabIndex = 36;
+            this.buttonCreateGame.Text = "2. Create game";
+            this.buttonCreateGame.UseVisualStyleBackColor = true;
+            this.buttonCreateGame.Click += new System.EventHandler(this.buttonCreateGame_Click);
+            // 
+            // buttonGameDetails
+            // 
+            this.buttonGameDetails.Location = new System.Drawing.Point(706, 165);
+            this.buttonGameDetails.Name = "buttonGameDetails";
+            this.buttonGameDetails.Size = new System.Drawing.Size(75, 23);
+            this.buttonGameDetails.TabIndex = 37;
+            this.buttonGameDetails.Text = "Details";
+            this.buttonGameDetails.UseVisualStyleBackColor = true;
+            this.buttonGameDetails.Click += new System.EventHandler(this.buttonGameDetails_Click);
+            // 
+            // buttonDeleteGame
+            // 
+            this.buttonDeleteGame.Location = new System.Drawing.Point(510, 165);
+            this.buttonDeleteGame.Name = "buttonDeleteGame";
+            this.buttonDeleteGame.Size = new System.Drawing.Size(75, 23);
+            this.buttonDeleteGame.TabIndex = 38;
+            this.buttonDeleteGame.Text = "Delete";
+            this.buttonDeleteGame.UseVisualStyleBackColor = true;
+            this.buttonDeleteGame.Click += new System.EventHandler(this.buttonDeleteGame_Click);
+            // 
+            // buttonBuildGame
+            // 
+            this.buttonBuildGame.Location = new System.Drawing.Point(381, 194);
+            this.buttonBuildGame.Name = "buttonBuildGame";
+            this.buttonBuildGame.Size = new System.Drawing.Size(123, 23);
+            this.buttonBuildGame.TabIndex = 39;
+            this.buttonBuildGame.Text = "3. Build game";
+            this.buttonBuildGame.UseVisualStyleBackColor = true;
+            this.buttonBuildGame.Click += new System.EventHandler(this.buttonBuildGame_Click);
+            // 
+            // buttonPlayGame
+            // 
+            this.buttonPlayGame.Location = new System.Drawing.Point(381, 223);
+            this.buttonPlayGame.Name = "buttonPlayGame";
+            this.buttonPlayGame.Size = new System.Drawing.Size(123, 23);
+            this.buttonPlayGame.TabIndex = 40;
+            this.buttonPlayGame.Text = "4. Play game";
+            this.buttonPlayGame.UseVisualStyleBackColor = true;
+            this.buttonPlayGame.Click += new System.EventHandler(this.buttonPlayGame_Click);
+            // 
+            // buttonStopBuild
+            // 
+            this.buttonStopBuild.Location = new System.Drawing.Point(510, 194);
+            this.buttonStopBuild.Name = "buttonStopBuild";
+            this.buttonStopBuild.Size = new System.Drawing.Size(75, 23);
+            this.buttonStopBuild.TabIndex = 41;
+            this.buttonStopBuild.Text = "Stop build";
+            this.buttonStopBuild.UseVisualStyleBackColor = true;
+            this.buttonStopBuild.Click += new System.EventHandler(this.buttonStopBuild_Click);
             // 
             // buttonBrowsePlayer
             // 
-            this.buttonBrowsePlayer.Location = new System.Drawing.Point(842, 357);
+            this.buttonBrowsePlayer.Location = new System.Drawing.Point(510, 223);
             this.buttonBrowsePlayer.Name = "buttonBrowsePlayer";
-            this.buttonBrowsePlayer.Size = new System.Drawing.Size(91, 23);
-            this.buttonBrowsePlayer.TabIndex = 28;
+            this.buttonBrowsePlayer.Size = new System.Drawing.Size(99, 23);
+            this.buttonBrowsePlayer.TabIndex = 42;
             this.buttonBrowsePlayer.Text = "Browse player";
             this.buttonBrowsePlayer.UseVisualStyleBackColor = true;
             this.buttonBrowsePlayer.Click += new System.EventHandler(this.buttonBrowsePlayer_Click);
-            // 
-            // buttonBatch
-            // 
-            this.buttonBatch.Location = new System.Drawing.Point(680, 386);
-            this.buttonBatch.Name = "buttonBatch";
-            this.buttonBatch.Size = new System.Drawing.Size(75, 23);
-            this.buttonBatch.TabIndex = 29;
-            this.buttonBatch.Text = "Batch build";
-            this.buttonBatch.UseVisualStyleBackColor = true;
-            this.buttonBatch.Click += new System.EventHandler(this.buttonBatch_Click);
-            // 
-            // numericUpDownBatch
-            // 
-            this.numericUpDownBatch.Location = new System.Drawing.Point(610, 389);
-            this.numericUpDownBatch.Name = "numericUpDownBatch";
-            this.numericUpDownBatch.Size = new System.Drawing.Size(64, 20);
-            this.numericUpDownBatch.TabIndex = 30;
-            this.numericUpDownBatch.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            // 
-            // labelBatchProgress
-            // 
-            this.labelBatchProgress.AutoSize = true;
-            this.labelBatchProgress.Location = new System.Drawing.Point(12, 365);
-            this.labelBatchProgress.Name = "labelBatchProgress";
-            this.labelBatchProgress.Size = new System.Drawing.Size(0, 13);
-            this.labelBatchProgress.TabIndex = 31;
-            // 
-            // buttonSave
-            // 
-            this.buttonSave.Location = new System.Drawing.Point(939, 357);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(75, 23);
-            this.buttonSave.TabIndex = 32;
-            this.buttonSave.Text = "Save all";
-            this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
-            // 
-            // buttonLoad
-            // 
-            this.buttonLoad.Location = new System.Drawing.Point(1020, 357);
-            this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(75, 23);
-            this.buttonLoad.TabIndex = 33;
-            this.buttonLoad.Text = "Load";
-            this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
-            // 
-            // buttonClear
-            // 
-            this.buttonClear.Location = new System.Drawing.Point(1020, 386);
-            this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(75, 23);
-            this.buttonClear.TabIndex = 34;
-            this.buttonClear.Text = "Clear";
-            this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
-            // 
-            // buttonEdit
-            // 
-            this.buttonEdit.Location = new System.Drawing.Point(112, 165);
-            this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(75, 23);
-            this.buttonEdit.TabIndex = 35;
-            this.buttonEdit.Text = "Edit";
-            this.buttonEdit.UseVisualStyleBackColor = true;
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1189, 576);
-            this.Controls.Add(this.buttonEdit);
-            this.Controls.Add(this.buttonClear);
-            this.Controls.Add(this.buttonLoad);
-            this.Controls.Add(this.buttonSave);
-            this.Controls.Add(this.labelBatchProgress);
-            this.Controls.Add(this.numericUpDownBatch);
-            this.Controls.Add(this.buttonBatch);
+            this.ClientSize = new System.Drawing.Size(790, 257);
             this.Controls.Add(this.buttonBrowsePlayer);
+            this.Controls.Add(this.buttonStopBuild);
+            this.Controls.Add(this.buttonPlayGame);
+            this.Controls.Add(this.buttonBuildGame);
+            this.Controls.Add(this.buttonDeleteGame);
+            this.Controls.Add(this.buttonGameDetails);
+            this.Controls.Add(this.buttonCreateGame);
+            this.Controls.Add(this.buttonEditStrategy);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.listBoxGames);
-            this.Controls.Add(this.buttonInterrupt);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.buttonPlay);
-            this.Controls.Add(this.buttonBuild);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonDelete);
-            this.Controls.Add(this.buttonAdd);
+            this.Controls.Add(this.buttonDeleteStrategy);
+            this.Controls.Add(this.buttonAddStrategy);
             this.Controls.Add(this.listBoxStrategies);
             this.Name = "FormMain";
             this.Text = "Show builder";
-            this.tabControl1.ResumeLayout(false);
-            this.tabPageBrief.ResumeLayout(false);
-            this.tabPageExecution.ResumeLayout(false);
-            this.tabPageGame.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBatch)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,29 +209,19 @@
         #endregion
 
         private System.Windows.Forms.ListBox listBoxStrategies;
-        private System.Windows.Forms.Button buttonAdd;
-        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button buttonAddStrategy;
+        private System.Windows.Forms.Button buttonDeleteStrategy;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RichTextBox richTextBoxBrief;
-        private System.Windows.Forms.RichTextBox richTextBoxExecution;
-        private System.Windows.Forms.RichTextBox richTextBoxGame;
-        private System.Windows.Forms.Button buttonBuild;
-        private System.Windows.Forms.Button buttonPlay;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPageBrief;
-        private System.Windows.Forms.TabPage tabPageExecution;
-        private System.Windows.Forms.TabPage tabPageGame;
-        private System.Windows.Forms.Button buttonInterrupt;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ListBox listBoxGames;
+        private System.Windows.Forms.Button buttonEditStrategy;
+        private System.Windows.Forms.Button buttonCreateGame;
+        private System.Windows.Forms.Button buttonGameDetails;
+        private System.Windows.Forms.Button buttonDeleteGame;
+        private System.Windows.Forms.Button buttonBuildGame;
+        private System.Windows.Forms.Button buttonPlayGame;
+        private System.Windows.Forms.Button buttonStopBuild;
         private System.Windows.Forms.Button buttonBrowsePlayer;
-        private System.Windows.Forms.Button buttonBatch;
-        private System.Windows.Forms.NumericUpDown numericUpDownBatch;
-        private System.Windows.Forms.Label labelBatchProgress;
-        private System.Windows.Forms.Button buttonSave;
-        private System.Windows.Forms.Button buttonLoad;
-        private System.Windows.Forms.Button buttonClear;
-        private System.Windows.Forms.Button buttonEdit;
     }
 }
 
