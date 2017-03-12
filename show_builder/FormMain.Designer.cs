@@ -38,9 +38,6 @@
             this.buttonCreateGame = new System.Windows.Forms.Button();
             this.buttonGameDetails = new System.Windows.Forms.Button();
             this.buttonDeleteGame = new System.Windows.Forms.Button();
-            this.buttonBuildGame = new System.Windows.Forms.Button();
-            this.buttonPlayGame = new System.Windows.Forms.Button();
-            this.buttonStopBuild = new System.Windows.Forms.Button();
             this.buttonBrowsePlayer = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -65,7 +62,7 @@
             // 
             // buttonDeleteStrategy
             // 
-            this.buttonDeleteStrategy.Location = new System.Drawing.Point(183, 194);
+            this.buttonDeleteStrategy.Location = new System.Drawing.Point(264, 165);
             this.buttonDeleteStrategy.Name = "buttonDeleteStrategy";
             this.buttonDeleteStrategy.Size = new System.Drawing.Size(75, 23);
             this.buttonDeleteStrategy.TabIndex = 2;
@@ -140,42 +137,12 @@
             this.buttonDeleteGame.UseVisualStyleBackColor = true;
             this.buttonDeleteGame.Click += new System.EventHandler(this.buttonDeleteGame_Click);
             // 
-            // buttonBuildGame
-            // 
-            this.buttonBuildGame.Location = new System.Drawing.Point(381, 194);
-            this.buttonBuildGame.Name = "buttonBuildGame";
-            this.buttonBuildGame.Size = new System.Drawing.Size(123, 23);
-            this.buttonBuildGame.TabIndex = 39;
-            this.buttonBuildGame.Text = "3. Build game";
-            this.buttonBuildGame.UseVisualStyleBackColor = true;
-            this.buttonBuildGame.Click += new System.EventHandler(this.buttonBuildGame_Click);
-            // 
-            // buttonPlayGame
-            // 
-            this.buttonPlayGame.Location = new System.Drawing.Point(381, 223);
-            this.buttonPlayGame.Name = "buttonPlayGame";
-            this.buttonPlayGame.Size = new System.Drawing.Size(123, 23);
-            this.buttonPlayGame.TabIndex = 40;
-            this.buttonPlayGame.Text = "4. Play game";
-            this.buttonPlayGame.UseVisualStyleBackColor = true;
-            this.buttonPlayGame.Click += new System.EventHandler(this.buttonPlayGame_Click);
-            // 
-            // buttonStopBuild
-            // 
-            this.buttonStopBuild.Location = new System.Drawing.Point(510, 194);
-            this.buttonStopBuild.Name = "buttonStopBuild";
-            this.buttonStopBuild.Size = new System.Drawing.Size(75, 23);
-            this.buttonStopBuild.TabIndex = 41;
-            this.buttonStopBuild.Text = "Stop build";
-            this.buttonStopBuild.UseVisualStyleBackColor = true;
-            this.buttonStopBuild.Click += new System.EventHandler(this.buttonStopBuild_Click);
-            // 
             // buttonBrowsePlayer
             // 
-            this.buttonBrowsePlayer.Location = new System.Drawing.Point(510, 223);
+            this.buttonBrowsePlayer.Location = new System.Drawing.Point(679, 222);
             this.buttonBrowsePlayer.Name = "buttonBrowsePlayer";
             this.buttonBrowsePlayer.Size = new System.Drawing.Size(99, 23);
-            this.buttonBrowsePlayer.TabIndex = 42;
+            this.buttonBrowsePlayer.TabIndex = 47;
             this.buttonBrowsePlayer.Text = "Browse player";
             this.buttonBrowsePlayer.UseVisualStyleBackColor = true;
             this.buttonBrowsePlayer.Click += new System.EventHandler(this.buttonBrowsePlayer_Click);
@@ -186,9 +153,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(790, 257);
             this.Controls.Add(this.buttonBrowsePlayer);
-            this.Controls.Add(this.buttonStopBuild);
-            this.Controls.Add(this.buttonPlayGame);
-            this.Controls.Add(this.buttonBuildGame);
             this.Controls.Add(this.buttonDeleteGame);
             this.Controls.Add(this.buttonGameDetails);
             this.Controls.Add(this.buttonCreateGame);
@@ -218,9 +182,6 @@
         private System.Windows.Forms.Button buttonCreateGame;
         private System.Windows.Forms.Button buttonGameDetails;
         private System.Windows.Forms.Button buttonDeleteGame;
-        private System.Windows.Forms.Button buttonBuildGame;
-        private System.Windows.Forms.Button buttonPlayGame;
-        private System.Windows.Forms.Button buttonStopBuild;
         private System.Windows.Forms.Button buttonBrowsePlayer;
     }
 }

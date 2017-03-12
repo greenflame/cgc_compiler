@@ -15,12 +15,12 @@ namespace show_builder
         public Strategy Left { get; private set; }
         public Strategy Right { get; private set; }
 
-        public string GameLog { get; private set; }
-        public string ExecutionLog { get; private set; }
-        public string BriefLog { get; private set; }
+        public string GameLog { get; private set; } = "";
+        public string ExecutionLog { get; private set; } = "";
+        public string BriefLog { get; private set; } = "";
 
-        public bool IsInterrupting { get; private set; }
-        public bool IsBuildFinished { get; private set; }
+        public bool IsInterrupting { get; private set; } = false;
+        public GameStatus Status { get; set; } = GameStatus.Ready;
 
         private Thread WorkerThread;
 
@@ -43,7 +43,8 @@ namespace show_builder
             try
             {
                 IsInterrupting = false;
-                IsBuildFinished = false;
+                Status = GameStatus.Building;
+                Storage.Instance.BindAll();
 
                 GameLog = "";
                 ExecutionLog = "";
@@ -58,6 +59,7 @@ namespace show_builder
                     {
                         GameLog += s + Environment.NewLine;
                         CheckForInterrupt();
+                        Storage.Instance.BindAll();
                     },
                     s =>
                     {
@@ -73,11 +75,14 @@ namespace show_builder
 
                 judge.RunSimulation();
 
-                IsBuildFinished = true;
+                Status = GameStatus.Finished;
+                Storage.Instance.BindAll();
             }
             catch (Exception ex)
             {
                 BriefLog += ex.Message + Environment.NewLine;
+                Status = GameStatus.Error;
+                Storage.Instance.BindAll();
             }
         }
 
@@ -88,12 +93,12 @@ namespace show_builder
 
         public void StartBuild()
         {
-            if (IsBuilding)
+            if (Status == GameStatus.Building)
             {
                 throw new Exception("Build thread is already running.");
             }
 
-            if (IsBuildFinished)
+            if (Status == GameStatus.Finished)
             {
                 throw new Exception("Build was completed.");
             }
@@ -102,11 +107,9 @@ namespace show_builder
             WorkerThread.Start();
         }
 
-        public bool IsBuilding => WorkerThread != null && WorkerThread.IsAlive;
-
         public void StopBuild()
         {
-            if (!IsBuilding)
+            if (Status != GameStatus.Building)
             {
                 throw new Exception("Builder is not working.");
             }
@@ -121,7 +124,7 @@ namespace show_builder
 
         public override string ToString()
         {
-            return Name;
+            return string.Format("{0} [{1}]", Name, Status);
         }
     }
 }

@@ -22,9 +22,25 @@ namespace show_builder
             comboBoxPattern.DataSource = ExecutionPattern.AllPatterns;
 
             Strategy = strategy;
+
+            Storage.Instance.OnStorageChanged += BindData;
+            BindData();
+        }
+
+        private void BindData()
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action(BindData), new object[] { });
+                return;
+            }
+
             Text = Strategy.Name;
 
-            SyncModelToView();
+            textBoxName.Text = Strategy.Name;
+            textBoxExecutable.Text = Strategy.Executable;
+            textBoxInterpreter.Text = Strategy.Interpreter;
+            textBoxExecutionPattern.Text = Strategy.ExecutionPattern;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -35,25 +51,19 @@ namespace show_builder
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            SyncViewToModel();
+            SaveGame();
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void SyncModelToView()
-        {
-            textBoxName.Text = Strategy.Name;
-            textBoxExecutable.Text = Strategy.Executable;
-            textBoxInterpreter.Text = Strategy.Interpreter;
-            textBoxExecutionPattern.Text = Strategy.ExecutionPattern;
-        }
-
-        private void SyncViewToModel()
+        private void SaveGame()
         {
             Strategy.Name = textBoxName.Text;
             Strategy.Executable = textBoxExecutable.Text;
             Strategy.Interpreter = textBoxInterpreter.Text;
             Strategy.ExecutionPattern = textBoxExecutionPattern.Text;
+
+            Storage.Instance.BindAll();
         }
 
         private bool UpdatePatternText = true;

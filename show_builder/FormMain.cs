@@ -10,23 +10,35 @@ namespace show_builder
 {
     public partial class FormMain : Form
     {
-        public List<Strategy> Strategies { get; private set; } = new List<Strategy>();
-        public List<Game> Games { get; private set; } = new List<Game>();
-
         private BindingSource StrategiesBS = new BindingSource();
         private BindingSource GamesBS = new BindingSource();
 
-        private string PlayerExecutable;
+        public Timer DataBindingTimer { get; private set; }
 
         public FormMain()
         {
             InitializeComponent();
 
-            StrategiesBS.DataSource = Strategies;
+            StrategiesBS.DataSource = Storage.Instance.Strategies;
             listBoxStrategies.DataSource = StrategiesBS;
 
-            GamesBS.DataSource = Games;
+            GamesBS.DataSource = Storage.Instance.Games;
             listBoxGames.DataSource = GamesBS;
+
+            Storage.Instance.OnStorageChanged += BindData;
+            BindData();
+        }
+
+        private void BindData()
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action(BindData), new object[] { });
+                return;
+            }
+
+            StrategiesBS.ResetBindings(false);
+            GamesBS.ResetBindings(false);
         }
 
         private void buttonStrategyAdd_Click(object sender, EventArgs e)
@@ -38,8 +50,8 @@ namespace show_builder
 
             if (dialog.DialogResult == DialogResult.OK)
             {
-                Strategies.Add(strategy);
-                StrategiesBS.ResetBindings(false);
+                Storage.Instance.Strategies.Add(strategy);
+                Storage.Instance.BindAll();
             }
         }
 
@@ -50,9 +62,6 @@ namespace show_builder
                 Strategy strategy = (Strategy)listBoxStrategies.SelectedItem;
                 FormStrategy dialog = new FormStrategy(strategy);
                 dialog.ShowDialog();
-
-                StrategiesBS.ResetBindings(false);
-                GamesBS.ResetBindings(false);
             }
         }
 
@@ -60,8 +69,8 @@ namespace show_builder
         {
             if (listBoxStrategies.SelectedItem != null)
             {
-                Strategies.Remove(listBoxStrategies.SelectedItem as Strategy);
-                StrategiesBS.ResetBindings(false);
+                Storage.Instance.Strategies.Remove(listBoxStrategies.SelectedItem as Strategy);
+                Storage.Instance.BindAll();
             }
         }
 
@@ -87,14 +96,14 @@ namespace show_builder
             }
 
             Game game = new Game(left, right);
-            Games.Add(game);
-            GamesBS.ResetBindings(false);
+            Storage.Instance.Games.Add(game);
+            Storage.Instance.BindAll();
         }
 
         private void buttonDeleteGame_Click(object sender, EventArgs e)
         {
-            listBoxGames.SelectedItems.OfType<Game>().ToList().ForEach(i => Games.Remove(i));
-            GamesBS.ResetBindings(false);
+            listBoxGames.SelectedItems.OfType<Game>().ToList().ForEach(i => Storage.Instance.Games.Remove(i));
+            Storage.Instance.BindAll();
         }
 
         private void buttonGameDetails_Click(object sender, EventArgs e)
@@ -103,69 +112,6 @@ namespace show_builder
             {
                 FormGame form = new FormGame(listBoxGames.SelectedItem as Game);
                 form.Show();
-                GamesBS.ResetBindings(false);
-            }
-        }
-
-        private void buttonBuildGame_Click(object sender, EventArgs e)
-        {
-            if (listBoxGames.SelectedItem != null)
-            {
-                try
-                {
-                    (listBoxGames.SelectedItem as Game).StartBuild();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
-        private void buttonStopBuild_Click(object sender, EventArgs e)
-        {
-            if (listBoxGames.SelectedItem != null)
-            {
-                try
-                {
-                    (listBoxGames.SelectedItem as Game).StopBuild();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
-        private void buttonPlayGame_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(PlayerExecutable))
-            {
-                MessageBox.Show("Browse player executable first.");
-                return;
-            }
-
-            if (listBoxGames.SelectedItem == null)
-            {
-                MessageBox.Show("Select game from the list.");
-                return;
-            }
-
-            Game gameToPlay = (Game)listBoxGames.SelectedItem;
-
-            try
-            {
-                File.WriteAllText(Path.Combine(Path.GetDirectoryName(PlayerExecutable), "game_log.txt"), gameToPlay.GameLog);
-
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = PlayerExecutable,
-                    WorkingDirectory = Path.GetDirectoryName(PlayerExecutable)
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
             }
         }
 
@@ -175,7 +121,8 @@ namespace show_builder
 
             if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
             {
-                PlayerExecutable = dialog.FileName;
+                Storage.Instance.PlayerExecutable = dialog.FileName;
+                Storage.Instance.BindAll();
             }
         }
     }
