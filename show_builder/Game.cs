@@ -10,7 +10,7 @@ namespace show_builder
 {
     public class Game
     {
-        public string Name => string.Format("{0} vs {1}", Left.Name, Right.Name);
+        public string Name { get; set; }
 
         public Strategy Left { get; private set; }
         public Strategy Right { get; private set; }

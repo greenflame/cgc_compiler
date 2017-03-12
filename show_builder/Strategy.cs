@@ -22,7 +22,7 @@ namespace show_builder
             Name = "New strategy name";
             Executable = "Full path to executable";
             Interpreter = "Full path to interpreter";
-            ExecutionPattern = show_builder.ExecutionPattern.DefaultPattern.Pattern;
+            ExecutionPattern = show_builder.ExecutionPattern.Default.Pattern;
         }
 
         public override string ToString()

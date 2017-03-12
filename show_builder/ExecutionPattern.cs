@@ -22,20 +22,23 @@ namespace show_builder
             return Name;
         }
 
-        public static ExecutionPattern DefaultPattern { get; private set; }
-        public static ExecutionPattern CustomPattern { get; private set; }
+        public static ExecutionPattern Default { get; private set; }
+        public static ExecutionPattern Custom { get; private set; }
+        public static ExecutionPattern NoInterpreter { get; private set; }
 
         public static List<ExecutionPattern> AllPatterns { get; private set; } = new List<ExecutionPattern>();
 
         static ExecutionPattern()
         {
-            DefaultPattern = new ExecutionPattern("No interpreter", "{e}#");
-            CustomPattern = new ExecutionPattern("Custom", "{i}#-magic_param {e}");
+            NoInterpreter = new ExecutionPattern("No interpreter", "{e}#");
 
-            AllPatterns.Add(DefaultPattern);
+            Default = NoInterpreter;
+            Custom = new ExecutionPattern("Custom", "{i}#-magic_param {e}");
+
+            AllPatterns.Add(Default);
             AllPatterns.Add(new ExecutionPattern("Java", "{i}#-jar {e}"));
             AllPatterns.Add(new ExecutionPattern("Python / Node", "{i}#{e}"));
-            AllPatterns.Add(CustomPattern);
+            AllPatterns.Add(Custom);
         }
 
         public static ExecutionPattern Suggest(string pattern)
@@ -48,7 +51,7 @@ namespace show_builder
             }
             else
             {
-                return CustomPattern;
+                return Custom;
             }
         }
     }

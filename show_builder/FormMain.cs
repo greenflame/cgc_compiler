@@ -31,6 +31,11 @@ namespace show_builder
 
         private void BindData()
         {
+            // Save selection
+            List<Strategy> SelectedStrategies = listBoxStrategies.SelectedItems.OfType<Strategy>().ToList();
+            List<Game> SelectedGames = listBoxGames.SelectedItems.OfType<Game>().ToList();
+
+            // Bind
             if (InvokeRequired)
             {
                 this.Invoke(new Action(BindData), new object[] { });
@@ -39,38 +44,31 @@ namespace show_builder
 
             StrategiesBS.ResetBindings(false);
             GamesBS.ResetBindings(false);
+
+            // Restore selection
+            listBoxStrategies.SelectedIndices.Clear();
+            SelectedStrategies.ForEach(s => listBoxStrategies.SelectedItems.Add(s));
+
+            listBoxGames.SelectedIndices.Clear();
+            SelectedGames.ForEach(g => listBoxGames.SelectedItems.Add(g));
         }
 
         private void buttonStrategyAdd_Click(object sender, EventArgs e)
         {
             Strategy strategy = new Strategy();
+            Storage.Instance.Strategies.Add(strategy);
+            Storage.Instance.BindAll();
+
             FormStrategy dialog = new FormStrategy(strategy);
-
-            dialog.ShowDialog();
-
-            if (dialog.DialogResult == DialogResult.OK)
-            {
-                Storage.Instance.Strategies.Add(strategy);
-                Storage.Instance.BindAll();
-            }
+            dialog.Show();
         }
 
-        private void buttonStrategyEdit_Click(object sender, EventArgs e)
+        private void buttonStrategyDetails_Click(object sender, EventArgs e)
         {
             if (listBoxStrategies.SelectedItem != null)
             {
-                Strategy strategy = (Strategy)listBoxStrategies.SelectedItem;
-                FormStrategy dialog = new FormStrategy(strategy);
-                dialog.ShowDialog();
-            }
-        }
-
-        private void buttonStrategyDelete_Click(object sender, EventArgs e)
-        {
-            if (listBoxStrategies.SelectedItem != null)
-            {
-                Storage.Instance.Strategies.Remove(listBoxStrategies.SelectedItem as Strategy);
-                Storage.Instance.BindAll();
+                FormStrategy dialog = new FormStrategy(listBoxStrategies.SelectedItem as Strategy);
+                dialog.Show();
             }
         }
 
@@ -98,6 +96,9 @@ namespace show_builder
             Game game = new Game(left, right);
             Storage.Instance.Games.Add(game);
             Storage.Instance.BindAll();
+
+            FormGame form = new FormGame(game);
+            form.Show();
         }
 
         private void buttonDeleteGame_Click(object sender, EventArgs e)

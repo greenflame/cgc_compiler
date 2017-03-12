@@ -17,11 +17,13 @@ namespace show_builder
 
         public FormStrategy(Strategy strategy)
         {
+            Strategy = strategy;
+
             InitializeComponent();
 
+            UpdatePatternText = false;
             comboBoxPattern.DataSource = ExecutionPattern.AllPatterns;
-
-            Strategy = strategy;
+            UpdatePatternText = true;
 
             Storage.Instance.OnStorageChanged += BindData;
             BindData();
@@ -41,35 +43,23 @@ namespace show_builder
             textBoxExecutable.Text = Strategy.Executable;
             textBoxInterpreter.Text = Strategy.Interpreter;
             textBoxExecutionPattern.Text = Strategy.ExecutionPattern;
-        }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
+            UpdatePatternText = false;
+            comboBoxPattern.SelectedItem = ExecutionPattern.Suggest(Strategy.ExecutionPattern);
+            UpdatePatternText = true;
 
-        private void buttonSave_Click(object sender, EventArgs e)
-        {
-            SaveGame();
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-
-        private void SaveGame()
-        {
-            Strategy.Name = textBoxName.Text;
-            Strategy.Executable = textBoxExecutable.Text;
-            Strategy.Interpreter = textBoxInterpreter.Text;
-            Strategy.ExecutionPattern = textBoxExecutionPattern.Text;
-
-            Storage.Instance.BindAll();
+            bool interpreterUsed = comboBoxPattern.SelectedItem as ExecutionPattern != ExecutionPattern.NoInterpreter;
+            textBoxInterpreter.Enabled = interpreterUsed;
+            buttonBrowseInterpreter.Enabled = interpreterUsed;
         }
 
         private bool UpdatePatternText = true;
 
         private void textBoxExecutionPattern_TextChanged(object sender, EventArgs e)
         {
+            Strategy.ExecutionPattern = textBoxExecutionPattern.Text;
+            Storage.Instance.BindAll();
+
             UpdatePatternText = false;
             comboBoxPattern.SelectedItem = ExecutionPattern.Suggest(textBoxExecutionPattern.Text);
             UpdatePatternText = true;
@@ -104,5 +94,39 @@ namespace show_builder
             }
         }
 
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Really?", "Delete strategy", MessageBoxButtons.OKCancel);
+
+            if (res == DialogResult.OK)
+            {
+                Storage.Instance.Strategies.Remove(Strategy);
+                Storage.Instance.BindAll();
+                Close();
+            }
+        }
+
+        private void buttonClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void textBoxName_TextChanged(object sender, EventArgs e)
+        {
+            Strategy.Name = textBoxName.Text;
+            Storage.Instance.BindAll();
+        }
+
+        private void textBoxExecutable_TextChanged(object sender, EventArgs e)
+        {
+            Strategy.Executable = textBoxExecutable.Text;
+            Storage.Instance.BindAll();
+        }
+
+        private void textBoxInterpreter_TextChanged(object sender, EventArgs e)
+        {
+            Strategy.Interpreter = textBoxInterpreter.Text;
+            Storage.Instance.BindAll();
+        }
     }
 }

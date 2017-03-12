@@ -30,11 +30,10 @@
         {
             this.listBoxStrategies = new System.Windows.Forms.ListBox();
             this.buttonAddStrategy = new System.Windows.Forms.Button();
-            this.buttonDeleteStrategy = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.listBoxGames = new System.Windows.Forms.ListBox();
-            this.buttonEditStrategy = new System.Windows.Forms.Button();
+            this.buttonStrategyDetails = new System.Windows.Forms.Button();
             this.buttonCreateGame = new System.Windows.Forms.Button();
             this.buttonGameDetails = new System.Windows.Forms.Button();
             this.buttonDeleteGame = new System.Windows.Forms.Button();
@@ -56,19 +55,9 @@
             this.buttonAddStrategy.Name = "buttonAddStrategy";
             this.buttonAddStrategy.Size = new System.Drawing.Size(123, 23);
             this.buttonAddStrategy.TabIndex = 1;
-            this.buttonAddStrategy.Text = "1. Add strategy";
+            this.buttonAddStrategy.Text = "Add strategy";
             this.buttonAddStrategy.UseVisualStyleBackColor = true;
             this.buttonAddStrategy.Click += new System.EventHandler(this.buttonStrategyAdd_Click);
-            // 
-            // buttonDeleteStrategy
-            // 
-            this.buttonDeleteStrategy.Location = new System.Drawing.Point(264, 165);
-            this.buttonDeleteStrategy.Name = "buttonDeleteStrategy";
-            this.buttonDeleteStrategy.Size = new System.Drawing.Size(75, 23);
-            this.buttonDeleteStrategy.TabIndex = 2;
-            this.buttonDeleteStrategy.Text = "Delete";
-            this.buttonDeleteStrategy.UseVisualStyleBackColor = true;
-            this.buttonDeleteStrategy.Click += new System.EventHandler(this.buttonStrategyDelete_Click);
             // 
             // label1
             // 
@@ -97,15 +86,15 @@
             this.listBoxGames.Size = new System.Drawing.Size(400, 134);
             this.listBoxGames.TabIndex = 26;
             // 
-            // buttonEditStrategy
+            // buttonStrategyDetails
             // 
-            this.buttonEditStrategy.Location = new System.Drawing.Point(183, 165);
-            this.buttonEditStrategy.Name = "buttonEditStrategy";
-            this.buttonEditStrategy.Size = new System.Drawing.Size(75, 23);
-            this.buttonEditStrategy.TabIndex = 35;
-            this.buttonEditStrategy.Text = "Edit";
-            this.buttonEditStrategy.UseVisualStyleBackColor = true;
-            this.buttonEditStrategy.Click += new System.EventHandler(this.buttonStrategyEdit_Click);
+            this.buttonStrategyDetails.Location = new System.Drawing.Point(144, 165);
+            this.buttonStrategyDetails.Name = "buttonStrategyDetails";
+            this.buttonStrategyDetails.Size = new System.Drawing.Size(99, 23);
+            this.buttonStrategyDetails.TabIndex = 35;
+            this.buttonStrategyDetails.Text = "Details";
+            this.buttonStrategyDetails.UseVisualStyleBackColor = true;
+            this.buttonStrategyDetails.Click += new System.EventHandler(this.buttonStrategyDetails_Click);
             // 
             // buttonCreateGame
             // 
@@ -139,7 +128,7 @@
             // 
             // buttonBrowsePlayer
             // 
-            this.buttonBrowsePlayer.Location = new System.Drawing.Point(679, 222);
+            this.buttonBrowsePlayer.Location = new System.Drawing.Point(15, 222);
             this.buttonBrowsePlayer.Name = "buttonBrowsePlayer";
             this.buttonBrowsePlayer.Size = new System.Drawing.Size(99, 23);
             this.buttonBrowsePlayer.TabIndex = 47;
@@ -156,11 +145,10 @@
             this.Controls.Add(this.buttonDeleteGame);
             this.Controls.Add(this.buttonGameDetails);
             this.Controls.Add(this.buttonCreateGame);
-            this.Controls.Add(this.buttonEditStrategy);
+            this.Controls.Add(this.buttonStrategyDetails);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.listBoxGames);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonDeleteStrategy);
             this.Controls.Add(this.buttonAddStrategy);
             this.Controls.Add(this.listBoxStrategies);
             this.Name = "FormMain";
@@ -174,11 +162,10 @@
 
         private System.Windows.Forms.ListBox listBoxStrategies;
         private System.Windows.Forms.Button buttonAddStrategy;
-        private System.Windows.Forms.Button buttonDeleteStrategy;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ListBox listBoxGames;
-        private System.Windows.Forms.Button buttonEditStrategy;
+        private System.Windows.Forms.Button buttonStrategyDetails;
         private System.Windows.Forms.Button buttonCreateGame;
         private System.Windows.Forms.Button buttonGameDetails;
         private System.Windows.Forms.Button buttonDeleteGame;
