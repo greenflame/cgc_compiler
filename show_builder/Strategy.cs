@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace show_builder
 {
+    [DataContract]
     public class Strategy
     {
+        [DataMember]
         public string Name { get; set; }
+        [DataMember]
         public string Executable { get; set; }
+        [DataMember]
         public string Interpreter { get; set; }
+        [DataMember]
         public string ExecutionPattern { get; set; }
 
         public Strategy(string name, string executable, string interpreter, string executionPattern)

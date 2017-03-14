@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace show_builder
 {
-    public enum GameStatus
+    public enum GameState
     {
         Ready,
         Building,

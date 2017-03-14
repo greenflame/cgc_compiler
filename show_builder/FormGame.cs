@@ -23,7 +23,7 @@ namespace show_builder
             Game = game;
 
             Storage.Instance.OnStorageChanged += BindData;
-            BindData();
+            Storage.Instance.BindAll();
         }
 
         public void BindData()
@@ -86,7 +86,7 @@ namespace show_builder
         {
             string playerExecutable = Storage.Instance.PlayerExecutable;
 
-            if (Game.Status != GameStatus.Finished)
+            if (Game.Status != GameState.Finished)
             {
                 MessageBox.Show("Buld the game before playing.");
                 return;
@@ -114,5 +114,9 @@ namespace show_builder
             }
         }
 
+        private void FormGame_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Storage.Instance.OnStorageChanged -= BindData;
+        }
     }
 }

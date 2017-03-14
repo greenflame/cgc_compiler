@@ -84,7 +84,7 @@
             this.tabPageExecution.Location = new System.Drawing.Point(4, 22);
             this.tabPageExecution.Name = "tabPageExecution";
             this.tabPageExecution.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageExecution.Size = new System.Drawing.Size(352, 159);
+            this.tabPageExecution.Size = new System.Drawing.Size(475, 203);
             this.tabPageExecution.TabIndex = 1;
             this.tabPageExecution.Text = "Execution logger";
             this.tabPageExecution.UseVisualStyleBackColor = true;
@@ -94,7 +94,7 @@
             this.richTextBoxExecution.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxExecution.Location = new System.Drawing.Point(3, 3);
             this.richTextBoxExecution.Name = "richTextBoxExecution";
-            this.richTextBoxExecution.Size = new System.Drawing.Size(346, 153);
+            this.richTextBoxExecution.Size = new System.Drawing.Size(469, 197);
             this.richTextBoxExecution.TabIndex = 17;
             this.richTextBoxExecution.Text = "";
             // 
@@ -104,7 +104,7 @@
             this.tabPageGame.Location = new System.Drawing.Point(4, 22);
             this.tabPageGame.Name = "tabPageGame";
             this.tabPageGame.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGame.Size = new System.Drawing.Size(352, 159);
+            this.tabPageGame.Size = new System.Drawing.Size(475, 203);
             this.tabPageGame.TabIndex = 2;
             this.tabPageGame.Text = "Game logger";
             this.tabPageGame.UseVisualStyleBackColor = true;
@@ -114,7 +114,7 @@
             this.richTextBoxGame.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxGame.Location = new System.Drawing.Point(3, 3);
             this.richTextBoxGame.Name = "richTextBoxGame";
-            this.richTextBoxGame.Size = new System.Drawing.Size(346, 153);
+            this.richTextBoxGame.Size = new System.Drawing.Size(469, 197);
             this.richTextBoxGame.TabIndex = 21;
             this.richTextBoxGame.Text = "";
             // 
@@ -166,11 +166,11 @@
             this.labelRightStrategyName.TabIndex = 47;
             this.labelRightStrategyName.Text = "label2";
             // 
-            // labelGameStatus
+            // labelGameState
             // 
             this.labelGameState.AutoSize = true;
             this.labelGameState.Location = new System.Drawing.Point(12, 35);
-            this.labelGameState.Name = "labelGameStatus";
+            this.labelGameState.Name = "labelGameState";
             this.labelGameState.Size = new System.Drawing.Size(35, 13);
             this.labelGameState.TabIndex = 48;
             this.labelGameState.Text = "label3";
@@ -189,6 +189,7 @@
             this.Controls.Add(this.tabControlLoggers);
             this.Name = "FormGame";
             this.Text = "FormGame";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormGame_FormClosing);
             this.tabControlLoggers.ResumeLayout(false);
             this.tabPageBrief.ResumeLayout(false);
             this.tabPageExecution.ResumeLayout(false);

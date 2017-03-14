@@ -26,7 +26,7 @@ namespace show_builder
             UpdatePatternText = true;
 
             Storage.Instance.OnStorageChanged += BindData;
-            BindData();
+            Storage.Instance.BindAll();
         }
 
         private void BindData()

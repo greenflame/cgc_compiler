@@ -5,45 +5,38 @@ using System.Windows.Forms;
 using System.Linq;
 using System.IO;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace show_builder
 {
     public partial class FormMain : Form
     {
-        private BindingSource StrategiesBS = new BindingSource();
-        private BindingSource GamesBS = new BindingSource();
-
-        public Timer DataBindingTimer { get; private set; }
-
         public FormMain()
         {
             InitializeComponent();
 
-            StrategiesBS.DataSource = Storage.Instance.Strategies;
-            listBoxStrategies.DataSource = StrategiesBS;
-
-            GamesBS.DataSource = Storage.Instance.Games;
-            listBoxGames.DataSource = GamesBS;
-
             Storage.Instance.OnStorageChanged += BindData;
-            BindData();
+            Storage.Instance.BindAll();
         }
 
         private void BindData()
         {
-            // Save selection
-            List<Strategy> SelectedStrategies = listBoxStrategies.SelectedItems.OfType<Strategy>().ToList();
-            List<Game> SelectedGames = listBoxGames.SelectedItems.OfType<Game>().ToList();
-
-            // Bind
             if (InvokeRequired)
             {
                 this.Invoke(new Action(BindData), new object[] { });
                 return;
             }
 
-            StrategiesBS.ResetBindings(false);
-            GamesBS.ResetBindings(false);
+            // Save selection
+            List<Strategy> SelectedStrategies = listBoxStrategies.SelectedItems.OfType<Strategy>().ToList();
+            List<Game> SelectedGames = listBoxGames.SelectedItems.OfType<Game>().ToList();
+
+            // Bind
+            listBoxStrategies.DataSource = null;
+            listBoxStrategies.DataSource = Storage.Instance.Strategies;
+
+            listBoxGames.DataSource = null;
+            listBoxGames.DataSource = Storage.Instance.Games;
 
             // Restore selection
             listBoxStrategies.SelectedIndices.Clear();
@@ -51,6 +44,16 @@ namespace show_builder
 
             listBoxGames.SelectedIndices.Clear();
             SelectedGames.ForEach(g => listBoxGames.SelectedItems.Add(g));
+        }
+
+        private async Task StopAllBuilders()
+        {
+            List<Game> runningBuilders = Storage.Instance.Games
+                .Where(g => g.Status == GameState.Building)
+                .ToList();
+
+            runningBuilders.ForEach(g => g.StopBuild());
+            await Task.Run(() => runningBuilders.ForEach(g => g.JoinBuilder()));
         }
 
         private void buttonStrategyAdd_Click(object sender, EventArgs e)
@@ -116,15 +119,45 @@ namespace show_builder
             }
         }
 
-        private void buttonBrowsePlayer_Click(object sender, EventArgs e)
+        private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
+            FormPreferences form = new FormPreferences();
+            form.Show();
+        }
 
-            if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
-            {
-                Storage.Instance.PlayerExecutable = dialog.FileName;
-                Storage.Instance.BindAll();
-            }
+        private async void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Stop all games
+            await StopAllBuilders();
+
+            // Save storage
+            Storage.Save("state.xml");
+        }
+
+        private async void loadStateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Stop all games
+            await StopAllBuilders();
+
+            // Load storage
+            Storage.Load("state.xml");
+
+            // Bind
+            Storage.Instance.OnStorageChanged += BindData;
+            Storage.Instance.BindAll();
+
+            // Close all forms in case of wrong binding
+            Application.OpenForms
+                .OfType<Form>()
+                .Where(f => f != this)
+                .ToList()
+                .ForEach(f => f.Close());
+        }
+
+        private async void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Storage.Instance.OnStorageChanged -= BindData;
+            await StopAllBuilders();
         }
     }
 }
