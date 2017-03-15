@@ -25,15 +25,15 @@ namespace show_builder
             comboBoxPattern.DataSource = ExecutionPattern.AllPatterns;
             UpdatePatternText = true;
 
-            Storage.Instance.OnStorageChanged += BindData;
-            Storage.Instance.BindAll();
+            Storage.Instance.OnChange += Bind;
+            Storage.Instance.Bind();
         }
 
-        private void BindData()
+        private void Bind()
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action(BindData), new object[] { });
+                this.Invoke(new Action(Bind), new object[] { });
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace show_builder
         private void textBoxExecutionPattern_TextChanged(object sender, EventArgs e)
         {
             Strategy.ExecutionPattern = textBoxExecutionPattern.Text;
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
 
             UpdatePatternText = false;
             comboBoxPattern.SelectedItem = ExecutionPattern.Suggest(textBoxExecutionPattern.Text);
@@ -101,7 +101,7 @@ namespace show_builder
             if (res == DialogResult.OK)
             {
                 Storage.Instance.Strategies.Remove(Strategy);
-                Storage.Instance.BindAll();
+                Storage.Instance.Bind();
                 Close();
             }
         }
@@ -114,19 +114,19 @@ namespace show_builder
         private void textBoxName_TextChanged(object sender, EventArgs e)
         {
             Strategy.Name = textBoxName.Text;
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
         }
 
         private void textBoxExecutable_TextChanged(object sender, EventArgs e)
         {
             Strategy.Executable = textBoxExecutable.Text;
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
         }
 
         private void textBoxInterpreter_TextChanged(object sender, EventArgs e)
         {
             Strategy.Interpreter = textBoxInterpreter.Text;
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
         }
     }
 }

@@ -22,15 +22,15 @@ namespace show_builder
 
             Game = game;
 
-            Storage.Instance.OnStorageChanged += BindData;
-            Storage.Instance.BindAll();
+            Storage.Instance.OnChange += Bind;
+            Storage.Instance.Bind();
         }
 
-        public void BindData()
+        public void Bind()
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action(BindData), new object[] {});
+                this.Invoke(new Action(Bind), new object[] {});
                 return;
             }
 
@@ -52,7 +52,7 @@ namespace show_builder
 
             // Game state, name, strategy names
             Text = Game.Name;
-            labelGameState.Text = Game.Status.ToString();
+            labelGameState.Text = Game.State.ToString();
 
             labelLeftStrategyName.Text = Game.Left.Name;
             labelRightStrategyName.Text = Game.Right.Name;
@@ -70,23 +70,16 @@ namespace show_builder
             }
         }
 
-        private void buttonStopBuild_Click(object sender, EventArgs e)
+        private async void buttonStopBuild_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Game.StopBuild();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            await Game.StopBuild();
         }
 
         private void buttonPlayGame_Click(object sender, EventArgs e)
         {
             string playerExecutable = Storage.Instance.PlayerExecutable;
 
-            if (Game.Status != GameState.Finished)
+            if (Game.State != GameState.Finished)
             {
                 MessageBox.Show("Buld the game before playing.");
                 return;
@@ -116,7 +109,7 @@ namespace show_builder
 
         private void FormGame_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Storage.Instance.OnStorageChanged -= BindData;
+            Storage.Instance.OnChange -= Bind;
         }
     }
 }

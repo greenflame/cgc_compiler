@@ -11,6 +11,14 @@ namespace show_builder
     [DataContract]
     class Storage
     {
+        [DataMember]
+        public List<Strategy> Strategies { get; private set; } = new List<Strategy>();
+        [DataMember]
+        public List<Game> Games { get; private set; } = new List<Game>();
+
+        [DataMember]
+        public string PlayerExecutable { get; set; }
+
         private static Storage instance;
 
         public static Storage Instance
@@ -26,23 +34,15 @@ namespace show_builder
             }
         }
 
-        [DataMember]
-        public List<Strategy> Strategies { get; private set; } = new List<Strategy>();
-        [DataMember]
-        public List<Game> Games { get; private set; } = new List<Game>();
-
-        [DataMember]
-        public string PlayerExecutable { get; set; }
-
-        public event Action OnStorageChanged;
+        public event Action OnChange;
 
         private Storage()
         {
         }
 
-        public void BindAll()
+        public void Bind()
         {
-            OnStorageChanged?.Invoke();
+            OnChange?.Invoke();
         }
 
         public static void Save(string path)
@@ -71,6 +71,18 @@ namespace show_builder
             fs.Close();
 
             instance = loadedStorage;
+        }
+
+        public static async Task StopAllBuilders()
+        {
+            if (Instance.Games.Count == 0)
+            {
+                return;
+            }
+
+            await Task.Factory.ContinueWhenAll(Instance.Games
+                .Select(g => g.StopBuild())
+                .ToArray(), q => { });
         }
     }
 }

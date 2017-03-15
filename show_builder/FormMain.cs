@@ -15,15 +15,15 @@ namespace show_builder
         {
             InitializeComponent();
 
-            Storage.Instance.OnStorageChanged += BindData;
-            Storage.Instance.BindAll();
+            Storage.Instance.OnChange += Bind;
+            Storage.Instance.Bind();
         }
 
-        private void BindData()
+        private void Bind()
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action(BindData), new object[] { });
+                this.Invoke(new Action(Bind), new object[] { });
                 return;
             }
 
@@ -46,33 +46,81 @@ namespace show_builder
             SelectedGames.ForEach(g => listBoxGames.SelectedItems.Add(g));
         }
 
-        private async Task StopAllBuilders()
-        {
-            List<Game> runningBuilders = Storage.Instance.Games
-                .Where(g => g.Status == GameState.Building)
-                .ToList();
-
-            runningBuilders.ForEach(g => g.StopBuild());
-            await Task.Run(() => runningBuilders.ForEach(g => g.JoinBuilder()));
-        }
-
-        private void buttonStrategyAdd_Click(object sender, EventArgs e)
+        public void AddStrategy()
         {
             Strategy strategy = new Strategy();
             Storage.Instance.Strategies.Add(strategy);
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
 
             FormStrategy dialog = new FormStrategy(strategy);
             dialog.Show();
         }
 
+        public void StrategyDetails()
+        {
+            if (listBoxStrategies.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select strategies form the list.");
+                return;
+            }
+
+            listBoxStrategies.SelectedItems
+                .OfType<Strategy>()
+                .ToList()
+                .ForEach(s =>
+                {
+                    FormStrategy dialog = new FormStrategy(s);
+                    dialog.Show();
+                });
+        }
+
+        public async Task RemoveStrategies()
+        {
+            if (listBoxStrategies.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select strategies from the list.");
+                return;
+            }
+
+            List<Strategy> strategiesToDel = listBoxStrategies.SelectedItems
+                .OfType<Strategy>()
+                .ToList();
+
+            List<Game> gamesToDel = Storage.Instance.Games
+                .Where(g => strategiesToDel.Contains(g.Left) || strategiesToDel.Contains(g.Right))
+                .ToList();
+
+            string msg = "Do you really want to delete strategies: {0}? The following games also will be aborted and deleted: {1}.";
+            string cptn = "Delete games";
+
+            DialogResult res = MessageBox.Show(
+                string.Format(msg,
+                    string.Join(", ",strategiesToDel),
+                    string.Join(", ", gamesToDel.Select(g => g.Name))),
+                cptn,
+                MessageBoxButtons.OKCancel);
+
+            if (res == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            // Stop games to delete
+            await Task.Factory.ContinueWhenAll(gamesToDel.Select(g => g.StopBuild()).ToArray(), q => { });
+
+            gamesToDel.ForEach(g => Storage.Instance.Games.Remove(g));
+            strategiesToDel.ForEach(s => Storage.Instance.Strategies.Remove(s));
+            Storage.Instance.Bind();
+        }
+
+        private void buttonStrategyAdd_Click(object sender, EventArgs e)
+        {
+            AddStrategy();
+        }
+
         private void buttonStrategyDetails_Click(object sender, EventArgs e)
         {
-            if (listBoxStrategies.SelectedItem != null)
-            {
-                FormStrategy dialog = new FormStrategy(listBoxStrategies.SelectedItem as Strategy);
-                dialog.Show();
-            }
+            StrategyDetails();
         }
 
         private void buttonCreateGame_Click(object sender, EventArgs e)
@@ -98,7 +146,7 @@ namespace show_builder
 
             Game game = new Game(left, right);
             Storage.Instance.Games.Add(game);
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
 
             FormGame form = new FormGame(game);
             form.Show();
@@ -107,7 +155,7 @@ namespace show_builder
         private void buttonDeleteGame_Click(object sender, EventArgs e)
         {
             listBoxGames.SelectedItems.OfType<Game>().ToList().ForEach(i => Storage.Instance.Games.Remove(i));
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
         }
 
         private void buttonGameDetails_Click(object sender, EventArgs e)
@@ -128,7 +176,7 @@ namespace show_builder
         private async void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Stop all games
-            await StopAllBuilders();
+            await Storage.StopAllBuilders();
 
             // Save storage
             Storage.Save("state.xml");
@@ -137,14 +185,14 @@ namespace show_builder
         private async void loadStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Stop all games
-            await StopAllBuilders();
+            await Storage.StopAllBuilders();
 
             // Load storage
             Storage.Load("state.xml");
 
             // Bind
-            Storage.Instance.OnStorageChanged += BindData;
-            Storage.Instance.BindAll();
+            Storage.Instance.OnChange += Bind;
+            Storage.Instance.Bind();
 
             // Close all forms in case of wrong binding
             Application.OpenForms
@@ -156,8 +204,36 @@ namespace show_builder
 
         private async void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Storage.Instance.OnStorageChanged -= BindData;
-            await StopAllBuilders();
+            Storage.Instance.OnChange -= Bind;
+            await Storage.StopAllBuilders();
+        }
+
+        private async void stopAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Storage.StopAllBuilders();
+        }
+
+        private void buildAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Storage.Instance.Games
+                .Where(g => g.State != GameState.Building)
+                .ToList()
+                .ForEach(g => g.StartBuild());
+        }
+
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddStrategy();
+        }
+
+        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StrategyDetails();
+        }
+
+        private async void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await RemoveStrategies();
         }
     }
 }

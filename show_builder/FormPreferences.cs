@@ -17,15 +17,15 @@ namespace show_builder
         {
             InitializeComponent();
 
-            Storage.Instance.OnStorageChanged += BindData;
-            Storage.Instance.BindAll();
+            Storage.Instance.OnChange += Bind;
+            Storage.Instance.Bind();
         }
 
-        private void BindData()
+        private void Bind()
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action(BindData), new object[] { });
+                this.Invoke(new Action(Bind), new object[] { });
                 return;
             }
 
@@ -39,19 +39,19 @@ namespace show_builder
             if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
             {
                 Storage.Instance.PlayerExecutable = dialog.FileName;
-                Storage.Instance.BindAll();
+                Storage.Instance.Bind();
             }
         }
 
         private void textBoxPlayerExecutable_TextChanged(object sender, EventArgs e)
         {
             Storage.Instance.PlayerExecutable = textBoxPlayerExecutable.Text;
-            Storage.Instance.BindAll();
+            Storage.Instance.Bind();
         }
 
         private void buttonClose_Click(object sender, EventArgs e)
         {
-            Storage.Instance.OnStorageChanged -= BindData;
+            Storage.Instance.OnChange -= Bind;
             Close();
         }
     }
