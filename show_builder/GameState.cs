@@ -11,6 +11,7 @@ namespace show_builder
         Ready,
         Building,
         Finished,
-        Error
+        Error,
+        Aborted
     }
 }

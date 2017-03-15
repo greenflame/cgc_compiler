@@ -104,6 +104,12 @@ namespace show_builder
                 State = GameState.Finished;
                 Storage.Instance.Bind();
             }
+            catch (ThreadAbortException tae)
+            {
+                BriefLog += tae.Message + Environment.NewLine;
+                State = GameState.Aborted;
+                Storage.Instance.Bind();
+            }
             catch (Exception ex)
             {
                 BriefLog += ex.Message + Environment.NewLine;

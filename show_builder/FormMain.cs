@@ -46,9 +46,10 @@ namespace show_builder
             SelectedGames.ForEach(g => listBoxGames.SelectedItems.Add(g));
         }
 
-        public void AddStrategy()
+        public void AddStrategy(object sender, EventArgs e)
         {
             Strategy strategy = new Strategy();
+
             Storage.Instance.Strategies.Add(strategy);
             Storage.Instance.Bind();
 
@@ -56,35 +57,32 @@ namespace show_builder
             dialog.Show();
         }
 
-        public void StrategyDetails()
+        public void StrategyDetails(object sender, EventArgs e)
         {
-            if (listBoxStrategies.SelectedItems.Count == 0)
+            List<Strategy> selected = listBoxStrategies.SelectedItems.OfType<Strategy>().ToList();
+
+            if (selected.Count == 0)
             {
                 MessageBox.Show("Select strategies form the list.");
                 return;
             }
 
-            listBoxStrategies.SelectedItems
-                .OfType<Strategy>()
-                .ToList()
-                .ForEach(s =>
+            selected.ForEach(s =>
                 {
                     FormStrategy dialog = new FormStrategy(s);
                     dialog.Show();
                 });
         }
 
-        public async Task RemoveStrategies()
+        public async void RemoveStrategies(object sender, EventArgs e)
         {
-            if (listBoxStrategies.SelectedItems.Count == 0)
+            List<Strategy> strategiesToDel = listBoxStrategies.SelectedItems.OfType<Strategy>().ToList();
+
+            if (strategiesToDel.Count == 0)
             {
                 MessageBox.Show("Select strategies from the list.");
                 return;
             }
-
-            List<Strategy> strategiesToDel = listBoxStrategies.SelectedItems
-                .OfType<Strategy>()
-                .ToList();
 
             List<Game> gamesToDel = Storage.Instance.Games
                 .Where(g => strategiesToDel.Contains(g.Left) || strategiesToDel.Contains(g.Right))
@@ -105,7 +103,6 @@ namespace show_builder
                 return;
             }
 
-            // Stop games to delete
             await Storage.StopBuilders(gamesToDel);
 
             gamesToDel.ForEach(g => Storage.Instance.Games.Remove(g));
@@ -113,7 +110,7 @@ namespace show_builder
             Storage.Instance.Bind();
         }
 
-        public void CreateGame()
+        public void CreateGame(object sender, EventArgs e)
         {
             Strategy left;
             Strategy right;
@@ -135,6 +132,7 @@ namespace show_builder
             }
 
             Game game = new Game(left, right);
+
             Storage.Instance.Games.Add(game);
             Storage.Instance.Bind();
 
@@ -142,41 +140,38 @@ namespace show_builder
             form.Show();
         }
 
-        public void GameDetails()
+        public void GameDetails(object sender, EventArgs e)
         {
-            if (listBoxGames.SelectedItems.Count == 0)
+            List<Game> selected = listBoxGames.SelectedItems.OfType<Game>().ToList();
+
+            if (selected.Count == 0)
             {
                 MessageBox.Show("Select games from the list.");
                 return;
             }
 
-            listBoxGames.SelectedItems
-                .OfType<Game>()
-                .ToList()
-                .ForEach(s =>
+            selected.ForEach(s =>
                 {
                     FormGame dialog = new FormGame(s);
                     dialog.Show();
                 });
         }
 
-        public async Task RemoveGames()
+        public async void RemoveGames(object sender, EventArgs e)
         {
-            if (listBoxGames.SelectedItems.Count == 0)
+            List<Game> selected = listBoxGames.SelectedItems.OfType<Game>().ToList();
+
+            if (selected.Count == 0)
             {
                 MessageBox.Show("Select games from the list.");
                 return;
             }
 
-            List<Game> gamesToDel = listBoxGames.SelectedItems
-                .OfType<Game>()
-                .ToList();
-
             string msg = "Do you really want to abort adn delete games: {0}?";
             string cptn = "Delete games";
 
             DialogResult res = MessageBox.Show(
-                string.Format(msg, string.Join(", ", gamesToDel)),
+                string.Format(msg, string.Join(", ", selected)),
                 cptn,
                 MessageBoxButtons.OKCancel);
 
@@ -185,36 +180,46 @@ namespace show_builder
                 return;
             }
 
-            // Stop games to delete
-            await Storage.StopBuilders(gamesToDel);
+            await Storage.StopBuilders(selected);
 
-            gamesToDel.ForEach(g => Storage.Instance.Games.Remove(g));
+            selected.ForEach(g => Storage.Instance.Games.Remove(g));
             Storage.Instance.Bind();
         }
 
-        private void buttonStrategyAdd_Click(object sender, EventArgs e)
+        public void BuildGame(object sender, EventArgs e)
         {
-            AddStrategy();
+            Game selected = listBoxGames.SelectedItem as Game;
+
+            if (selected == null)
+            {
+                MessageBox.Show("Select a game from the list.");
+                return;
+            }
+
+            bool isAnyGameBuilding = Storage.Instance.Games
+                .Where(g => g.State == GameState.Building)
+                .Count() > 0;
+
+            if (isAnyGameBuilding)
+            {
+                MessageBox.Show("Other game is building.");
+                return;
+            }
+
+            selected.StartBuild();
         }
 
-        private void buttonStrategyDetails_Click(object sender, EventArgs e)
+        public async void StopBuild(object sender, EventArgs e)
         {
-            StrategyDetails();
-        }
+            Game selected = listBoxGames.SelectedItem as Game;
 
-        private void buttonCreateGame_Click(object sender, EventArgs e)
-        {
-            CreateGame();
-        }
+            if (selected == null)
+            {
+                MessageBox.Show("Select a game from the list.");
+                return;
+            }
 
-        private async void buttonDeleteGame_Click(object sender, EventArgs e)
-        {
-            await RemoveGames();
-        }
-
-        private void buttonGameDetails_Click(object sender, EventArgs e)
-        {
-            GameDetails();
+            await selected.StopBuild();
         }
 
         private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -256,49 +261,6 @@ namespace show_builder
         {
             Storage.Instance.OnChange -= Bind;
             await Storage.StopAllBuilders();
-        }
-
-        private async void stopAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await Storage.StopAllBuilders();
-        }
-
-        private void buildAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Storage.Instance.Games
-                .Where(g => g.State != GameState.Building)
-                .ToList()
-                .ForEach(g => g.StartBuild());
-        }
-
-        private void addToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddStrategy();
-        }
-
-        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StrategyDetails();
-        }
-
-        private async void removeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await RemoveStrategies();
-        }
-
-        private void createToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CreateGame();
-        }
-
-        private void detailsToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            GameDetails();
-        }
-
-        private async void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await RemoveGames();
         }
     }
 }
