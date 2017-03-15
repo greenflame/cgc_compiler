@@ -73,7 +73,7 @@ namespace show_builder
             instance = loadedStorage;
         }
 
-        public static async Task StopAllBuilders()
+        public static async Task StopBuilders(List<Game> games)
         {
             if (Instance.Games.Count == 0)
             {
@@ -83,6 +83,11 @@ namespace show_builder
             await Task.Factory.ContinueWhenAll(Instance.Games
                 .Select(g => g.StopBuild())
                 .ToArray(), q => { });
+        }
+
+        public static async Task StopAllBuilders()
+        {
+            await StopBuilders(Instance.Games);
         }
     }
 }

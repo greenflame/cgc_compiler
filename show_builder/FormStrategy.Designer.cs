@@ -142,7 +142,7 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(315, 130);
+            this.buttonDelete.Location = new System.Drawing.Point(396, 130);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(75, 23);
             this.buttonDelete.TabIndex = 27;
@@ -152,11 +152,11 @@
             // 
             // buttonClose
             // 
-            this.buttonClose.Location = new System.Drawing.Point(396, 130);
+            this.buttonClose.Location = new System.Drawing.Point(315, 130);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 28;
-            this.buttonClose.Text = "Ok";
+            this.buttonClose.Text = "Save";
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 

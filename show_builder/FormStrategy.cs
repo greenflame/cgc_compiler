@@ -37,6 +37,11 @@ namespace show_builder
                 return;
             }
 
+            if (!Storage.Instance.Strategies.Contains(Strategy))
+            {
+                Close();
+            }
+
             Text = Strategy.Name;
 
             textBoxName.Text = Strategy.Name;
@@ -94,16 +99,33 @@ namespace show_builder
             }
         }
 
-        private void buttonDelete_Click(object sender, EventArgs e)
+        private async void buttonDelete_Click(object sender, EventArgs e)
         {
-            DialogResult res = MessageBox.Show("Really?", "Delete strategy", MessageBoxButtons.OKCancel);
+            List<Game> gamesToDel = Storage.Instance.Games
+                .Where(g => g.Left == Strategy || g.Right == Strategy)
+                .ToList();
 
-            if (res == DialogResult.OK)
+            string msg = "Do you really want to delete strategy {0}? The following games also will be aborted and deleted: {1}.";
+            string cptn = "Delete strategy";
+
+            DialogResult res = MessageBox.Show(
+                string.Format(msg,
+                    Strategy,
+                    string.Join(", ", gamesToDel.Select(g => g.Name))),
+                cptn,
+                MessageBoxButtons.OKCancel);
+
+            if (res == DialogResult.Cancel)
             {
-                Storage.Instance.Strategies.Remove(Strategy);
-                Storage.Instance.Bind();
-                Close();
+                return;
             }
+
+            // Stop games to delete
+            await Storage.StopBuilders(gamesToDel);
+
+            gamesToDel.ForEach(g => Storage.Instance.Games.Remove(g));
+            Storage.Instance.Strategies.Remove(Strategy);
+            Storage.Instance.Bind();
         }
 
         private void buttonClose_Click(object sender, EventArgs e)

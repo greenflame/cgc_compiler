@@ -91,7 +91,7 @@ namespace show_builder
                 .ToList();
 
             string msg = "Do you really want to delete strategies: {0}? The following games also will be aborted and deleted: {1}.";
-            string cptn = "Delete games";
+            string cptn = "Delete strategies";
 
             DialogResult res = MessageBox.Show(
                 string.Format(msg,
@@ -106,24 +106,14 @@ namespace show_builder
             }
 
             // Stop games to delete
-            await Task.Factory.ContinueWhenAll(gamesToDel.Select(g => g.StopBuild()).ToArray(), q => { });
+            await Storage.StopBuilders(gamesToDel);
 
             gamesToDel.ForEach(g => Storage.Instance.Games.Remove(g));
             strategiesToDel.ForEach(s => Storage.Instance.Strategies.Remove(s));
             Storage.Instance.Bind();
         }
 
-        private void buttonStrategyAdd_Click(object sender, EventArgs e)
-        {
-            AddStrategy();
-        }
-
-        private void buttonStrategyDetails_Click(object sender, EventArgs e)
-        {
-            StrategyDetails();
-        }
-
-        private void buttonCreateGame_Click(object sender, EventArgs e)
+        public void CreateGame()
         {
             Strategy left;
             Strategy right;
@@ -152,19 +142,79 @@ namespace show_builder
             form.Show();
         }
 
-        private void buttonDeleteGame_Click(object sender, EventArgs e)
+        public void GameDetails()
         {
-            listBoxGames.SelectedItems.OfType<Game>().ToList().ForEach(i => Storage.Instance.Games.Remove(i));
+            if (listBoxGames.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select games from the list.");
+                return;
+            }
+
+            listBoxGames.SelectedItems
+                .OfType<Game>()
+                .ToList()
+                .ForEach(s =>
+                {
+                    FormGame dialog = new FormGame(s);
+                    dialog.Show();
+                });
+        }
+
+        public async Task RemoveGames()
+        {
+            if (listBoxGames.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select games from the list.");
+                return;
+            }
+
+            List<Game> gamesToDel = listBoxGames.SelectedItems
+                .OfType<Game>()
+                .ToList();
+
+            string msg = "Do you really want to abort adn delete games: {0}?";
+            string cptn = "Delete games";
+
+            DialogResult res = MessageBox.Show(
+                string.Format(msg, string.Join(", ", gamesToDel)),
+                cptn,
+                MessageBoxButtons.OKCancel);
+
+            if (res == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            // Stop games to delete
+            await Storage.StopBuilders(gamesToDel);
+
+            gamesToDel.ForEach(g => Storage.Instance.Games.Remove(g));
             Storage.Instance.Bind();
+        }
+
+        private void buttonStrategyAdd_Click(object sender, EventArgs e)
+        {
+            AddStrategy();
+        }
+
+        private void buttonStrategyDetails_Click(object sender, EventArgs e)
+        {
+            StrategyDetails();
+        }
+
+        private void buttonCreateGame_Click(object sender, EventArgs e)
+        {
+            CreateGame();
+        }
+
+        private async void buttonDeleteGame_Click(object sender, EventArgs e)
+        {
+            await RemoveGames();
         }
 
         private void buttonGameDetails_Click(object sender, EventArgs e)
         {
-            if (listBoxGames.SelectedItem != null)
-            {
-                FormGame form = new FormGame(listBoxGames.SelectedItem as Game);
-                form.Show();
-            }
+            GameDetails();
         }
 
         private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -234,6 +284,21 @@ namespace show_builder
         private async void removeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await RemoveStrategies();
+        }
+
+        private void createToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateGame();
+        }
+
+        private void detailsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            GameDetails();
+        }
+
+        private async void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await RemoveGames();
         }
     }
 }
