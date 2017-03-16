@@ -34,6 +34,15 @@ namespace show_builder
                 return;
             }
 
+            if (!Storage.Instance.Games.Contains(Game))
+            {
+                Close();
+            }
+
+            comboBoxLeftStrategy.SelectedIndexChanged -= comboBoxLeftStrategy_SelectedIndexChanged;
+            comboBoxRightStrategy.SelectedIndexChanged -= comboBoxRightStrategy_SelectedIndexChanged;
+            textBoxName.TextChanged -= textBoxName_TextChanged;
+
             // Logs
             if (richTextBoxBrief.Text != Game.BriefLog.Replace("\r\n", "\n"))
             {
@@ -50,12 +59,29 @@ namespace show_builder
                richTextBoxExecution.Text = Game.ExecutionLog;
             }
 
-            // Game state, name, strategy names
-            Text = Game.Name;
-            labelGameState.Text = Game.State.ToString();
+            // Data
+            Text = string.Format("{0} [{1}]", Game.Name, Game.State);
 
-            labelLeftStrategyName.Text = Game.Left.Name;
-            labelRightStrategyName.Text = Game.Right.Name;
+            textBoxName.Text = Game.Name;
+
+            BindingSource leftStrategiesBS = new BindingSource();
+            leftStrategiesBS.DataSource = Storage.Instance.Strategies;            
+            comboBoxLeftStrategy.DataSource = leftStrategiesBS;
+            comboBoxLeftStrategy.SelectedItem = Game.Left;
+
+            BindingSource rightStrategiesBS = new BindingSource();
+            rightStrategiesBS.DataSource = Storage.Instance.Strategies;
+            comboBoxRightStrategy.DataSource = rightStrategiesBS;
+            comboBoxRightStrategy.SelectedItem = Game.Right;
+
+            // Components enable
+            bool strategyChangeAvailible = Game.State != GameState.Building && Game.State != GameState.Finished;
+            comboBoxLeftStrategy.Enabled = strategyChangeAvailible;
+            comboBoxRightStrategy.Enabled = strategyChangeAvailible;
+
+            comboBoxLeftStrategy.SelectedIndexChanged += comboBoxLeftStrategy_SelectedIndexChanged;
+            comboBoxRightStrategy.SelectedIndexChanged += comboBoxRightStrategy_SelectedIndexChanged;
+            textBoxName.TextChanged += textBoxName_TextChanged;
         }
 
         private void buttonBuildGame_Click(object sender, EventArgs e)
@@ -110,6 +136,38 @@ namespace show_builder
         private void FormGame_FormClosing(object sender, FormClosingEventArgs e)
         {
             Storage.Instance.OnChange -= Bind;
+        }
+
+        private void textBoxName_TextChanged(object sender, EventArgs e)
+        {
+            Game.Name = textBoxName.Text;
+            Storage.Instance.Bind();
+        }
+
+        private void comboBoxLeftStrategy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Strategy strategy = comboBoxLeftStrategy.SelectedItem as Strategy;
+
+            if (strategy == null)
+            {
+                return;
+            }
+
+            Game.Left = strategy;
+            Storage.Instance.Bind();
+        }
+
+        private void comboBoxRightStrategy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Strategy strategy = comboBoxRightStrategy.SelectedItem as Strategy;
+
+            if (strategy == null)
+            {
+                return;
+            }
+
+            Game.Right = strategy;
+            Storage.Instance.Bind();
         }
     }
 }

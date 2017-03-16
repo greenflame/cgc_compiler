@@ -219,7 +219,14 @@ namespace show_builder
                 return;
             }
 
-            await selected.StopBuild();
+            try
+            {
+                await selected.StopBuild();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)

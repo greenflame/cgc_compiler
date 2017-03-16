@@ -16,9 +16,9 @@ namespace show_builder
         public string Name { get; set; }
 
         [DataMember]
-        public Strategy Left { get; private set; }
+        public Strategy Left { get; set; }
         [DataMember]
-        public Strategy Right { get; private set; }
+        public Strategy Right { get; set; }
 
         [DataMember]
         public string GameLog { get; private set; } = "";
@@ -144,7 +144,7 @@ namespace show_builder
         {
             if (State != GameState.Building)
             {
-                throw new Exception("Builder is not working.");
+                throw new Exception("Builder is not running.");
             }
 
             if (IsInterrupting)

@@ -38,6 +38,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.listBoxGames = new System.Windows.Forms.ListBox();
+            this.contextMenuStripGame = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.detailsToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.buildToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopBuildToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.playToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonStrategyDetails = new System.Windows.Forms.Button();
             this.buttonCreateGame = new System.Windows.Forms.Button();
             this.buttonGameDetails = new System.Windows.Forms.Button();
@@ -60,6 +68,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripStrategy.SuspendLayout();
+            this.contextMenuStripGame.SuspendLayout();
             this.menuStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,6 +81,7 @@
             this.listBoxStrategies.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxStrategies.Size = new System.Drawing.Size(260, 160);
             this.listBoxStrategies.TabIndex = 0;
+            this.listBoxStrategies.DoubleClick += new System.EventHandler(this.StrategyDetails);
             // 
             // contextMenuStripStrategy
             // 
@@ -133,12 +143,73 @@
             // 
             // listBoxGames
             // 
+            this.listBoxGames.ContextMenuStrip = this.contextMenuStripGame;
             this.listBoxGames.FormattingEnabled = true;
             this.listBoxGames.Location = new System.Drawing.Point(281, 50);
             this.listBoxGames.Name = "listBoxGames";
             this.listBoxGames.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxGames.Size = new System.Drawing.Size(260, 160);
             this.listBoxGames.TabIndex = 26;
+            this.listBoxGames.DoubleClick += new System.EventHandler(this.GameDetails);
+            // 
+            // contextMenuStripGame
+            // 
+            this.contextMenuStripGame.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createToolStripMenuItem1,
+            this.detailsToolStripMenuItem2,
+            this.deleteToolStripMenuItem1,
+            this.toolStripSeparator3,
+            this.buildToolStripMenuItem1,
+            this.stopBuildToolStripMenuItem1,
+            this.playToolStripMenuItem1});
+            this.contextMenuStripGame.Name = "contextMenuStripGame";
+            this.contextMenuStripGame.Size = new System.Drawing.Size(129, 142);
+            // 
+            // createToolStripMenuItem1
+            // 
+            this.createToolStripMenuItem1.Name = "createToolStripMenuItem1";
+            this.createToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.createToolStripMenuItem1.Text = "Create";
+            this.createToolStripMenuItem1.Click += new System.EventHandler(this.CreateGame);
+            // 
+            // detailsToolStripMenuItem2
+            // 
+            this.detailsToolStripMenuItem2.Name = "detailsToolStripMenuItem2";
+            this.detailsToolStripMenuItem2.Size = new System.Drawing.Size(128, 22);
+            this.detailsToolStripMenuItem2.Text = "Details";
+            this.detailsToolStripMenuItem2.Click += new System.EventHandler(this.GameDetails);
+            // 
+            // deleteToolStripMenuItem1
+            // 
+            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
+            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.deleteToolStripMenuItem1.Text = "Delete";
+            this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.RemoveGames);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(125, 6);
+            // 
+            // buildToolStripMenuItem1
+            // 
+            this.buildToolStripMenuItem1.Name = "buildToolStripMenuItem1";
+            this.buildToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.buildToolStripMenuItem1.Text = "Build";
+            this.buildToolStripMenuItem1.Click += new System.EventHandler(this.BuildGame);
+            // 
+            // stopBuildToolStripMenuItem1
+            // 
+            this.stopBuildToolStripMenuItem1.Name = "stopBuildToolStripMenuItem1";
+            this.stopBuildToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.stopBuildToolStripMenuItem1.Text = "Stop build";
+            this.stopBuildToolStripMenuItem1.Click += new System.EventHandler(this.StopBuild);
+            // 
+            // playToolStripMenuItem1
+            // 
+            this.playToolStripMenuItem1.Name = "playToolStripMenuItem1";
+            this.playToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.playToolStripMenuItem1.Text = "Play";
             // 
             // buttonStrategyDetails
             // 
@@ -158,6 +229,7 @@
             this.buttonCreateGame.TabIndex = 36;
             this.buttonCreateGame.Text = "Create game";
             this.buttonCreateGame.UseVisualStyleBackColor = true;
+            this.buttonCreateGame.Click += new System.EventHandler(this.CreateGame);
             // 
             // buttonGameDetails
             // 
@@ -167,6 +239,7 @@
             this.buttonGameDetails.TabIndex = 37;
             this.buttonGameDetails.Text = "Details";
             this.buttonGameDetails.UseVisualStyleBackColor = true;
+            this.buttonGameDetails.Click += new System.EventHandler(this.GameDetails);
             // 
             // menuStripMain
             // 
@@ -228,47 +301,47 @@
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.createToolStripMenuItem.Text = "Create";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.CreateGame);
             // 
             // detailsToolStripMenuItem1
             // 
             this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
-            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
             this.detailsToolStripMenuItem1.Text = "Details";
             this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.GameDetails);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.RemoveGames);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(125, 6);
             // 
             // buildToolStripMenuItem
             // 
             this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
-            this.buildToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.buildToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.buildToolStripMenuItem.Text = "Build";
             this.buildToolStripMenuItem.Click += new System.EventHandler(this.BuildGame);
             // 
             // stopBuildToolStripMenuItem
             // 
             this.stopBuildToolStripMenuItem.Name = "stopBuildToolStripMenuItem";
-            this.stopBuildToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopBuildToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.stopBuildToolStripMenuItem.Text = "Stop build";
             this.stopBuildToolStripMenuItem.Click += new System.EventHandler(this.StopBuild);
             // 
             // playToolStripMenuItem
             // 
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.playToolStripMenuItem.Text = "Play";
             // 
             // preferencesToolStripMenuItem
@@ -327,6 +400,7 @@
             this.Text = "Show builder";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.contextMenuStripStrategy.ResumeLayout(false);
+            this.contextMenuStripGame.ResumeLayout(false);
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             this.ResumeLayout(false);
@@ -366,6 +440,14 @@
         private System.Windows.Forms.ToolStripMenuItem contextGameAdd;
         private System.Windows.Forms.ToolStripMenuItem contextGameDetails;
         private System.Windows.Forms.ToolStripMenuItem contextGameRemove;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripGame;
+        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem detailsToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem stopBuildToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem1;
     }
 }
 

@@ -158,6 +158,7 @@ namespace cgc_compiler
 		public void ProcessOutput(string output, Action<string> executionLogger)
 		{
 			output
+                .Replace(",", ".")
 				.Split (new String[] { Environment.NewLine }, StringSplitOptions.None)
 				.ToList ()
 				.ForEach (command => {
