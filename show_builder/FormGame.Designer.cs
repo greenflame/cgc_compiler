@@ -211,7 +211,7 @@
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(98, 23);
             this.buttonDelete.TabIndex = 52;
-            this.buttonDelete.Text = "buttonDeleteGame";
+            this.buttonDelete.Text = "Delete game";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
             // 

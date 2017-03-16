@@ -10,6 +10,8 @@ namespace cgc_compiler
 		public Action<string> ExecutionLogger { get; private set; }
 		public Action<string> BriefInfoLogger { get; private set; }
 
+        public event Action<int> TurnFinished;
+
         public Strategy LeftStrategy { get; private set; }
         public Strategy RightStrategy { get; private set; }
 
@@ -49,6 +51,7 @@ namespace cgc_compiler
 
 				RunStrategies();
 				TurnNum++;
+                TurnFinished?.Invoke(TurnNum);
 			}
 
 			// Time limit exceeded

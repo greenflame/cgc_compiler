@@ -86,14 +86,14 @@ namespace show_builder
 
         private void buttonBuildGame_Click(object sender, EventArgs e)
         {
-            try
+            if (Game.State == GameState.Building || Game.State == GameState.Finished)
             {
-                Game.StartBuild();
+                MessageBox.Show("Game is already building or finished.");
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+
+            Game.State = GameState.Inqueued;
+            Storage.Instance.Bind();
         }
 
         private async void buttonStopBuild_Click(object sender, EventArgs e)

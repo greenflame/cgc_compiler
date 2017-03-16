@@ -85,7 +85,6 @@ namespace show_builder
                     {
                         GameLog += s + Environment.NewLine;
                         CheckForInterrupt();
-                        Storage.Instance.Bind();
                     },
                     s =>
                     {
@@ -98,6 +97,14 @@ namespace show_builder
                         CheckForInterrupt();
                     }
                 );
+
+                judge.TurnFinished += (i) =>
+                {
+                    if (i < 3 || i % 5 == 0)
+                    {
+                        Storage.Instance.Bind();
+                    }
+                };
 
                 judge.RunSimulation();
 

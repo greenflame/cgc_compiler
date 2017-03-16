@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.IO;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace cgc_compiler
 {
@@ -30,9 +32,12 @@ namespace cgc_compiler
 
         public string GenerateInput()
 		{
+            NumberFormatInfo numFormat = new NumberFormatInfo();
+            numFormat.NumberDecimalSeparator = ".";
+
 			StringBuilder input = new StringBuilder ();
 
-			input.AppendLine (Player.ManaFlask.CurrentMana.ToString());
+			input.AppendLine (Player.ManaFlask.CurrentMana.ToString("0.0000", numFormat));
 
 			Player.CardQueue.Queue
 				.ForEach(i => input.AppendLine(i.ToString()));
@@ -47,7 +52,11 @@ namespace cgc_compiler
 					float position = invert ? GameWorld.InvertPosition (o.Position) : o.Position;
 					float health = (o as IDamagable).GetHealth().CurrentHealth;
 
-					return string.Format ("{0} {1} {2} {3}", type, owner, position, health);
+					return string.Format ("{0} {1} {2} {3}",
+                        type,
+                        owner,
+                        position.ToString("0.0000", numFormat),
+                        (int)health);
 				})
 				.ToList();
 
@@ -59,17 +68,16 @@ namespace cgc_compiler
 
 		public void ProcessOutput(string output, Action<string> executionLogger)
 		{
+            output = Regex.Replace(output, @"(\r|\n){2,}", "\n");   // Standartize endings
+
 			output
-                .Replace(",", ".")
-				.Split (new String[] { Environment.NewLine }, StringSplitOptions.None)
+				.Split ('\n')
+                .Select(s => s.Trim())  // Trim
+                .Select(s => Regex.Replace(s, @"[ ]{2,}", " ")) // Remove multiple spaces
+                .Where(s => !string.IsNullOrEmpty(s))
 				.ToList ()
-				.ForEach (command => {
-
-					if (string.IsNullOrEmpty(command))
-					{
-						return;
-					}
-
+				.ForEach (command =>
+                {
 					executionLogger(string.Format("Processing command: {0}", command));
 
 					List<string> parameters = command.Split(' ').ToList();
@@ -92,7 +100,13 @@ namespace cgc_compiler
 					}
 
 					float position;
-					if (!float.TryParse (parameters [1], out position))
+                    bool parseRes = float.TryParse(
+                        parameters[1].Replace(",", "."),
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out position);
+
+                    if (!parseRes)
 					{
 						executionLogger("Cann't parse spawn position");
 						return;
