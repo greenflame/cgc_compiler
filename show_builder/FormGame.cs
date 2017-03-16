@@ -98,7 +98,14 @@ namespace show_builder
 
         private async void buttonStopBuild_Click(object sender, EventArgs e)
         {
-            await Game.StopBuild();
+            try
+            {
+                await Game.StopBuild();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void buttonPlayGame_Click(object sender, EventArgs e)
@@ -167,6 +174,24 @@ namespace show_builder
             }
 
             Game.Right = strategy;
+            Storage.Instance.Bind();
+        }
+
+        private async void buttonDelete_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Do you want to abort delete thiss game?", "Delete game", MessageBoxButtons.OKCancel);
+
+            if (res == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            if (Game.State == GameState.Building)
+            {
+                await Game.StopBuild();
+            }
+
+            Storage.Instance.Games.Remove(Game);
             Storage.Instance.Bind();
         }
     }

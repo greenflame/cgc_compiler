@@ -9,9 +9,9 @@ namespace show_builder
     public enum GameState
     {
         Ready,
+        Inqueued,
         Building,
         Finished,
-        Error,
-        Aborted
+        Error
     }
 }

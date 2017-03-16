@@ -107,7 +107,7 @@ namespace show_builder
             catch (ThreadAbortException tae)
             {
                 BriefLog += tae.Message + Environment.NewLine;
-                State = GameState.Aborted;
+                State = GameState.Ready;
                 Storage.Instance.Bind();
             }
             catch (Exception ex)

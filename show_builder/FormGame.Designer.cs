@@ -44,6 +44,7 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.comboBoxLeftStrategy = new System.Windows.Forms.ComboBox();
             this.comboBoxRightStrategy = new System.Windows.Forms.ComboBox();
+            this.buttonDelete = new System.Windows.Forms.Button();
             this.tabControlLoggers.SuspendLayout();
             this.tabPageBrief.SuspendLayout();
             this.tabPageExecution.SuspendLayout();
@@ -204,11 +205,22 @@
             this.comboBoxRightStrategy.TabIndex = 51;
             this.comboBoxRightStrategy.SelectedIndexChanged += new System.EventHandler(this.comboBoxRightStrategy_SelectedIndexChanged);
             // 
+            // buttonDelete
+            // 
+            this.buttonDelete.Location = new System.Drawing.Point(413, 36);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(98, 23);
+            this.buttonDelete.TabIndex = 52;
+            this.buttonDelete.Text = "buttonDeleteGame";
+            this.buttonDelete.UseVisualStyleBackColor = true;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
             // FormGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(522, 333);
+            this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.comboBoxRightStrategy);
             this.Controls.Add(this.comboBoxLeftStrategy);
             this.Controls.Add(this.textBoxName);
@@ -248,5 +260,6 @@
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.ComboBox comboBoxLeftStrategy;
         private System.Windows.Forms.ComboBox comboBoxRightStrategy;
+        private System.Windows.Forms.Button buttonDelete;
     }
 }

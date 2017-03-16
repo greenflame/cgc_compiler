@@ -21,9 +21,9 @@ namespace show_builder
 
             InitializeComponent();
 
-            UpdatePatternText = false;
+            comboBoxPattern.SelectedIndexChanged -= comboBoxPattern_SelectedIndexChanged;
             comboBoxPattern.DataSource = ExecutionPattern.AllPatterns;
-            UpdatePatternText = true;
+            comboBoxPattern.SelectedIndexChanged += comboBoxPattern_SelectedIndexChanged;
 
             Storage.Instance.OnChange += Bind;
             Storage.Instance.Bind();
@@ -42,6 +42,13 @@ namespace show_builder
                 Close();
             }
 
+            textBoxName.TextChanged -= textBoxName_TextChanged;
+            textBoxExecutable.TextChanged -= textBoxExecutable_TextChanged;
+            textBoxInterpreter.TextChanged -= textBoxInterpreter_TextChanged;
+            textBoxExecutionPattern.TextChanged -= textBoxExecutionPattern_TextChanged;
+            comboBoxPattern.SelectedIndexChanged -= comboBoxPattern_SelectedIndexChanged;
+
+
             Text = Strategy.Name;
 
             textBoxName.Text = Strategy.Name;
@@ -49,33 +56,38 @@ namespace show_builder
             textBoxInterpreter.Text = Strategy.Interpreter;
             textBoxExecutionPattern.Text = Strategy.ExecutionPattern;
 
-            UpdatePatternText = false;
             comboBoxPattern.SelectedItem = ExecutionPattern.Suggest(Strategy.ExecutionPattern);
-            UpdatePatternText = true;
 
             bool interpreterUsed = comboBoxPattern.SelectedItem as ExecutionPattern != ExecutionPattern.NoInterpreter;
             textBoxInterpreter.Enabled = interpreterUsed;
             buttonBrowseInterpreter.Enabled = interpreterUsed;
-        }
 
-        private bool UpdatePatternText = true;
+
+            textBoxName.TextChanged += textBoxName_TextChanged;
+            textBoxExecutable.TextChanged += textBoxExecutable_TextChanged;
+            textBoxInterpreter.TextChanged += textBoxInterpreter_TextChanged;
+            textBoxExecutionPattern.TextChanged += textBoxExecutionPattern_TextChanged;
+            comboBoxPattern.SelectedIndexChanged += comboBoxPattern_SelectedIndexChanged;
+        }
 
         private void textBoxExecutionPattern_TextChanged(object sender, EventArgs e)
         {
             Strategy.ExecutionPattern = textBoxExecutionPattern.Text;
             Storage.Instance.Bind();
 
-            UpdatePatternText = false;
+            comboBoxPattern.SelectedIndexChanged -= comboBoxPattern_SelectedIndexChanged;
             comboBoxPattern.SelectedItem = ExecutionPattern.Suggest(textBoxExecutionPattern.Text);
-            UpdatePatternText = true;
+            comboBoxPattern.SelectedIndexChanged += comboBoxPattern_SelectedIndexChanged;
         }
 
         private void comboBoxPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxPattern.SelectedItem != null && UpdatePatternText)
+            if (comboBoxPattern.SelectedItem == null)
             {
-                textBoxExecutionPattern.Text = ((ExecutionPattern)comboBoxPattern.SelectedItem).Pattern;
+                return;
             }
+
+            textBoxExecutionPattern.Text = ((ExecutionPattern)comboBoxPattern.SelectedItem).Pattern;
         }
 
         private void buttonBrowseExecutable_Click(object sender, EventArgs e)

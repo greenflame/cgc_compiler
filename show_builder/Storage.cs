@@ -38,6 +38,7 @@ namespace show_builder
 
         private Storage()
         {
+            OnChange += ProcessQueue;
         }
 
         public void Bind()
@@ -45,6 +46,7 @@ namespace show_builder
             OnChange?.Invoke();
         }
 
+        // State
         public static void Save(string path)
         {
             FileStream fs = new FileStream(path, FileMode.Create);
@@ -71,14 +73,22 @@ namespace show_builder
             fs.Close();
 
             instance = loadedStorage;
+
+            instance.OnChange += instance.ProcessQueue;
         }
 
+        // Building
         public static async Task StopBuilders(List<Game> games)
         {
             if (Instance.Games.Count == 0)
             {
                 return;
             }
+
+            games
+               .Where(g => g.State == GameState.Inqueued)
+               .ToList()
+               .ForEach(g => g.State = GameState.Ready);
 
             await Task.Factory.ContinueWhenAll(Instance.Games
                 .Select(g => g.StopBuild())
@@ -88,6 +98,29 @@ namespace show_builder
         public static async Task StopAllBuilders()
         {
             await StopBuilders(Instance.Games);
+        }
+
+        public bool IsBuilding => Games
+                .Where(g => g.State == GameState.Building)
+                .Count() != 0;
+
+        public void ProcessQueue()
+        {
+            if (IsBuilding)
+            {
+                return;
+            }
+
+            Game game = Storage.instance.Games
+                .Where(g => g.State == GameState.Inqueued)
+                .FirstOrDefault();
+
+            if (game == null)
+            {
+                return;
+            }
+
+            game.StartBuild();
         }
     }
 }

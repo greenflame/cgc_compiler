@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace show_builder
 {
@@ -48,7 +49,7 @@ namespace show_builder
 
         public void AddStrategy(object sender, EventArgs e)
         {
-            Strategy strategy = new Strategy();
+         ;  Strategy strategy = new Strategy();
 
             Storage.Instance.Strategies.Add(strategy);
             Storage.Instance.Bind();
@@ -136,6 +137,11 @@ namespace show_builder
             Storage.Instance.Games.Add(game);
             Storage.Instance.Bind();
 
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                return;
+            }
+
             FormGame form = new FormGame(game);
             form.Show();
         }
@@ -167,11 +173,11 @@ namespace show_builder
                 return;
             }
 
-            string msg = "Do you really want to abort adn delete games: {0}?";
+            string msg = "Do you really want to abort and delete games: {0}?";
             string cptn = "Delete games";
 
             DialogResult res = MessageBox.Show(
-                string.Format(msg, string.Join(", ", selected)),
+                string.Format(msg, string.Join(", ", selected.Select(g => g.Name))),
                 cptn,
                 MessageBoxButtons.OKCancel);
 
@@ -188,40 +194,35 @@ namespace show_builder
 
         public void BuildGame(object sender, EventArgs e)
         {
-            Game selected = listBoxGames.SelectedItem as Game;
+            List<Game> selected = listBoxGames.SelectedItems.OfType<Game>().ToList();
 
-            if (selected == null)
+            if (selected.Count == 0)
             {
-                MessageBox.Show("Select a game from the list.");
+                MessageBox.Show("Select games from the list.");
                 return;
             }
 
-            bool isAnyGameBuilding = Storage.Instance.Games
-                .Where(g => g.State == GameState.Building)
-                .Count() > 0;
+            selected
+                .Where(g => g.State != GameState.Building && g.State != GameState.Finished)
+                .ToList()
+                .ForEach(g => g.State = GameState.Inqueued);
 
-            if (isAnyGameBuilding)
-            {
-                MessageBox.Show("Other game is building.");
-                return;
-            }
-
-            selected.StartBuild();
+            Storage.Instance.Bind();
         }
 
         public async void StopBuild(object sender, EventArgs e)
         {
-            Game selected = listBoxGames.SelectedItem as Game;
+            List<Game> selected = listBoxGames.SelectedItems.OfType<Game>().ToList();
 
-            if (selected == null)
+            if (selected.Count == 0)
             {
-                MessageBox.Show("Select a game from the list.");
+                MessageBox.Show("Select games from the list.");
                 return;
             }
 
             try
             {
-                await selected.StopBuild();
+                await Storage.StopBuilders(selected);
             }
             catch (Exception ex)
             {
@@ -237,35 +238,82 @@ namespace show_builder
 
         private async void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (Storage.Instance.IsBuilding)
+            {
+                DialogResult res = MessageBox.Show("Cannot save - building is running. Stop building and save games?", "Stop and save", MessageBoxButtons.OKCancel);
+
+                if (res == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             // Stop all games
             await Storage.StopAllBuilders();
 
             // Save storage
-            Storage.Save("state.xml");
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "State files (*.xml)|*.xml|All files (*.*)|*.*";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                Storage.Save(dialog.FileName);
+            }
         }
 
         private async void loadStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (Storage.Instance.IsBuilding)
+            {
+                DialogResult res = MessageBox.Show("Cannot load - building is running. Stop building and save games?", "Stop and save", MessageBoxButtons.OKCancel);
+
+                if (res == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             // Stop all games
             await Storage.StopAllBuilders();
 
-            // Load storage
-            Storage.Load("state.xml");
+            // Unsubscribe
+            Storage.Instance.OnChange -= Bind;
 
-            // Bind
-            Storage.Instance.OnChange += Bind;
-            Storage.Instance.Bind();
-
-            // Close all forms in case of wrong binding
-            Application.OpenForms
+            Application.OpenForms   // Others :)
                 .OfType<Form>()
                 .Where(f => f != this)
                 .ToList()
                 .ForEach(f => f.Close());
+
+            // Load storage
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "State files (*.xml)|*.xml|All files (*.*)|*.*";
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            Storage.Load(dialog.FileName);
+
+            // Bind
+            Storage.Instance.OnChange += Bind;
+            Storage.Instance.Bind();
         }
 
         private async void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (Storage.Instance.IsBuilding)
+            {
+                DialogResult res = MessageBox.Show("Building is in process: do you want abort it and exit?", "Close", MessageBoxButtons.OKCancel);
+
+                if (res == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
             Storage.Instance.OnChange -= Bind;
             await Storage.StopAllBuilders();
         }
