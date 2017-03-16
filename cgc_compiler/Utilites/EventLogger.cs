@@ -16,7 +16,7 @@ namespace cgc_compiler
 
 		private float EnemyDirectionPos(GameObject obj)
 		{
-			return obj.Owner == Player.Right ?
+			return obj.Owner == World.RightPlayer ?
 				obj.Position - 1 : 
 				obj.Position + 1;
 		}
@@ -242,37 +242,37 @@ namespace cgc_compiler
 				obj.Id));
 		}
 
-		public void InventoryUpdate(PlayerController controller)
+		public void InventoryUpdate(Player controller)
 		{
-			CardsUpdate(controller.CardQueueController, controller.Player);
-			ManaUpdate(controller.ManaController, controller.Player);
+			CardsUpdate(controller);
+			ManaUpdate(controller);
 		}
 
-		public void CardsUpdate(CardQueueController controller, Player player)
+		public void CardsUpdate(Player player)
 		{
 			Logger(string.Format("CARDS_UPDATE {0} {1} {2}",
 				World.GlobalTime,
 
 				player.ToString(),
-				string.Join(" ", controller.Queue.Select(i => i.ToString()))));
+				string.Join(" ", player.CardQueue.Queue.Select(i => i.ToString()))));
 		}
 
-		public void ManaUpdate(ManaController controller, Player player)
+		public void ManaUpdate(Player player)
 		{
 			Logger(string.Format("MANA_UPDATE {0} {1} {2}",
 				World.GlobalTime,
 
 				player.ToString(),
-				controller.CurrentMana));
+				player.ManaFlask.CurrentMana));
 		}
 
-		public void NameUpdate(Player player, string name)
+		public void NameUpdate(Strategy strategy)
 		{
 			Logger(string.Format("NAME_UPDATE {0} {1} {2}",
 				World.GlobalTime,
 
-				player.ToString(),
-				name));
+				strategy.Player.Name,
+				strategy.Name));
 		}
 
 		public void VerdictUpdate(Player player, string verdict)

@@ -71,13 +71,13 @@
     <Compile Include="GameWorld\Interfaces\IDeployable.cs" />
     <Compile Include="GameWorld\Interfaces\IDynamic.cs" />
     <Compile Include="GameWorld\Interfaces\IMovable.cs" />
-    <Compile Include="Judge\CardQueueController.cs" />
+    <Compile Include="GameWorld\CardQueue.cs" />
     <Compile Include="Judge\Judge.cs" />
-    <Compile Include="Judge\PlayerController.cs" />
-    <Compile Include="Judge\ManaController.cs" />
+    <Compile Include="Judge\Strategy.cs" />
+    <Compile Include="GameWorld\ManaFlask.cs" />
     <Compile Include="GameWorld\Metrics.cs" />
     <Compile Include="GameWorld\TargetSelectors.cs" />
-    <Compile Include="Judge\CardType.cs" />
+    <Compile Include="GameWorld\CardType.cs" />
     <Compile Include="GameWorld\GameObjects\Troops\Halberdier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

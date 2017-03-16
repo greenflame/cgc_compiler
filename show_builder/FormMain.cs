@@ -49,7 +49,7 @@ namespace show_builder
 
         public void AddStrategy(object sender, EventArgs e)
         {
-         ;  Strategy strategy = new Strategy();
+            Strategy strategy = new Strategy();
 
             Storage.Instance.Strategies.Add(strategy);
             Storage.Instance.Bind();

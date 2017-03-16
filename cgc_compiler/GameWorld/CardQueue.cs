@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace cgc_compiler
 {
-	public class CardQueueController
+	public class CardQueue
 	{
 		public List<CardType> Queue { get; private set; }
 
-		public CardQueueController ()
+		public CardQueue ()
 		{
 			Queue = new List<CardType> ();
 			GenerateCardQueue ();

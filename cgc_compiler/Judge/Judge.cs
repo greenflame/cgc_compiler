@@ -10,14 +10,8 @@ namespace cgc_compiler
 		public Action<string> ExecutionLogger { get; private set; }
 		public Action<string> BriefInfoLogger { get; private set; }
 
-		public Executer LeftExecuter { get; private set; }
-		public Executer RightExecuter { get; private set; }
-
-		public PlayerController LeftController { get; private set; }
-		public PlayerController RightController { get; private set; }
-
-		public string LeftName { get; private set; }
-		public string RightName { get; private set; }
+        public Strategy LeftStrategy { get; private set; }
+        public Strategy RightStrategy { get; private set; }
 
 		public int TurnNum { get; private set; } = 0;
 
@@ -27,71 +21,14 @@ namespace cgc_compiler
 			ExecutionLogger = executionLogger;
 			BriefInfoLogger = briefInfoLogger;
 
-			LeftExecuter = new Executer(leftProgramm, Configuration.InputFile, Configuration.OutputFile);
-			RightExecuter = new Executer(rightProgramm, Configuration.InputFile, Configuration.OutputFile);
-
-			LeftController = new PlayerController(GameWorld, Player.Left);
-			RightController = new PlayerController(GameWorld, Player.Right);
-
-			LeftName = ExtractStrategyName(leftProgramm);
-			RightName = ExtractStrategyName(rightProgramm);
-
-			InitGameWorld();
+            LeftStrategy = new Strategy(GameWorld.LeftPlayer, leftProgramm);
+            RightStrategy = new Strategy(GameWorld.RightPlayer, rightProgramm);
 
 			// Events
-			GameWorld.EventLogger.NameUpdate(Player.Left, LeftName);
-			GameWorld.EventLogger.NameUpdate(Player.Right, RightName);
+			GameWorld.EventLogger.NameUpdate(LeftStrategy);
+			GameWorld.EventLogger.NameUpdate(RightStrategy);
 
-			GameWorld.EventLogger.VsMessage(LeftName, RightName);
-		}
-
-		private void InitGameWorld()
-		{
-			GameWorld.GameObjects.Add(new Forge(GameWorld, Player.Left, Configuration.ForgePosition));
-			GameWorld.GameObjects.Add(new Tower(GameWorld, Player.Left, Configuration.FirstTowerPosition));
-
-			GameWorld.GameObjects.Add(new Forge(GameWorld, Player.Right, GameWorld.InvertPosition(Configuration.ForgePosition)));
-			GameWorld.GameObjects.Add(new Tower(GameWorld, Player.Right, GameWorld.InvertPosition(Configuration.FirstTowerPosition)));
-		}
-
-		private string ExtractStrategyName(string executionString)
-		{
-			string path = executionString.Split('|')[0];
-			string name = Path.GetFileNameWithoutExtension(path);
-			return name.Replace(" ", "_");
-		}
-
-		private bool IsAnyoneWin()
-		{
-			return GameWorld.GameObjects
-				.Where(o => o is Forge)
-				.Count() != 2;
-		}
-
-		private float GetBuildingsHealth(Player player)
-		{
-			return GameWorld.GameObjects
-				.Where(o => o is Turret)
-				.Where(o => o.Owner == player)
-				.Select(o => (o as IDamagable).GetHealth().CurrentHealth)
-				.Sum();
-		}
-
-		private Player GetWinner()
-		{
-			if (GetBuildingsHealth(Player.Left) > GetBuildingsHealth(Player.Right))
-			{
-				return Player.Left;
-			}
-			else
-			{
-				return Player.Right;
-			}
-		}
-
-		private string PlayerName(Player player)
-		{
-			return player == Player.Left ? LeftName : RightName;
+			GameWorld.EventLogger.VsMessage(LeftStrategy.Name, RightStrategy.Name);
 		}
 
 		public void RunSimulation()
@@ -102,13 +39,10 @@ namespace cgc_compiler
 				{
 					GameWorld.Update(Configuration.SimulationStep);
 
-					LeftController.ManaController.Produce(Configuration.SimulationStep);
-					RightController.ManaController.Produce(Configuration.SimulationStep);
-
-					if (IsAnyoneWin())
+					if (GameWorld.IsAnyoneWin())
 					{
-						GameWorld.EventLogger.Victory(PlayerName(GetWinner()));
-						BriefInfoLogger(GetWinner().ToString() + " strategy won");
+						GameWorld.EventLogger.Victory(GameWorld.GetWinner().Name);
+						BriefInfoLogger(GameWorld.GetWinner().Name + " strategy won");
 						return;
 					}
 				}
@@ -118,8 +52,8 @@ namespace cgc_compiler
 			}
 
 			// Time limit exceeded
-			GameWorld.EventLogger.Victory(PlayerName(GetWinner()));
-			BriefInfoLogger(GetWinner().ToString() + " strategy won");
+			GameWorld.EventLogger.Victory(GameWorld.GetWinner().Name);
+			BriefInfoLogger(GameWorld.GetWinner().Name + " strategy won");
 		}
 
 		private void RunStrategies()
@@ -129,18 +63,18 @@ namespace cgc_compiler
 			
 			ExecutionLogger(string.Format("---------- Turn: {0} World time: {1} ----------", TurnNum, GameWorld.GlobalTime));
 
-			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftName));
-			RunStrategy(LeftExecuter, LeftController, ref briefLogStr);
+			ExecutionLogger(string.Format("----- Left strategy: {0}", LeftStrategy.Name));
+			RunStrategy(LeftStrategy, ref briefLogStr);
 
-			ExecutionLogger(string.Format("----- Right strategy: {0}", RightName));
-			RunStrategy(RightExecuter, RightController, ref briefLogStr);
+			ExecutionLogger(string.Format("----- Right strategy: {0}", RightStrategy.Name));
+			RunStrategy(RightStrategy, ref briefLogStr);
 
 			BriefInfoLogger(briefLogStr);
 		}
 
-		private void RunStrategy(Executer executer, PlayerController controller, ref string briefLogStr)
+		private void RunStrategy(Strategy strategy, ref string briefLogStr)
 		{
-			string input = controller.GenerateInput();
+			string input = strategy.GenerateInput();
 
 			ExecutionLogger("----- Input:");
 			ExecutionLogger(input);
@@ -151,7 +85,7 @@ namespace cgc_compiler
 
 			try
 			{
-				result = executer.Execute(input, Configuration.MaxExecutionTime, out output);
+				result = strategy.Executer.Execute(input, Configuration.MaxExecutionTime, out output);
 			}
 			catch(Exception ex)
 			{
@@ -159,9 +93,9 @@ namespace cgc_compiler
 				executerException = ex;
 			}
 
-			briefLogStr += string.Format(" {0}: {1}", controller.Player, result);
+			briefLogStr += string.Format(" {0}: {1}", strategy.Player, result);
 			ExecutionLogger(string.Format("----- Executer verdict: {0}", result));
-			GameWorld.EventLogger.VerdictUpdate(controller.Player, result.ToString());
+			GameWorld.EventLogger.VerdictUpdate(strategy.Player, result.ToString());
 
 			if (executerException != null)
 			{
@@ -174,7 +108,7 @@ namespace cgc_compiler
 				ExecutionLogger(output);
 
 				ExecutionLogger("----- Output processor:");
-				controller.ProcessOutput(output, ExecutionLogger);
+				strategy.ProcessOutput(output, ExecutionLogger);
 			}
 		}
 	}

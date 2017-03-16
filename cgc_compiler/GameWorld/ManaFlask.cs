@@ -2,11 +2,11 @@
 
 namespace cgc_compiler
 {
-	public class ManaController
+	public class ManaFlask
 	{
 		public float CurrentMana { get; private set; }
 
-		public ManaController ()
+		public ManaFlask ()
 		{
 			CurrentMana = Configuration.InitialMana;
 		}
